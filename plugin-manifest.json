@@ -1,0 +1,15 @@
+{
+  "id": "dgits.ai-integration",
+  "name": "AI Integration",
+  "description": "Per-space AI provider integration: endpoint URL, API key, model and auto-generation, with connection test before saving.",
+  "version": "0.1.0",
+  "repository": "https://github.com/dgrabarz/flotiq-ui-plugin-ai-integration",
+  "url": "https://localhost:3053/index.js",
+  "permissions": [
+    {
+      "type": "CO",
+      "ctdName": "_plugin_settings",
+      "canUpdate": true
+    }
+  ]
+}

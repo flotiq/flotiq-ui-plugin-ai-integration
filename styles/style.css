@@ -1,0 +1,393 @@
+/* Colours come from the panel's Tailwind theme. Literal values are kept as
+   fallbacks in case the plugin renders outside the panel's :root scope. */
+
+/* ================================================================ header */
+
+.plugin-ai-integration-intro {
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+/* ================================================================ banner */
+
+.plugin-ai-integration-banner {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px solid;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.plugin-ai-integration-banner[data-variant="info"] {
+    border-color: var(--color-blue-400, #429cf0);
+    background-color: var(--color-blue-50, #ceecff);
+    color: var(--color-slate-900, #0f172b);
+}
+
+.plugin-ai-integration-banner[data-variant="active"] {
+    border-color: var(--color-lime-300, #83ce63);
+    background-color: var(--color-lime-50, #cdf3c6);
+    color: var(--color-lime-900, #155400);
+}
+
+.plugin-ai-integration-banner[data-variant="failed"] {
+    border-color: var(--color-red-300, #ffacac);
+    background-color: var(--color-red-50, #fef2f2);
+    color: var(--color-red-900, #7f1c1d);
+}
+
+.plugin-ai-integration-banner[data-variant="loading"] {
+    border-color: var(--color-slate-200, #dae3f2);
+    background-color: var(--color-slate-50, #f4f7fe);
+    color: var(--color-slate-800, #1e293b);
+}
+
+/* Dark mode keeps the same hues but flips to the deep end of each ramp. */
+.dark .plugin-ai-integration-banner[data-variant="info"] {
+    border-color: var(--color-blue-700, #004993);
+    background-color: var(--color-blue-950, #002354);
+    color: var(--color-blue-50, #ceecff);
+}
+
+.dark .plugin-ai-integration-banner[data-variant="active"] {
+    border-color: var(--color-lime-800, #006d23);
+    background-color: var(--color-lime-950, #0e3900);
+    color: var(--color-lime-50, #cdf3c6);
+}
+
+.dark .plugin-ai-integration-banner[data-variant="failed"] {
+    border-color: var(--color-red-800, #991b1b);
+    background-color: var(--color-red-950, #450a0a);
+    color: var(--color-red-100, #fee2e1);
+}
+
+.dark .plugin-ai-integration-banner[data-variant="loading"] {
+    border-color: var(--color-slate-800, #1e293b);
+    background-color: var(--color-slate-900, #0f172b);
+    color: var(--color-slate-100, #e6edf9);
+}
+
+.plugin-ai-integration-banner__icon {
+    flex-shrink: 0;
+    line-height: 0;
+    margin-top: 1px;
+}
+
+.plugin-ai-integration-banner[data-variant="info"] .plugin-ai-integration-banner__icon {
+    color: var(--color-blue, #1c70e8);
+}
+
+.plugin-ai-integration-banner[data-variant="active"] .plugin-ai-integration-banner__icon {
+    color: var(--color-lime-700, #008a0b);
+}
+
+.plugin-ai-integration-banner[data-variant="failed"] .plugin-ai-integration-banner__icon {
+    color: var(--color-red-600, #dc2626);
+}
+
+.plugin-ai-integration-banner[data-variant="loading"] .plugin-ai-integration-banner__icon {
+    color: var(--color-slate-500, #62748e);
+}
+
+.dark .plugin-ai-integration-banner[data-variant="info"] .plugin-ai-integration-banner__icon {
+    color: var(--color-blue-300, #75c1ff);
+}
+
+.dark .plugin-ai-integration-banner[data-variant="active"] .plugin-ai-integration-banner__icon {
+    color: var(--color-lime, #76ec71);
+}
+
+.dark .plugin-ai-integration-banner[data-variant="failed"] .plugin-ai-integration-banner__icon {
+    color: var(--color-red-300, #ffacac);
+}
+
+.plugin-ai-integration-banner__title {
+    display: block;
+    margin-bottom: 2px;
+    font-weight: 600;
+}
+
+.plugin-ai-integration-banner__body {
+    margin: 0;
+}
+
+.plugin-ai-integration-banner__link {
+    display: inline-block;
+    margin-top: 6px;
+    color: var(--color-blue, #1c70e8);
+    text-decoration: none;
+}
+
+.dark .plugin-ai-integration-banner__link {
+    color: var(--color-blue-300, #75c1ff);
+}
+
+.plugin-ai-integration-banner__link:hover {
+    text-decoration: underline;
+}
+
+.plugin-ai-integration-spinner {
+    animation: plugin-ai-integration-spin 0.9s linear infinite;
+}
+
+@keyframes plugin-ai-integration-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ================================================================== tabs */
+
+.plugin-ai-integration-tabs {
+    display: flex;
+    gap: 24px;
+    margin-top: 20px;
+    border-bottom: 1px solid var(--color-slate-200, #dae3f2);
+}
+
+.dark .plugin-ai-integration-tabs {
+    border-bottom-color: var(--color-slate-800, #1e293b);
+}
+
+.plugin-ai-integration-tabs__item {
+    padding: 8px 4px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--color-slate-500, #62748e);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.dark .plugin-ai-integration-tabs__item {
+    color: var(--color-slate-400, #8ea1b8);
+}
+
+.plugin-ai-integration-tabs__item.is-active {
+    border-bottom-color: var(--color-blue, #1c70e8);
+    color: var(--color-blue, #1c70e8);
+}
+
+.dark .plugin-ai-integration-tabs__item.is-active {
+    border-bottom-color: var(--color-blue-300, #75c1ff);
+    color: var(--color-blue-300, #75c1ff);
+}
+
+/* ================================================================== logs */
+
+.plugin-ai-integration-panel[hidden] {
+    display: none;
+}
+
+.plugin-ai-integration-logs {
+    padding-top: 16px;
+}
+
+/* ------------------------------------------------------------ empty state */
+
+.plugin-ai-integration-logs__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px;
+    text-align: center;
+}
+
+/* The icon ships with its own circular background - no styling needed here. */
+.plugin-ai-integration-logs__empty-icon {
+    display: block;
+    margin-bottom: 16px;
+    line-height: 0;
+}
+
+.plugin-ai-integration-logs__empty-title {
+    margin-bottom: 6px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.plugin-ai-integration-logs__empty-body {
+    margin: 0;
+    max-width: 480px;
+    color: var(--color-slate-500, #62748e);
+    font-size: 14px;
+}
+
+.dark .plugin-ai-integration-logs__empty-body {
+    color: var(--color-slate-400, #8ea1b8);
+}
+
+/* --------------------------------------------------------------- timeline */
+
+.plugin-ai-integration-logs__list {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 20px;
+    list-style: none;
+}
+
+/* The vertical rail connecting the status dots. */
+.plugin-ai-integration-logs__list::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: 4px;
+    width: 1px;
+    background: var(--color-slate-200, #dae3f2);
+}
+
+.dark .plugin-ai-integration-logs__list::before {
+    background: var(--color-slate-800, #1e293b);
+}
+
+.plugin-ai-integration-log {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 8px;
+    border-radius: 6px;
+}
+
+.plugin-ai-integration-log__dot {
+    position: absolute;
+    top: 18px;
+    left: -20px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.plugin-ai-integration-log[data-status="succeeded"] .plugin-ai-integration-log__dot {
+    background: var(--color-lime-600, #2d9c1e);
+}
+
+.plugin-ai-integration-log[data-status="failed"] .plugin-ai-integration-log__dot {
+    background: var(--color-red, #eb5757);
+}
+
+.plugin-ai-integration-log__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.plugin-ai-integration-log__time {
+    display: block;
+    color: var(--color-slate-400, #8ea1b8);
+    font-size: 12px;
+}
+
+.plugin-ai-integration-log__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.plugin-ai-integration-log[data-status="failed"] .plugin-ai-integration-log__status {
+    color: var(--color-red, #eb5757);
+}
+
+.plugin-ai-integration-log__separator,
+.plugin-ai-integration-log__meta {
+    color: var(--color-slate-400, #8ea1b8);
+}
+
+.plugin-ai-integration-log__info {
+    flex-shrink: 0;
+    line-height: 0;
+    color: var(--color-slate-400, #8ea1b8);
+    cursor: help;
+}
+
+/* ================================================================ toggle */
+
+/* Flotiq stacks the switch label above the control. Our label lives in
+   additionalElements (a sibling div), so lay the whole field out as a row. */
+div:has(> div > .plugin-ai-integration-toggle-label) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* The built-in label is emptied in the schema - drop the grid row it leaves. */
+div:has(> div > .plugin-ai-integration-toggle-label) .grid.grid-rows-2 {
+    grid-template-rows: none;
+}
+
+div:has(> div > .plugin-ai-integration-toggle-label) label {
+    display: none;
+}
+
+.plugin-ai-integration-toggle-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.plugin-ai-integration-toggle-label__hint {
+    line-height: 0;
+    color: var(--color-blue, #1c70e8);
+    cursor: help;
+}
+
+.dark .plugin-ai-integration-toggle-label__hint {
+    color: var(--color-blue-300, #75c1ff);
+}
+
+.plugin-ai-integration-toggle-label__hint svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* ================================================================= model */
+
+.plugin-ai-integration-model__status {
+    font-size: 12px;
+    color: var(--color-slate-500, #62748e);
+}
+
+.dark .plugin-ai-integration-model__status {
+    color: var(--color-slate-400, #8ea1b8);
+}
+
+.plugin-ai-integration-model__status[data-state="error"] {
+    color: var(--color-red, #eb5757);
+}
+
+.plugin-ai-integration-model__status[data-state="loaded"] {
+    color: var(--color-lime-600, #2d9c1e);
+}
+
+.dark .plugin-ai-integration-model__status[data-state="loaded"] {
+    color: var(--color-lime, #76ec71);
+}
+
+/* ================================================================= modal */
+
+.plugin-ai-integration-modal__heading {
+    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.plugin-ai-integration-modal__list {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    list-style: disc;
+}
+
+.plugin-ai-integration-modal__note {
+    font-size: 13px;
+    color: var(--color-slate-500, #62748e);
+}
+
+.dark .plugin-ai-integration-modal__note {
+    color: var(--color-slate-400, #8ea1b8);
+}

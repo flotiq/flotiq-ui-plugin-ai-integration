@@ -1,0 +1,41 @@
+import pluginInfo from "../../plugin-manifest.json";
+import {
+    addElementToCache,
+    getCachedElement,
+    removeElement,
+} from "../../common/plugin-element-cache";
+import { hydrate } from "../../common/logs-store";
+import { getSchema } from "./form-schema";
+import { getSubmitHandler } from "./submit";
+import { validate } from "./validate";
+
+export const handleManageSchema = (data, client, globals) => {
+    const cacheKey = `${pluginInfo.id}-form-schema`;
+    let formSchema = getCachedElement(cacheKey)?.element;
+
+    if (!formSchema) {
+        let settings = {};
+        try {
+            settings = JSON.parse(globals.getPluginSettings() || "{}");
+        } catch {
+            settings = {};
+        }
+
+        hydrate(settings);
+
+        formSchema = {
+            schema: getSchema(),
+            options: {
+                disabledBuildInValidation: true,
+                onValidate: validate,
+                onSubmit: getSubmitHandler(data, client, globals),
+            },
+        };
+
+        addElementToCache(formSchema, cacheKey);
+    }
+
+    data.modalInstance.promise.then(() => removeElement(cacheKey));
+
+    return formSchema;
+};

@@ -1,0 +1,20 @@
+{
+  "name": "flotiq-ui-plugin-ai-integration",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "start": "node esbuild.config.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "esbuild-plugin-copy": "^2.1.1",
+    "esbuild-plugin-inline-import": "^1.1.0",
+    "postcss": "^8.5.28",
+    "postcss-url": "^10.1.4"
+  },
+  "dependencies": {
+    "i18next": "^26.4.2"
+  }
+}
