@@ -1,7 +1,7 @@
 import pluginInfo from "../../plugin-manifest.json";
 import i18n from "../../i18n";
 import { getEntries, subscribe } from "../../common/logs-store";
-import { infoIcon, logsEmptyIcon } from "../../common/icons";
+import { logInfoIcon, logsEmptyIcon } from "../../common/icons";
 import {
     addElementToCache,
     getCachedElement,
@@ -51,15 +51,20 @@ const buildEntry = (entry) => {
         <span class="plugin-ai-integration-log__meta"></span>
       </div>
     </div>
-    <span class="plugin-ai-integration-log__info">${infoIcon}</span>
+    <span class="plugin-ai-integration-log__info">${logInfoIcon}</span>
   `;
 
     item.querySelector(".plugin-ai-integration-log__time").textContent =
         formatTimestamp(entry.timestamp);
 
-    item.querySelector(".plugin-ai-integration-log__status").textContent = i18n.t(
+    const statusText = i18n.t(
         entry.status === "succeeded" ? "Logs.Succeeded" : "Logs.Failed",
     );
+
+    item.querySelector(".plugin-ai-integration-log__status").textContent = statusText;
+
+    // The dot conveys the outcome by colour alone - give it a text equivalent.
+    item.querySelector(".plugin-ai-integration-log__dot").title = statusText;
 
     item.querySelector(".plugin-ai-integration-log__type").textContent = i18n.t(
         TYPE_KEYS[entry.type] || TYPE_KEYS.connection_test,
@@ -68,10 +73,15 @@ const buildEntry = (entry) => {
     item.querySelector(".plugin-ai-integration-log__meta").textContent =
         `${i18n.t("Logs.Attempts", { count: entry.attempts })} · ${i18n.t("Logs.Duration", { seconds })}`;
 
-    // The info icon carries the full provider message as a native tooltip.
-    if (entry.message) {
-        item.querySelector(".plugin-ai-integration-log__info").title = entry.message;
-    }
+    // The row shows a shortened time and no message at all, so the icon carries
+    // the exact moment plus the reason behind the outcome when there is one.
+    // Always set: an icon that is sometimes inert reads as broken.
+    item.querySelector(".plugin-ai-integration-log__info").title = [
+        new Date(entry.timestamp).toLocaleString(i18n.language),
+        entry.message,
+    ]
+        .filter(Boolean)
+        .join("\n");
 
     return item;
 };

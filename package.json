@@ -5,9 +5,10 @@
   "private": true,
   "scripts": {
     "build": "node esbuild.config.js",
-    "start": "node esbuild.config.js --watch"
+    "start": "node --env-file-if-exists=.env esbuild.config.js --watch"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "esbuild": "^0.25.0",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-inline-import": "^1.1.0",

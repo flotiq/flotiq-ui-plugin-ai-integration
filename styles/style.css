@@ -27,46 +27,46 @@
 }
 
 .plugin-ai-integration-banner[data-variant="active"] {
-    border-color: var(--color-lime-300, #83ce63);
+    border-color: var(--color-lime-600, #2d9c1e);
     background-color: var(--color-lime-50, #cdf3c6);
-    color: var(--color-lime-900, #155400);
+    color: var(--color-slate-900, #0f172b);
 }
 
 .plugin-ai-integration-banner[data-variant="failed"] {
-    border-color: var(--color-red-300, #ffacac);
+    border-color: var(--color-red, #eb5757);
     background-color: var(--color-red-50, #fef2f2);
-    color: var(--color-red-900, #7f1c1d);
+    color: var(--color-slate-900, #0f172b);
 }
 
 .plugin-ai-integration-banner[data-variant="loading"] {
     border-color: var(--color-slate-200, #dae3f2);
     background-color: var(--color-slate-50, #f4f7fe);
-    color: var(--color-slate-800, #1e293b);
+    color: var(--color-slate-900, #0f172b);
 }
 
 /* Dark mode keeps the same hues but flips to the deep end of each ramp. */
-.dark .plugin-ai-integration-banner[data-variant="info"] {
-    border-color: var(--color-blue-700, #004993);
+:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="info"] {
+    border-color: var(--color-blue-800, #023a88);
     background-color: var(--color-blue-950, #002354);
-    color: var(--color-blue-50, #ceecff);
+    color: var(--color-white, #fff);
 }
 
-.dark .plugin-ai-integration-banner[data-variant="active"] {
-    border-color: var(--color-lime-800, #006d23);
+:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="active"] {
+    border-color: var(--color-lime-900, #155400);
     background-color: var(--color-lime-950, #0e3900);
-    color: var(--color-lime-50, #cdf3c6);
+    color: var(--color-white, #fff);
 }
 
-.dark .plugin-ai-integration-banner[data-variant="failed"] {
-    border-color: var(--color-red-800, #991b1b);
+:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="failed"] {
+    border-color: var(--color-red-900, #7f1c1d);
     background-color: var(--color-red-950, #450a0a);
-    color: var(--color-red-100, #fee2e1);
+    color: var(--color-white, #fff);
 }
 
-.dark .plugin-ai-integration-banner[data-variant="loading"] {
+:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="loading"] {
     border-color: var(--color-slate-800, #1e293b);
     background-color: var(--color-slate-900, #0f172b);
-    color: var(--color-slate-100, #e6edf9);
+    color: var(--color-white, #fff);
 }
 
 .plugin-ai-integration-banner__icon {
@@ -91,15 +91,15 @@
     color: var(--color-slate-500, #62748e);
 }
 
-.dark .plugin-ai-integration-banner[data-variant="info"] .plugin-ai-integration-banner__icon {
+:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="info"] .plugin-ai-integration-banner__icon {
     color: var(--color-blue-300, #75c1ff);
 }
 
-.dark .plugin-ai-integration-banner[data-variant="active"] .plugin-ai-integration-banner__icon {
+:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="active"] .plugin-ai-integration-banner__icon {
     color: var(--color-lime, #76ec71);
 }
 
-.dark .plugin-ai-integration-banner[data-variant="failed"] .plugin-ai-integration-banner__icon {
+:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="failed"] .plugin-ai-integration-banner__icon {
     color: var(--color-red-300, #ffacac);
 }
 
@@ -114,14 +114,22 @@
 }
 
 .plugin-ai-integration-banner__link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     margin-top: 6px;
+    /* Stays blue on every variant - the banner body is slate-900 throughout. */
     color: var(--color-blue, #1c70e8);
     text-decoration: none;
 }
 
-.dark .plugin-ai-integration-banner__link {
-    color: var(--color-blue-300, #75c1ff);
+.plugin-ai-integration-banner__link svg {
+    flex-shrink: 0;
+}
+
+/* The chevron inherits this through currentColor. */
+:is(.mode-dark, .dark) .plugin-ai-integration-banner__link {
+    color: var(--color-white, #fff);
 }
 
 .plugin-ai-integration-banner__link:hover {
@@ -147,22 +155,22 @@
     border-bottom: 1px solid var(--color-slate-200, #dae3f2);
 }
 
-.dark .plugin-ai-integration-tabs {
+:is(.mode-dark, .dark) .plugin-ai-integration-tabs {
     border-bottom-color: var(--color-slate-800, #1e293b);
 }
 
 .plugin-ai-integration-tabs__item {
     padding: 8px 4px;
     border: none;
-    border-bottom: 2px solid transparent;
+    border-bottom: 3px solid transparent;
     background: none;
-    color: var(--color-slate-500, #62748e);
+    color: var(--color-slate-900, #0f172b);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
 }
 
-.dark .plugin-ai-integration-tabs__item {
+:is(.mode-dark, .dark) .plugin-ai-integration-tabs__item {
     color: var(--color-slate-400, #8ea1b8);
 }
 
@@ -171,9 +179,22 @@
     color: var(--color-blue, #1c70e8);
 }
 
-.dark .plugin-ai-integration-tabs__item.is-active {
+:is(.mode-dark, .dark) .plugin-ai-integration-tabs__item.is-active {
     border-bottom-color: var(--color-blue-300, #75c1ff);
     color: var(--color-blue-300, #75c1ff);
+}
+
+/* ================================================================== tabs: logs view */
+
+/*
+ * The Logs tab hides the settings fields, which Flotiq renders as siblings of
+ * our header. A class on the form beats writing inline styles onto each one:
+ * those would have to be restored afterwards, and we do not know what Flotiq
+ * had put there. !important because an inline style would otherwise outrank us.
+ */
+.plugin-ai-integration-hide-fields
+    > *:not(.plugin-ai-integration-header):not(:has(.plugin-ai-integration-header)) {
+    display: none !important;
 }
 
 /* ================================================================== logs */
@@ -196,11 +217,24 @@
     text-align: center;
 }
 
-/* The icon ships with its own circular background - no styling needed here. */
+/* 48px badge, fully rounded. The icon itself is currentColor. */
 .plugin-ai-integration-logs__empty-icon {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
     margin-bottom: 16px;
+    border-radius: 24px;
+    background-color: var(--color-blue-50, #ceecff);
+    color: var(--color-blue, #1c70e8);
     line-height: 0;
+}
+
+:is(.mode-dark, .dark) .plugin-ai-integration-logs__empty-icon {
+    background-color: var(--color-blue-900, #012f6e);
+    color: var(--color-blue-300, #75c1ff);
 }
 
 .plugin-ai-integration-logs__empty-title {
@@ -216,7 +250,7 @@
     font-size: 14px;
 }
 
-.dark .plugin-ai-integration-logs__empty-body {
+:is(.mode-dark, .dark) .plugin-ai-integration-logs__empty-body {
     color: var(--color-slate-400, #8ea1b8);
 }
 
@@ -229,18 +263,35 @@
     list-style: none;
 }
 
-/* The vertical rail connecting the status dots. */
-.plugin-ai-integration-logs__list::before {
+/*
+ * The vertical rail connecting the status dots. Drawn per row rather than
+ * once across the whole list, so the first and last dots close the timeline
+ * instead of the line overshooting them at both ends.
+ *
+ * -16px puts the 1px rail on the dot's axis: the row starts 20px into the
+ * list, the dot sits at -20px and is 9px wide, so its centre is 4.5px from
+ * the list edge.
+ */
+.plugin-ai-integration-log::before {
     content: "";
     position: absolute;
-    top: 8px;
-    bottom: 8px;
-    left: 4px;
+    top: 0;
+    bottom: 0;
+    left: -16px;
     width: 1px;
     background: var(--color-slate-200, #dae3f2);
 }
 
-.dark .plugin-ai-integration-logs__list::before {
+/* 22.5px is the dot's centre: an 18px offset plus half of its 9px height. */
+.plugin-ai-integration-log:first-child::before {
+    top: 22.5px;
+}
+
+.plugin-ai-integration-log:last-child::before {
+    bottom: calc(100% - 22.5px);
+}
+
+:is(.mode-dark, .dark) .plugin-ai-integration-log::before {
     background: var(--color-slate-800, #1e293b);
 }
 
@@ -263,7 +314,7 @@
 }
 
 .plugin-ai-integration-log[data-status="succeeded"] .plugin-ai-integration-log__dot {
-    background: var(--color-lime-600, #2d9c1e);
+    background: var(--color-lime-300, #83ce63);
 }
 
 .plugin-ai-integration-log[data-status="failed"] .plugin-ai-integration-log__dot {
@@ -337,7 +388,7 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     cursor: help;
 }
 
-.dark .plugin-ai-integration-toggle-label__hint {
+:is(.mode-dark, .dark) .plugin-ai-integration-toggle-label__hint {
     color: var(--color-blue-300, #75c1ff);
 }
 
@@ -353,7 +404,7 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     color: var(--color-slate-500, #62748e);
 }
 
-.dark .plugin-ai-integration-model__status {
+:is(.mode-dark, .dark) .plugin-ai-integration-model__status {
     color: var(--color-slate-400, #8ea1b8);
 }
 
@@ -365,7 +416,7 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     color: var(--color-lime-600, #2d9c1e);
 }
 
-.dark .plugin-ai-integration-model__status[data-state="loaded"] {
+:is(.mode-dark, .dark) .plugin-ai-integration-model__status[data-state="loaded"] {
     color: var(--color-lime, #76ec71);
 }
 
@@ -388,6 +439,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     color: var(--color-slate-500, #62748e);
 }
 
-.dark .plugin-ai-integration-modal__note {
+:is(.mode-dark, .dark) .plugin-ai-integration-modal__note {
     color: var(--color-slate-400, #8ea1b8);
 }

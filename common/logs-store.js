@@ -9,6 +9,16 @@ const MAX_ENTRIES = 20;
 const state = {
     entries: [],
     banner: { type: "idle" },
+    /**
+     * Whether the saved configuration is live, persisted next to it as
+     * `connection: { status, at }`.
+     *
+     * This used to be inferred from the newest log entry, which conflated two
+     * different things: "the last attempt failed" and "the integration is off".
+     * A failed test does not un-save a working configuration, so the two need
+     * separate storage.
+     */
+    connection: null,
 };
 
 const subscribers = new Set();
@@ -46,29 +56,50 @@ export const addEntry = (entry) => {
     notify();
 };
 
+export const CONNECTION = {
+    ACTIVE: "active",
+    DISCONNECTED: "disconnected",
+};
+
+export const getConnection = () => state.connection;
+
+/** Settings only ever save after a passing test, so this marks that moment. */
+export const markConnected = (at) => {
+    state.connection = { status: CONNECTION.ACTIVE, at };
+};
+
+export const markDisconnected = () => {
+    state.connection = { status: CONNECTION.DISCONNECTED };
+    state.banner = { type: "idle" };
+    notify();
+};
+
 /** Called when the manage modal opens, with the persisted settings object. */
 export const hydrate = (settings) => {
     state.entries = Array.isArray(settings?.logs) ? settings.logs : [];
+    state.connection = settings?.connection || null;
 
-    const lastTest = state.entries.find(
-        (entry) => entry.type === "connection_test",
-    );
-
-    if (!lastTest) {
-        state.banner = { type: "idle" };
-    } else if (lastTest.status === "succeeded") {
-        state.banner = {
-            type: "active",
-            url: settings.ai_url,
-            model: settings.model,
-            at: lastTest.timestamp,
-        };
-    } else {
-        state.banner = { type: "failed", message: lastTest.message };
-    }
+    // Reflects what is stored, not how the last attempt went - a failed test is
+    // reported in the Logs tab and in the banner for that session only.
+    state.banner =
+        state.connection?.status === CONNECTION.ACTIVE
+            ? {
+                type: "active",
+                url: settings.ai_url,
+                model: settings.model,
+                at: state.connection.at,
+            }
+            : { type: "idle" };
 
     notify();
 };
 
-/** Logs are persisted alongside the settings - merge them in before saving. */
-export const withLogs = (values) => ({ ...values, logs: state.entries });
+/**
+ * The log and the connection state ride along in the same settings JSON, so
+ * merge both in before saving.
+ */
+export const withState = (values) => ({
+    ...values,
+    logs: state.entries,
+    connection: state.connection,
+});

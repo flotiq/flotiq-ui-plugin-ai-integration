@@ -1,23 +1,44 @@
 /**
- * All calls go to the provider configured by the user, not to Flotiq API,
- * so plain fetch is fine here (apiClient is only mandatory for Flotiq API).
+ * The model listing goes straight from the browser to the provider, not through
+ * the worker: OpenAI serves /models with `access-control-allow-origin: *` and
+ * allows the Authorization header, so a plain fetch works and needs no proxy.
+ * Providers that do not (or that have no listing at all) leave the model select
+ * empty - see plugins/manage/field-config.js.
  */
 
 const MODELS_TIMEOUT_MS = 15000;
-const TEST_TIMEOUT_MS = 300000; // the UI promises "up to 5 minutes"
 
-const request = async (url, apiKey, init = {}, timeoutMs) => {
+export const normalizeBaseUrl = (value) =>
+    (value || "").trim().replace(/\/+$/, "");
+
+/**
+ * `ai_url` is the full completions endpoint, because the worker POSTs to it
+ * verbatim. The listing lives next to the API root rather than next to the
+ * endpoint, so drop the trailing operation segment:
+ *
+ *   .../v1/chat/completions -> .../v1/models
+ *   .../v1/completions      -> .../v1/models
+ *
+ * Anything that is not a recognised operation is left alone, which yields a URL
+ * the provider will reject - deliberately, because guessing harder would send
+ * requests to paths nobody asked for. A provider whose listing cannot be derived
+ * simply leaves the model select empty.
+ */
+const OPERATION_SUFFIX = /\/(chat\/)?(completions?|responses?)\/?$/i;
+
+export const modelsUrlFor = (aiUrl) =>
+    `${normalizeBaseUrl(aiUrl).replace(OPERATION_SUFFIX, "")}/models`;
+
+export const fetchModels = async (aiUrl, apiKey) => {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    const timeout = setTimeout(() => controller.abort(), MODELS_TIMEOUT_MS);
 
     try {
-        const response = await fetch(url, {
-            ...init,
+        const response = await fetch(modelsUrlFor(aiUrl), {
             signal: controller.signal,
             headers: {
-                "Content-Type": "application/json",
+                Accept: "application/json",
                 ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
-                ...(init.headers || {}),
             },
         });
 
@@ -27,29 +48,6 @@ const request = async (url, apiKey, init = {}, timeoutMs) => {
         } catch {
             body = null;
         }
-
-        return { response, body };
-    } finally {
-        clearTimeout(timeout);
-    }
-};
-
-export const normalizeBaseUrl = (value) =>
-    (value || "").trim().replace(/\/+$/, "");
-
-/**
- * GET {ai_url}/models - OpenAI-compatible listing.
- * The user provides the full base URL including the version segment
- * (e.g. https://api.openai.com/v1), so no version is appended here.
- */
-export const fetchModels = async (aiUrl, apiKey) => {
-    try {
-        const { response, body } = await request(
-            `${normalizeBaseUrl(aiUrl)}/models`,
-            apiKey,
-            {},
-            MODELS_TIMEOUT_MS,
-        );
 
         if (!response.ok) {
             return {
@@ -64,6 +62,12 @@ export const fetchModels = async (aiUrl, apiKey) => {
             .filter(Boolean)
             .sort();
 
+        // A 2xx that lists nothing is not a usable list - treat it as a failure
+        // so the field degrades to free text instead of offering an empty select.
+        if (!models.length) {
+            return { ok: false, models: [], error: null };
+        }
+
         return { ok: true, models, error: null };
     } catch (error) {
         return {
@@ -74,85 +78,7 @@ export const fetchModels = async (aiUrl, apiKey) => {
                     ? "Request timed out"
                     : "Cannot reach the endpoint (network error or CORS)",
         };
-    }
-};
-
-export const TEST_RESULT = {
-    SUCCESS: "success",
-    WARNING: "warning",
-    BLOCKING: "blocking",
-};
-
-/**
- * POST {ai_url}/test
- *
- * Result contract (confirm with the API owner before shipping):
- *   non-2xx / network failure         -> blocking
- *   2xx + body.status === "error"     -> blocking
- *   2xx + body.status === "warning"   -> warning  (body.messages: string[])
- *   2xx + anything else               -> success
- *
- * Returns { type, messages, durationMs, attempts }. Retries are not implemented,
- * so `attempts` is always 1 - add a retry loop here if the API needs one.
- */
-export const testConfiguration = async ({ ai_url, api_key, model }) => {
-    const startedAt = Date.now();
-    const attempts = 1;
-
-    try {
-        const { response, body } = await request(
-            `${normalizeBaseUrl(ai_url)}/test`,
-            api_key,
-            { method: "POST", body: JSON.stringify({ model }) },
-            TEST_TIMEOUT_MS,
-        );
-
-        const durationMs = Date.now() - startedAt;
-        const messages = body?.messages || (body?.message ? [body.message] : []);
-
-        if (!response.ok) {
-            return {
-                type: TEST_RESULT.BLOCKING,
-                messages: messages.length
-                    ? messages
-                    : [`Configuration test failed (HTTP ${response.status})`],
-                durationMs,
-                attempts,
-                httpStatus: response.status,
-            };
-        }
-
-        if (body?.status === "error") {
-            return {
-                type: TEST_RESULT.BLOCKING,
-                messages: messages.length ? messages : ["Configuration test failed"],
-                durationMs,
-                attempts,
-            };
-        }
-
-        if (body?.status === "warning") {
-            return {
-                type: TEST_RESULT.WARNING,
-                messages: messages.length
-                    ? messages
-                    : ["The provider reported a non-blocking problem"],
-                durationMs,
-                attempts,
-            };
-        }
-
-        return { type: TEST_RESULT.SUCCESS, messages, durationMs, attempts };
-    } catch (error) {
-        return {
-            type: TEST_RESULT.BLOCKING,
-            messages: [
-                error.name === "AbortError"
-                    ? "Configuration test timed out"
-                    : "Cannot reach the endpoint (network error or CORS)",
-            ],
-            durationMs: Date.now() - startedAt,
-            attempts,
-        };
+    } finally {
+        clearTimeout(timeout);
     }
 };

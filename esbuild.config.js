@@ -20,6 +20,11 @@ const context = await esbuild.context({
     minify: !watch,
     sourcemap: true,
     outfile: "dist/index.js",
+    define: {
+        "process.env.WORKER_URL": JSON.stringify(
+            process.env.WORKER_URL || "https://ai-image-worker.flotiq.com",
+        ),
+    },
     plugins: [
         copy({
             resolveFrom: "cwd",
@@ -44,7 +49,10 @@ if (!watch) {
 } else {
     await context.watch();
 
-    const { host, port } = await context.serve({ servedir: "dist", port: 3050 });
+    // esbuild 0.17+ returns { port, hosts } - there is no `host`, and reading it
+    // silently yielded undefined, leaving http.request to guess "localhost".
+    const { hosts, port } = await context.serve({ servedir: "dist", port: 3050 });
+    const [host] = hosts;
 
     const cors = {
         "access-control-allow-origin": "*",

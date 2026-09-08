@@ -15,19 +15,19 @@ export const getSchema = () => ({
                 properties: {
                     ai_url: { type: "string", minLength: 1 },
                     api_key: { type: "string", minLength: 1 },
+                    flotiq_api_key: { type: "string", minLength: 1 },
                     model: { type: "string", minLength: 1 },
                     auto_generate: { type: "boolean" },
-                    // Persisted alongside the settings, never rendered as a field.
-                    // logs: { type: "array" },
                 },
             },
         ],
-        required: ["ai_url", "api_key", "model"],
-        additionalProperties: false,
+        required: ["ai_url", "api_key", "flotiq_api_key", "model"],
+        // Connection test history is persisted alongside these values under
+        // `logs` without being a form field - see common/logs-store.js.
+        additionalProperties: true,
     },
     metaDefinition: {
-        // `logs` is intentionally absent - anything not in `order` is not rendered.
-        order: ["ai_url", "api_key", "model", "auto_generate"],
+        order: ["ai_url", "api_key", "flotiq_api_key", "model", "auto_generate"],
         propertiesConfig: {
             ai_url: {
                 label: i18n.t("Field.EndpointUrl"),
@@ -42,27 +42,27 @@ export const getSchema = () => ({
                 // Turned into <input type="password"> in field::config.
                 inputType: "text",
             },
+            flotiq_api_key: {
+                label: i18n.t("Field.FlotiqApiKey"),
+                helpText: i18n.t("Field.FlotiqApiKeyHelp"),
+                unique: false,
+                // Turned into <input type="password"> in field::config.
+                inputType: "text",
+            },
             model: {
                 label: i18n.t("Field.Model"),
-                helpText: "",
                 unique: false,
                 inputType: "select",
-                useOptionsWithLabels: false,
-                // Filled in dynamically from /models - see field-config.js.
+                // Filled in by field-config once the provider listing resolves.
                 options: [],
             },
             auto_generate: {
+                // Rendered by our own element next to the switch, see field-config.
                 label: "",
                 helpText: "",
                 unique: false,
                 inputType: "checkbox",
             },
-            // logs: {
-            //     label: "",
-            //     helpText: "",
-            //     unique: false,
-            //     inputType: "text",
-            // },
         },
     },
 });

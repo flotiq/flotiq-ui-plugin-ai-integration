@@ -6,6 +6,7 @@ import {
     successIcon,
     warningIcon,
     spinnerIcon,
+    chevronRightIcon,
 } from "../../common/icons";
 import {
     addElementToCache,
@@ -15,10 +16,20 @@ import {
 // TODO: point at the real integration docs once they exist.
 const DOCS_URL = "https://flotiq.com/docs/";
 
+/** Validation pins the scheme to https, so it is noise in the banner. */
+const displayUrl = (url) => (url || "").replace(/^https:\/\//i, "");
+
+// Explicit parts rather than dateStyle/timeStyle: "short" renders a two-digit
+// year and 12-hour clock, which reads badly next to the URL. Locale still
+// decides the separators - pl gives 28.08.2026, 11:42.
 const formatDate = (iso) =>
     new Date(iso).toLocaleString(i18n.language, {
-        dateStyle: "short",
-        timeStyle: "short",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
     });
 
 const contentFor = (banner) => {
@@ -28,7 +39,7 @@ const contentFor = (banner) => {
                 variant: "loading",
                 icon: spinnerIcon,
                 title: i18n.t("Banner.TestingTitle"),
-                body: i18n.t("Banner.TestingBody", { url: banner.url }),
+                body: i18n.t("Banner.TestingBody", { url: displayUrl(banner.url) }),
             };
 
         case "active":
@@ -37,7 +48,7 @@ const contentFor = (banner) => {
                 icon: successIcon,
                 title: i18n.t("Banner.ActiveTitle"),
                 body: i18n.t("Banner.ActiveBody", {
-                    url: banner.url,
+                    url: displayUrl(banner.url),
                     model: banner.model,
                     date: formatDate(banner.at),
                 }),
@@ -57,7 +68,7 @@ const contentFor = (banner) => {
                 icon: infoIcon,
                 title: i18n.t("Banner.IdleTitle"),
                 body: i18n.t("Banner.IdleBody"),
-                link: `${i18n.t("Banner.DocsLink")} >`,
+                link: i18n.t("Banner.DocsLink"),
             };
     }
 };
@@ -75,7 +86,9 @@ export const getBannerElement = () => {
       <strong class="plugin-ai-integration-banner__title"></strong>
       <p class="plugin-ai-integration-banner__body"></p>
       <a class="plugin-ai-integration-banner__link"
-         href="${DOCS_URL}" target="_blank" rel="noopener noreferrer"></a>
+         href="${DOCS_URL}" target="_blank" rel="noopener noreferrer"
+        ><span class="plugin-ai-integration-banner__link-text"></span
+        >${chevronRightIcon}</a>
     </div>
   `;
 
@@ -91,7 +104,9 @@ export const getBannerElement = () => {
             body || "";
 
         const anchor = wrapper.querySelector(".plugin-ai-integration-banner__link");
-        anchor.textContent = link || "";
+        // textContent on the anchor itself would wipe the chevron.
+        anchor.querySelector(".plugin-ai-integration-banner__link-text").textContent =
+            link || "";
         anchor.hidden = !link;
     };
 

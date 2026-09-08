@@ -53,14 +53,12 @@ export const getHeader = () => {
         panel.hidden = tab !== "logs";
 
         // Flotiq renders each field as a direct child of the form, next to this
-        // element. Hide them all except the one containing us.
-        const form = wrapper.closest("form");
-        if (!form) return;
-
-        for (const child of form.children) {
-            if (child.contains(wrapper)) continue;
-            child.style.display = tab === "logs" ? "none" : "";
-        }
+        // element. Toggle one class on the form rather than writing inline styles
+        // onto every sibling: restoring those would mean guessing what Flotiq had
+        // set there, and "" is not a safe guess.
+        wrapper
+            .closest("form")
+            ?.classList.toggle("plugin-ai-integration-hide-fields", tab === "logs");
     };
 
     wrapper
