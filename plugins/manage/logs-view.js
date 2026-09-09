@@ -41,7 +41,7 @@ const buildEntry = (entry) => {
     const seconds = (entry.durationMs / 1000).toFixed(1);
 
     item.innerHTML = /* html */ `
-    <span class="plugin-ai-integration-log__dot"></span>
+    <span class="plugin-ai-integration-log__dot plugin-ai-integration-tip plugin-ai-integration-tip--start"></span>
     <div class="plugin-ai-integration-log__content">
       <span class="plugin-ai-integration-log__time"></span>
       <div class="plugin-ai-integration-log__row">
@@ -51,7 +51,7 @@ const buildEntry = (entry) => {
         <span class="plugin-ai-integration-log__meta"></span>
       </div>
     </div>
-    <span class="plugin-ai-integration-log__info">${logInfoIcon}</span>
+    <span class="plugin-ai-integration-log__info plugin-ai-integration-tip plugin-ai-integration-tip--end">${logInfoIcon}</span>
   `;
 
     item.querySelector(".plugin-ai-integration-log__time").textContent =
@@ -64,7 +64,8 @@ const buildEntry = (entry) => {
     item.querySelector(".plugin-ai-integration-log__status").textContent = statusText;
 
     // The dot conveys the outcome by colour alone - give it a text equivalent.
-    item.querySelector(".plugin-ai-integration-log__dot").title = statusText;
+    item.querySelector(".plugin-ai-integration-log__dot").dataset.tooltip =
+        statusText;
 
     item.querySelector(".plugin-ai-integration-log__type").textContent = i18n.t(
         TYPE_KEYS[entry.type] || TYPE_KEYS.connection_test,
@@ -76,7 +77,7 @@ const buildEntry = (entry) => {
     // The row shows a shortened time and no message at all, so the icon carries
     // the exact moment plus the reason behind the outcome when there is one.
     // Always set: an icon that is sometimes inert reads as broken.
-    item.querySelector(".plugin-ai-integration-log__info").title = [
+    item.querySelector(".plugin-ai-integration-log__info").dataset.tooltip = [
         new Date(entry.timestamp).toLocaleString(i18n.language),
         entry.message,
     ]

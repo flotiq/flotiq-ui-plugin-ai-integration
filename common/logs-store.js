@@ -19,6 +19,8 @@ const state = {
      * separate storage.
      */
     connection: null,
+    /** The banner as the modal opened, for an abandoned save to fall back to. */
+    savedBanner: { type: "idle" },
 };
 
 const subscribers = new Set();
@@ -91,6 +93,18 @@ export const hydrate = (settings) => {
             }
             : { type: "idle" };
 
+    state.savedBanner = state.banner;
+
+    notify();
+};
+
+/**
+ * Back to the state the modal opened with. Used when the user declines the
+ * warning: nothing was saved, so the banner must not keep the "loading" it was
+ * put into, nor claim an active connection that was never written.
+ */
+export const restoreBanner = () => {
+    state.banner = state.savedBanner;
     notify();
 };
 

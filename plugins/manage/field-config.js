@@ -17,7 +17,7 @@ const getAutoGenerateLabel = () => {
     label.className = "plugin-ai-integration-toggle-label";
     label.innerHTML = /* html */ `
     <span class="plugin-ai-integration-toggle-label__text"></span>
-    <span class="plugin-ai-integration-toggle-label__hint">${infoIcon}</span>
+    <span class="plugin-ai-integration-toggle-label__hint plugin-ai-integration-tip">${infoIcon}</span>
   `;
 
     const render = () => {
@@ -25,8 +25,9 @@ const getAutoGenerateLabel = () => {
             ".plugin-ai-integration-toggle-label__text",
         ).textContent = i18n.t("Field.AutoGenerate");
 
-        label.querySelector(".plugin-ai-integration-toggle-label__hint").title =
-            i18n.t("Field.AutoGenerateTooltip");
+        label.querySelector(
+            ".plugin-ai-integration-toggle-label__hint",
+        ).dataset.tooltip = i18n.t("Field.AutoGenerateTooltip");
     };
 
     render();

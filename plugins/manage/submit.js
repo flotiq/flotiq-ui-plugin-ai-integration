@@ -8,9 +8,11 @@ import {
 import {
     addEntry,
     markConnected,
+    restoreBanner,
     setBanner,
     withState,
 } from "../../common/logs-store";
+import { confirmWarnings } from "../../common/modals";
 import { validate } from "./validate";
 
 /**
@@ -67,7 +69,11 @@ const persist = async (values, client, { reload, modalInstance }, toast) => {
 };
 
 export const getSubmitHandler =
-    (data, client, { toast, getSpaceId, getPluginSettings, setPluginSettings }) =>
+    (
+        data,
+        client,
+        { toast, openModal, getSpaceId, getPluginSettings, setPluginSettings },
+    ) =>
         async (values) => {
             // Belt and braces - onValidate already gates this, but never call the
             // worker with an incomplete configuration.
@@ -108,6 +114,18 @@ export const getSubmitHandler =
                 return [values, { [field]: message }];
             }
 
+            // The model answered without a usable title or alt. Worth saving,
+            // but only the user can say whether it is good enough.
+            if (result.type === TEST_RESULT.WARNING) {
+                console.log("modelResponse:", result.response);
+                const confirmed = await confirmWarnings(openModal, result.response);
+
+                if (!confirmed) {
+                    restoreBanner();
+                    return [values, {}];
+                }
+            }
+
             // One timestamp for both, so the banner and the stored state cannot
             // drift apart by a few milliseconds.
             const at = new Date().toISOString();
@@ -120,7 +138,5 @@ export const getSubmitHandler =
                 at,
             });
 
-            // A warning means the model answered without a usable title or alt.
-            // It is recorded in the log above and no longer blocks the save.
             return persist(values, client, data, toast);
         };

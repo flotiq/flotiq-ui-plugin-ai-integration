@@ -199,6 +199,9 @@ export const testConfiguration = async (values, spaceId) => {
             return {
                 type: TEST_RESULT.WARNING,
                 messages: [i18n.t("Test.EmptyResponse")],
+                // Shown verbatim in the confirmation modal - the user needs to
+                // see what came back to judge whether the model is usable.
+                response: JSON.stringify(payload),
                 durationMs,
                 attempts,
             };

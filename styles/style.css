@@ -105,7 +105,7 @@
 
 .plugin-ai-integration-banner__title {
     display: block;
-    margin-bottom: 2px;
+    margin-bottom: 8px;
     font-weight: 600;
 }
 
@@ -117,7 +117,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-top: 6px;
+    margin-top: 16px;
     /* Stays blue on every variant - the banner body is slate-900 throughout. */
     color: var(--color-blue, #1c70e8);
     text-decoration: none;
@@ -146,6 +146,121 @@
     }
 }
 
+/* ================================================================ notice */
+
+/*
+ * Permanent and plain text, not a tooltip: a statement about who answers for
+ * the data sent must be readable without hovering anything. Sits with the
+ * fields and hides with them on the Logs tab.
+ */
+.plugin-ai-integration-notice {
+    margin: 16px 0 0;
+    color: var(--color-slate-500, #62748e);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+:is(.mode-dark, .dark) .plugin-ai-integration-notice {
+    color: var(--color-slate-400, #8ea1b8);
+}
+
+/* =============================================================== tooltip */
+
+/*
+ * Mirrors the editor's Tooltip component: a slate-600 bubble (slate-700 in
+ * dark), white 12px text, 6px radius, a 16px square rotated 45deg for the
+ * arrow, held 16px clear of the trigger and faded in over 300ms.
+ *
+ * Driven by a data attribute rather than a wrapper element, because the
+ * triggers are an absolutely positioned dot and a span holding an inline SVG;
+ * neither can take an extra parent without disturbing its current layout.
+ * `position` is deliberately not set here - it would override the dot's own.
+ */
+.plugin-ai-integration-tip::before,
+.plugin-ai-integration-tip::after {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 300ms ease-in-out;
+}
+
+.plugin-ai-integration-tip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    z-index: 20;
+    margin-bottom: 16px;
+    transform: translateX(-50%);
+    padding: 12px;
+    width: max-content;
+    max-width: 200px;
+    border-radius: 6px;
+    background: var(--color-slate-600, #475569);
+    color: var(--color-white, #fff);
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 400;
+    text-align: left;
+    /* The tooltip text carries its own line breaks. */
+    white-space: pre-line;
+}
+
+/* 8px keeps the square centred on the bubble's bottom edge, half overlapping. */
+.plugin-ai-integration-tip::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    z-index: 20;
+    margin-bottom: 8px;
+    width: 16px;
+    height: 16px;
+    transform: translateX(-50%) rotate(45deg);
+    border-bottom-right-radius: 2px;
+    background: var(--color-slate-600, #475569);
+}
+
+/* The component is p-3 / max-w-[200px] on phones and p-4 / max-w-xs above md. */
+@media (min-width: 768px) {
+    .plugin-ai-integration-tip::before {
+        padding: 16px;
+        max-width: 320px;
+    }
+}
+
+.plugin-ai-integration-tip:hover::before,
+.plugin-ai-integration-tip:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+:is(.mode-dark, .dark) .plugin-ai-integration-tip::before,
+:is(.mode-dark, .dark) .plugin-ai-integration-tip::after {
+    background: var(--color-slate-700, #314158);
+}
+
+/*
+ * Edge variants, matching the component's topLeft/topRight: a centred bubble
+ * on a trigger at the very edge of the panel would be clipped. Both drop the
+ * arrow, exactly as those placements do.
+ */
+.plugin-ai-integration-tip--start::before {
+    left: 0;
+    transform: none;
+}
+
+.plugin-ai-integration-tip--end::before {
+    left: auto;
+    right: 0;
+    transform: none;
+}
+
+.plugin-ai-integration-tip--start::after,
+.plugin-ai-integration-tip--end::after {
+    display: none;
+}
+
 /* ================================================================== tabs */
 
 .plugin-ai-integration-tabs {
@@ -159,13 +274,24 @@
     border-bottom-color: var(--color-slate-800, #1e293b);
 }
 
+/*
+ * The underline runs the full width of the button, so 28px of horizontal
+ * padding is what makes it overhang the label by that much on each side.
+ *
+ * Height rather than vertical padding, as the gap is measured to the border:
+ * 20px line + 16px above + 16px below + the 3px border = 55px. box-sizing is
+ * stated explicitly so the arithmetic does not depend on the host's reset.
+ */
 .plugin-ai-integration-tabs__item {
-    padding: 8px 4px;
+    box-sizing: border-box;
+    height: 55px;
+    padding: 0 28px;
     border: none;
     border-bottom: 3px solid transparent;
     background: none;
     color: var(--color-slate-900, #0f172b);
     font-size: 14px;
+    line-height: 20px;
     font-weight: 500;
     cursor: pointer;
 }
@@ -182,6 +308,20 @@
 :is(.mode-dark, .dark) .plugin-ai-integration-tabs__item.is-active {
     border-bottom-color: var(--color-blue-300, #75c1ff);
     color: var(--color-blue-300, #75c1ff);
+}
+
+/*
+ * A failed last run colours the Logs tab, so the outcome is visible without
+ * opening it. The active state still wins: :not(.is-active) keeps the open tab
+ * on the usual blue rather than carrying the alert into it.
+ */
+.plugin-ai-integration-tabs__item[data-alert="true"]:not(.is-active) {
+    color: var(--color-red, #eb5757);
+}
+
+:is(.mode-dark, .dark)
+    .plugin-ai-integration-tabs__item[data-alert="true"]:not(.is-active) {
+    color: var(--color-red-300, #ffacac);
 }
 
 /* ================================================================== tabs: logs view */
@@ -203,7 +343,14 @@
     display: none;
 }
 
+/*
+ * Floor the panel so one or two entries do not collapse it and snap the modal
+ * shorter on every tab switch. 240px is the empty state's own height (96px of
+ * padding, a 48px badge, its 16px margin and two lines of text), so the tab
+ * never renders shorter than when it has nothing to show.
+ */
 .plugin-ai-integration-logs {
+    min-height: 240px;
     padding-top: 16px;
 }
 
@@ -350,6 +497,7 @@
 }
 
 .plugin-ai-integration-log__info {
+    position: relative;
     flex-shrink: 0;
     line-height: 0;
     color: var(--color-slate-400, #8ea1b8);
@@ -383,6 +531,7 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
 }
 
 .plugin-ai-integration-toggle-label__hint {
+    position: relative;
     line-height: 0;
     color: var(--color-blue, #1c70e8);
     cursor: help;
@@ -422,21 +571,87 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
 
 /* ================================================================= modal */
 
+/*
+ * Mirrors defaultTextRender.warning from the editor's ModalContext, which the
+ * plugin cannot call: red, bold, text-3xl (24px/32px in Flotiq's scale) with a
+ * 20px triangle and 10px of gap.
+ */
 .plugin-ai-integration-modal__heading {
-    margin-bottom: 8px;
-    font-size: 18px;
-    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    color: var(--color-red, #eb5757);
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 700;
 }
 
-.plugin-ai-integration-modal__list {
-    margin-bottom: 8px;
+.plugin-ai-integration-modal__heading-icon {
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.plugin-ai-integration-modal__heading-icon svg {
+    height: 20px;
+    width: auto;
+}
+
+.plugin-ai-integration-modal__label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--color-slate-400, #8ea1b8);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Read-only, so it reads as a value to copy rather than a field to fill in. */
+.plugin-ai-integration-modal__response {
+    box-sizing: border-box;
+    width: 100%;
+    height: 48px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-slate-200, #dae3f2);
+    border-radius: 6px;
+    background-color: var(--color-slate-50, #f4f7fe);
+    color: inherit;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+/*
+ * Flotiq pads the content wrapper with px-6 md:px-11 (44px). The plugin API
+ * forwards only dialogAdditionalClasses, which lands on the panel rather than
+ * on that wrapper, so contentAdditionalClasses is out of reach and this has to
+ * be done in CSS. Matched by the wrapper holding our own root element.
+ */
+.plugin-ai-integration-dialog > div > div:has(.plugin-ai-integration-modal) {
     padding-left: 20px;
-    list-style: disc;
+    padding-right: 20px;
+}
+
+/*
+ * Flotiq renders the footer with justify-center and p-3. Reached through the
+ * class we put on the dialog and matched structurally, not by its utility
+ * classes. The horizontal padding matches the content wrapper above, so the
+ * buttons line up with the field rather than sitting 8px closer to the edge.
+ * Vertical padding is left at Flotiq's 12px.
+ */
+.plugin-ai-integration-dialog > div:last-child:has(button) {
+    justify-content: flex-end;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+:is(.mode-dark, .dark) .plugin-ai-integration-modal__response {
+    border-color: var(--color-slate-600, #45556c);
+    background-color: var(--color-slate-800, #1d293d);
 }
 
 .plugin-ai-integration-modal__note {
+    margin-bottom: 16px;
     font-size: 13px;
-    color: var(--color-slate-500, #62748e);
+    color: var(--color-slate-900, #0f172b);
 }
 
 :is(.mode-dark, .dark) .plugin-ai-integration-modal__note {

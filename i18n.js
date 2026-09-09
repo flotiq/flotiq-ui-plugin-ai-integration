@@ -24,6 +24,12 @@ i18n.init({
                     "{{url}} · model {{model}} · last successful test: {{date}}",
                 "Banner.FailedTitle": "Failed",
 
+                // Shown with the fields, not behind a hover: a statement about
+                // responsibility has to be readable without interacting.
+                "Notice.ExternalProvider":
+                    "Files you process reach the AI provider configured here. " +
+                    "You are responsible for the data sent.",
+
                 "Tabs.Settings": "Settings",
                 "Tabs.Logs": "Logs",
 
@@ -90,6 +96,14 @@ i18n.init({
                 "Test.Unreachable":
                     "Could not reach the integration service - check that it is running",
 
+                "Modal.WarningTitle": "Warning",
+                "Modal.WarningNote":
+                    "The model responded, but the generated output looks invalid. " +
+                    "Check your configuration or choose a different model.",
+                "Modal.ModelResponse": "Model response:",
+                "Modal.ChooseAnotherModel": "Choose another model",
+                "Modal.Accept": "Accept",
+
                 "Toast.Saved": "AI integration saved",
                 "Toast.SaveError": "Could not save the settings",
             },
@@ -110,6 +124,10 @@ i18n.init({
                 "Banner.ActiveBody":
                     "{{url}} · model {{model}} · ostatni udany test: {{date}}",
                 "Banner.FailedTitle": "Niepowodzenie",
+
+                "Notice.ExternalProvider":
+                    "Przetwarzane pliki trafiają do skonfigurowanego tu dostawcy AI. " +
+                    "Odpowiadasz za wysyłane dane.",
 
                 "Tabs.Settings": "Ustawienia",
                 "Tabs.Logs": "Logi",
@@ -173,6 +191,14 @@ i18n.init({
                     "Test przekroczył limit czasu - dostawca nie odpowiedział na czas",
                 "Test.Unreachable":
                     "Nie udało się połączyć z usługą integracji - sprawdź, czy działa",
+
+                "Modal.WarningTitle": "Ostrzeżenie",
+                "Modal.WarningNote":
+                    "Model odpowiedział, ale wygenerowana odpowiedź wygląda na nieprawidłową. " +
+                    "Sprawdź konfigurację lub wybierz inny model.",
+                "Modal.ModelResponse": "Odpowiedź modelu:",
+                "Modal.ChooseAnotherModel": "Wybierz inny model",
+                "Modal.Accept": "Akceptuj",
 
                 "Toast.Saved": "Zapisano integrację AI",
                 "Toast.SaveError": "Nie udało się zapisać ustawień",

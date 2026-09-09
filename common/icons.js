@@ -1,3 +1,17 @@
+/*
+ * Traced from the editor's exclamation_triangle_red-icon.svg. The original
+ * carries a <style> block with generic class names; those are inlined here so
+ * nothing collides once the markup is injected into the host page.
+ */
+export const warningTriangleIcon = /* html */ `
+<svg viewBox="0 0 28 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.3,2l-11,19C1.1,21.3,1,21.6,1,22s0.1,0.7,0.3,1s0.4,0.6,0.7,0.7C2.3,23.9,2.6,24,3,24h22
+	c0.4,0,0.7-0.1,1-0.3c0.3-0.2,0.6-0.4,0.7-0.7c0.2-0.3,0.3-0.6,0.3-1s-0.1-0.7-0.3-1l-11-19c-0.2-0.3-0.4-0.6-0.7-0.7
+	S14.4,1,14,1s-0.7,0.1-1,0.3C12.7,1.4,12.4,1.7,12.3,2z" fill="#eb5757" fill-opacity="0.1" stroke="#eb5757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14,10v5" stroke="#eb5757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14,21c0.8,0,1.5-0.7,1.5-1.5S14.8,18,14,18s-1.5,0.7-1.5,1.5S13.2,21,14,21z" fill="#eb5757"/>
+</svg>`
+
 export const infoIcon = /* html */ `
 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M9 13H11V15H9V13ZM9 5H11V11H9V5ZM9.99 0C4.47 0 0 4.48 0 10C0 15.52 4.47 20 9.99 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 9.99 0ZM10 18C5.58 18 2 14.42 2 10C2 5.58 5.58 2 10 2C14.42 2 18 5.58 18 10C18 14.42 14.42 18 10 18Z" fill="currentColor"/>
