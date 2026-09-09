@@ -3,8 +3,6 @@ import i18n from "i18next";
 i18n.init({
     fallbackLng: "en",
     supportedLngs: ["en", "pl"],
-    // Every translated string is written with textContent, never innerHTML, so
-    // i18next's HTML escaping only turns "/" into "&#x2F;" on screen.
     interpolation: { escapeValue: false },
     resources: {
         en: {
@@ -124,7 +122,8 @@ i18n.init({
 
                 "Logs.EmptyTitle": "Brak zdarzeń",
                 "Logs.EmptyBody":
-                    "Logi pojawią się tutaj po pierwszym teście połączenia lub po pierwszym wygenerowaniu treści przez AI.",
+                    "Logi pojawią się tutaj po pierwszym teście połączenia " +
+                    "lub po pierwszym wygenerowaniu treści przez AI.",
                 "Logs.Today": "Dzisiaj",
                 "Logs.Succeeded": "Powodzenie",
                 "Logs.Failed": "Niepowodzenie",
@@ -173,7 +172,8 @@ i18n.init({
                 "Validation.InvalidUrl": "To nie jest poprawny adres URL",
                 "Validation.InvalidHost": "Adres musi zawierać poprawną domenę",
                 "Validation.MissingPath":
-                    "Dodaj ścieżkę endpointu, np. /v1/chat/completions - adres jest używany dokładnie tak, jak go wpiszesz",
+                    "Dodaj ścieżkę endpointu, np. /v1/chat/completions - " +
+                    "adres jest używany dokładnie tak, jak go wpiszesz",
 
                 "Test.EmptyResponse":
                     "Model odpowiedział, ale nie zwrócił tytułu ani tekstu alternatywnego",

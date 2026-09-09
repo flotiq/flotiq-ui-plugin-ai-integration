@@ -16,7 +16,7 @@ import { confirmWarnings } from "../../common/modals";
 import { validate } from "./validate";
 
 const persistLastTest = async (client, { getPluginSettings, setPluginSettings }) => {
-    let stored = {};
+    let stored;
     try {
         stored = JSON.parse(getPluginSettings() || "{}");
     } catch {

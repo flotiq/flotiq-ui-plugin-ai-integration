@@ -5,16 +5,8 @@ import i18n from "../i18n";
 // WORKER_URL=http://localhost:8787 (see esbuild.config.js).
 const WORKER_URL = process.env.WORKER_URL;
 
-// The worker calls the AI model synchronously on /test and does not retry,
-// so allow generous headroom before giving up.
 const TIMEOUT_MS = 300000;
 
-/**
- * Every worker call is authenticated against Flotiq's /api/auth-context using
- * the read-only key the user pastes into the settings form. The key is only
- * proof of access to the space - the worker writes logs and media with its own
- * credentials.
- */
 const workerFetch = async (
     path,
     { token, spaceId, method = "GET", body } = {},

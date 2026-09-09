@@ -14,7 +14,7 @@ export const handleManageSchema = (data, client, globals) => {
     let formSchema = getCachedElement(cacheKey)?.element;
 
     if (!formSchema) {
-        let settings = {};
+        let settings;
         try {
             settings = JSON.parse(globals.getPluginSettings() || "{}");
         } catch {

@@ -51,7 +51,8 @@ const buildEntry = (entry) => {
         <span class="plugin-ai-integration-log__meta"></span>
       </div>
     </div>
-    <span class="plugin-ai-integration-log__info plugin-ai-integration-tip plugin-ai-integration-tip--end">${logInfoIcon}</span>
+    <span class="plugin-ai-integration-log__info plugin-ai-integration-tip
+                 plugin-ai-integration-tip--end">${logInfoIcon}</span>
   `;
 
     item.querySelector(".plugin-ai-integration-log__time").textContent =
