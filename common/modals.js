@@ -4,15 +4,7 @@ import { warningTriangleIcon } from "./icons";
 
 const modalId = `${pluginInfo.id}-modal`;
 
-/**
- * The editor builds this heading with `defaultTextRender.warning`, but plugins
- * cannot reach it: the registry passes `content` through ElementFromPlugin,
- * which accepts a DOM node, while `title` goes straight to React and would
- * reject one. So the heading is rebuilt here, inside the content, to match.
- */
 const buildContent = (modelResponse) => {
-    console.log(modelResponse)
-
     const wrapper = document.createElement("div");
     wrapper.className = "plugin-ai-integration-modal";
 
@@ -37,12 +29,6 @@ const buildContent = (modelResponse) => {
     wrapper.querySelector(".plugin-ai-integration-modal__label").textContent =
         i18n.t("Modal.ModelResponse");
 
-    // Read-only rather than disabled: the point is to let the user read and copy
-    // what came back, which a disabled input makes unselectable in some browsers.
-    //
-    // Both the attribute and the property: ElementFromPlugin clears its host with
-    // innerHTML on every effect run, and a value held only as an IDL property does
-    // not survive HTML being reparsed - the attribute does.
     const field = wrapper.querySelector(
         ".plugin-ai-integration-modal__response",
     );
@@ -53,17 +39,11 @@ const buildContent = (modelResponse) => {
     return wrapper;
 };
 
-/**
- * Warning path - the user decides whether the configuration is saved.
- * Resolves to true (accept) or false (go back and pick another model).
- */
 export const confirmWarnings = (openModal, modelResponse) =>
     openModal({
         id: modalId,
         size: "md",
         hideClose: true,
-        // Lands on DialogPanel as dialogAdditionalClasses - the only hook the
-        // plugin API gives us for reaching the footer Flotiq renders itself.
         className: "plugin-ai-integration-dialog",
         content: buildContent(modelResponse),
         buttons: [

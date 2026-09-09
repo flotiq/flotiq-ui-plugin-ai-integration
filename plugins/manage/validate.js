@@ -1,10 +1,7 @@
 import i18n from "../../i18n";
 import { validateAiUrl } from "../../common/validate-url";
 
-/**
- * Runs on every form change. Returning a non-empty object blocks submit,
- * so the worker is never called with an incomplete configuration.
- */
+
 export const validate = (values) => {
     const errors = {};
 

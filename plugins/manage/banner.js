@@ -1,6 +1,6 @@
 import pluginInfo from "../../plugin-manifest.json";
 import i18n from "../../i18n";
-import { getBanner, subscribe } from "../../common/logs-store";
+import {getBanner, subscribe} from "../../common/connection-store";
 import {
     infoIcon,
     successIcon,
@@ -13,15 +13,10 @@ import {
     getCachedElement,
 } from "../../common/plugin-element-cache";
 
-// TODO: point at the real integration docs once they exist.
 const DOCS_URL = "https://flotiq.com/docs/";
 
-/** Validation pins the scheme to https, so it is noise in the banner. */
 const displayUrl = (url) => (url || "").replace(/^https:\/\//i, "");
 
-// Explicit parts rather than dateStyle/timeStyle: "short" renders a two-digit
-// year and 12-hour clock, which reads badly next to the URL. Locale still
-// decides the separators - pl gives 28.08.2026, 11:42.
 const formatDate = (iso) =>
     new Date(iso).toLocaleString(i18n.language, {
         day: "2-digit",
@@ -39,7 +34,7 @@ const contentFor = (banner) => {
                 variant: "loading",
                 icon: spinnerIcon,
                 title: i18n.t("Banner.TestingTitle"),
-                body: i18n.t("Banner.TestingBody", { url: displayUrl(banner.url) }),
+                body: i18n.t("Banner.TestingBody", {url: displayUrl(banner.url)}),
             };
 
         case "active":
@@ -93,7 +88,13 @@ export const getBannerElement = () => {
   `;
 
     const render = () => {
-        const { variant, icon, title, body, link } = contentFor(getBanner());
+        const {
+            variant,
+            icon,
+            title,
+            body,
+            link
+        } = contentFor(getBanner());
 
         wrapper.dataset.variant = variant;
         wrapper.querySelector(".plugin-ai-integration-banner__icon").innerHTML =
@@ -104,7 +105,7 @@ export const getBannerElement = () => {
             body || "";
 
         const anchor = wrapper.querySelector(".plugin-ai-integration-banner__link");
-        // textContent on the anchor itself would wipe the chevron.
+
         anchor.querySelector(".plugin-ai-integration-banner__link-text").textContent =
             link || "";
         anchor.hidden = !link;

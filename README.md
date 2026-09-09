@@ -48,9 +48,9 @@ The test performs no retries, so a temporarily unavailable model surfaces here a
 
 ## Logs
 
-The **Logs** tab shows the history of connection tests for this space - newest first, capped at 20 entries. Each row carries the outcome, the number of attempts, how long the request took, and the message behind the info icon.
+The **Logs** tab shows the result of the last connection test for this space: the outcome, the number of attempts, how long the request took, and the message behind the info icon. Full history is the worker's job - it writes to the `ai_logs` content type, and the plugin will read from there once that endpoint can list by space.
 
-The history is stored inside the plugin settings, alongside the connection state. A failed test is recorded without saving the configuration that produced it.
+The record is stored inside the plugin settings, alongside the connection state. A failed test is recorded without saving the configuration that produced it.
 
 <!-- TODO: screenshot - Logs tab with entries -->
 

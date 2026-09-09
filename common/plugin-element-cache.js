@@ -18,7 +18,6 @@ export const addElementToCache = (element, key, data = {}, onRemove = null) => {
         }
     });
 
-    // The element may be attached/detached many times - wait before dropping it.
     element.addEventListener("flotiq.detached", () => {
         detachTimeoutId = setTimeout(() => {
             removeElement(key);
@@ -29,10 +28,6 @@ export const addElementToCache = (element, key, data = {}, onRemove = null) => {
 
 export const getCachedElement = (key) => elements[key];
 
-/**
- * FlotiqPlugins may not exist yet when the bundle is evaluated
- * (e.g. when the plugin is loaded from a manifest before the app boots).
- */
 export const registerFn = (pluginInfo, callback) => {
     if (window.FlotiqPlugins?.add) {
         window.FlotiqPlugins.add(pluginInfo, callback);

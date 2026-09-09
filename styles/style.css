@@ -1,6 +1,3 @@
-/* Colours come from the panel's Tailwind theme. Literal values are kept as
-   fallbacks in case the plugin renders outside the panel's :root scope. */
-
 /* ================================================================ header */
 
 .plugin-ai-integration-intro {
@@ -26,6 +23,11 @@
     color: var(--color-slate-900, #0f172b);
 }
 
+.plugin-ai-integration-banner[data-variant="active"],
+.plugin-ai-integration-banner[data-variant="failed"] {
+    min-height: 80px;
+}
+
 .plugin-ai-integration-banner[data-variant="active"] {
     border-color: var(--color-lime-600, #2d9c1e);
     background-color: var(--color-lime-50, #cdf3c6);
@@ -44,26 +46,25 @@
     color: var(--color-slate-900, #0f172b);
 }
 
-/* Dark mode keeps the same hues but flips to the deep end of each ramp. */
-:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="info"] {
+.mode-dark .plugin-ai-integration-banner[data-variant="info"] {
     border-color: var(--color-blue-800, #023a88);
     background-color: var(--color-blue-950, #002354);
     color: var(--color-white, #fff);
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="active"] {
+.mode-dark .plugin-ai-integration-banner[data-variant="active"] {
     border-color: var(--color-lime-900, #155400);
     background-color: var(--color-lime-950, #0e3900);
     color: var(--color-white, #fff);
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="failed"] {
+.mode-dark .plugin-ai-integration-banner[data-variant="failed"] {
     border-color: var(--color-red-900, #7f1c1d);
     background-color: var(--color-red-950, #450a0a);
     color: var(--color-white, #fff);
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="loading"] {
+.mode-dark .plugin-ai-integration-banner[data-variant="loading"] {
     border-color: var(--color-slate-800, #1e293b);
     background-color: var(--color-slate-900, #0f172b);
     color: var(--color-white, #fff);
@@ -91,15 +92,15 @@
     color: var(--color-slate-500, #62748e);
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="info"] .plugin-ai-integration-banner__icon {
+.mode-dark .plugin-ai-integration-banner[data-variant="info"] .plugin-ai-integration-banner__icon {
     color: var(--color-blue-300, #75c1ff);
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="active"] .plugin-ai-integration-banner__icon {
+.mode-dark .plugin-ai-integration-banner[data-variant="active"] .plugin-ai-integration-banner__icon {
     color: var(--color-lime, #76ec71);
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-banner[data-variant="failed"] .plugin-ai-integration-banner__icon {
+.mode-dark .plugin-ai-integration-banner[data-variant="failed"] .plugin-ai-integration-banner__icon {
     color: var(--color-red-300, #ffacac);
 }
 
@@ -118,7 +119,6 @@
     align-items: center;
     gap: 6px;
     margin-top: 16px;
-    /* Stays blue on every variant - the banner body is slate-900 throughout. */
     color: var(--color-blue, #1c70e8);
     text-decoration: none;
 }
@@ -127,8 +127,7 @@
     flex-shrink: 0;
 }
 
-/* The chevron inherits this through currentColor. */
-:is(.mode-dark, .dark) .plugin-ai-integration-banner__link {
+.mode-dark .plugin-ai-integration-banner__link {
     color: var(--color-white, #fff);
 }
 
@@ -146,36 +145,9 @@
     }
 }
 
-/* ================================================================ notice */
-
-/*
- * Permanent and plain text, not a tooltip: a statement about who answers for
- * the data sent must be readable without hovering anything. Sits with the
- * fields and hides with them on the Logs tab.
- */
-.plugin-ai-integration-notice {
-    margin: 16px 0 0;
-    color: var(--color-slate-500, #62748e);
-    font-size: 12px;
-    line-height: 1.5;
-}
-
-:is(.mode-dark, .dark) .plugin-ai-integration-notice {
-    color: var(--color-slate-400, #8ea1b8);
-}
 
 /* =============================================================== tooltip */
 
-/*
- * Mirrors the editor's Tooltip component: a slate-600 bubble (slate-700 in
- * dark), white 12px text, 6px radius, a 16px square rotated 45deg for the
- * arrow, held 16px clear of the trigger and faded in over 300ms.
- *
- * Driven by a data attribute rather than a wrapper element, because the
- * triggers are an absolutely positioned dot and a span holding an inline SVG;
- * neither can take an extra parent without disturbing its current layout.
- * `position` is deliberately not set here - it would override the dot's own.
- */
 .plugin-ai-integration-tip::before,
 .plugin-ai-integration-tip::after {
     opacity: 0;
@@ -202,11 +174,9 @@
     line-height: 14px;
     font-weight: 400;
     text-align: left;
-    /* The tooltip text carries its own line breaks. */
     white-space: pre-line;
 }
 
-/* 8px keeps the square centred on the bubble's bottom edge, half overlapping. */
 .plugin-ai-integration-tip::after {
     content: "";
     position: absolute;
@@ -221,7 +191,6 @@
     background: var(--color-slate-600, #475569);
 }
 
-/* The component is p-3 / max-w-[200px] on phones and p-4 / max-w-xs above md. */
 @media (min-width: 768px) {
     .plugin-ai-integration-tip::before {
         padding: 16px;
@@ -235,16 +204,11 @@
     visibility: visible;
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-tip::before,
-:is(.mode-dark, .dark) .plugin-ai-integration-tip::after {
+.mode-dark .plugin-ai-integration-tip::before,
+.mode-dark .plugin-ai-integration-tip::after {
     background: var(--color-slate-700, #314158);
 }
 
-/*
- * Edge variants, matching the component's topLeft/topRight: a centred bubble
- * on a trigger at the very edge of the panel would be clipped. Both drop the
- * arrow, exactly as those placements do.
- */
 .plugin-ai-integration-tip--start::before {
     left: 0;
     transform: none;
@@ -270,18 +234,10 @@
     border-bottom: 1px solid var(--color-slate-200, #dae3f2);
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-tabs {
+.mode-dark .plugin-ai-integration-tabs {
     border-bottom-color: var(--color-slate-800, #1e293b);
 }
 
-/*
- * The underline runs the full width of the button, so 28px of horizontal
- * padding is what makes it overhang the label by that much on each side.
- *
- * Height rather than vertical padding, as the gap is measured to the border:
- * 20px line + 16px above + 16px below + the 3px border = 55px. box-sizing is
- * stated explicitly so the arithmetic does not depend on the host's reset.
- */
 .plugin-ai-integration-tabs__item {
     box-sizing: border-box;
     height: 55px;
@@ -296,7 +252,7 @@
     cursor: pointer;
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-tabs__item {
+.mode-dark .plugin-ai-integration-tabs__item {
     color: var(--color-slate-400, #8ea1b8);
 }
 
@@ -305,33 +261,21 @@
     color: var(--color-blue, #1c70e8);
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-tabs__item.is-active {
+.mode-dark .plugin-ai-integration-tabs__item.is-active {
     border-bottom-color: var(--color-blue-300, #75c1ff);
     color: var(--color-blue-300, #75c1ff);
 }
 
-/*
- * A failed last run colours the Logs tab, so the outcome is visible without
- * opening it. The active state still wins: :not(.is-active) keeps the open tab
- * on the usual blue rather than carrying the alert into it.
- */
 .plugin-ai-integration-tabs__item[data-alert="true"]:not(.is-active) {
     color: var(--color-red, #eb5757);
 }
 
-:is(.mode-dark, .dark)
-    .plugin-ai-integration-tabs__item[data-alert="true"]:not(.is-active) {
-    color: var(--color-red-300, #ffacac);
+.mode-dark .plugin-ai-integration-tabs__item[data-alert="true"]:not(.is-active) {
+    color: var(--color-red-500, #ed5a5a);
 }
 
 /* ================================================================== tabs: logs view */
 
-/*
- * The Logs tab hides the settings fields, which Flotiq renders as siblings of
- * our header. A class on the form beats writing inline styles onto each one:
- * those would have to be restored afterwards, and we do not know what Flotiq
- * had put there. !important because an inline style would otherwise outrank us.
- */
 .plugin-ai-integration-hide-fields
     > *:not(.plugin-ai-integration-header):not(:has(.plugin-ai-integration-header)) {
     display: none !important;
@@ -343,12 +287,6 @@
     display: none;
 }
 
-/*
- * Floor the panel so one or two entries do not collapse it and snap the modal
- * shorter on every tab switch. 240px is the empty state's own height (96px of
- * padding, a 48px badge, its 16px margin and two lines of text), so the tab
- * never renders shorter than when it has nothing to show.
- */
 .plugin-ai-integration-logs {
     min-height: 240px;
     padding-top: 16px;
@@ -364,7 +302,6 @@
     text-align: center;
 }
 
-/* 48px badge, fully rounded. The icon itself is currentColor. */
 .plugin-ai-integration-logs__empty-icon {
     display: flex;
     align-items: center;
@@ -379,7 +316,7 @@
     line-height: 0;
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-logs__empty-icon {
+.mode-dark .plugin-ai-integration-logs__empty-icon {
     background-color: var(--color-blue-900, #012f6e);
     color: var(--color-blue-300, #75c1ff);
 }
@@ -397,7 +334,7 @@
     font-size: 14px;
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-logs__empty-body {
+.mode-dark .plugin-ai-integration-logs__empty-body {
     color: var(--color-slate-400, #8ea1b8);
 }
 
@@ -410,15 +347,6 @@
     list-style: none;
 }
 
-/*
- * The vertical rail connecting the status dots. Drawn per row rather than
- * once across the whole list, so the first and last dots close the timeline
- * instead of the line overshooting them at both ends.
- *
- * -16px puts the 1px rail on the dot's axis: the row starts 20px into the
- * list, the dot sits at -20px and is 9px wide, so its centre is 4.5px from
- * the list edge.
- */
 .plugin-ai-integration-log::before {
     content: "";
     position: absolute;
@@ -429,7 +357,6 @@
     background: var(--color-slate-200, #dae3f2);
 }
 
-/* 22.5px is the dot's centre: an 18px offset plus half of its 9px height. */
 .plugin-ai-integration-log:first-child::before {
     top: 22.5px;
 }
@@ -438,7 +365,7 @@
     bottom: calc(100% - 22.5px);
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-log::before {
+.mode-dark .plugin-ai-integration-log::before {
     background: var(--color-slate-800, #1e293b);
 }
 
@@ -506,15 +433,12 @@
 
 /* ================================================================ toggle */
 
-/* Flotiq stacks the switch label above the control. Our label lives in
-   additionalElements (a sibling div), so lay the whole field out as a row. */
 div:has(> div > .plugin-ai-integration-toggle-label) {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-/* The built-in label is emptied in the schema - drop the grid row it leaves. */
 div:has(> div > .plugin-ai-integration-toggle-label) .grid.grid-rows-2 {
     grid-template-rows: none;
 }
@@ -537,7 +461,7 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     cursor: help;
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-toggle-label__hint {
+.mode-dark .plugin-ai-integration-toggle-label__hint {
     color: var(--color-blue-300, #75c1ff);
 }
 
@@ -546,36 +470,9 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     height: 12px;
 }
 
-/* ================================================================= model */
-
-.plugin-ai-integration-model__status {
-    font-size: 12px;
-    color: var(--color-slate-500, #62748e);
-}
-
-:is(.mode-dark, .dark) .plugin-ai-integration-model__status {
-    color: var(--color-slate-400, #8ea1b8);
-}
-
-.plugin-ai-integration-model__status[data-state="error"] {
-    color: var(--color-red, #eb5757);
-}
-
-.plugin-ai-integration-model__status[data-state="loaded"] {
-    color: var(--color-lime-600, #2d9c1e);
-}
-
-:is(.mode-dark, .dark) .plugin-ai-integration-model__status[data-state="loaded"] {
-    color: var(--color-lime, #76ec71);
-}
 
 /* ================================================================= modal */
 
-/*
- * Mirrors defaultTextRender.warning from the editor's ModalContext, which the
- * plugin cannot call: red, bold, text-3xl (24px/32px in Flotiq's scale) with a
- * 20px triangle and 10px of gap.
- */
 .plugin-ai-integration-modal__heading {
     display: inline-flex;
     align-items: center;
@@ -605,7 +502,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     font-weight: 500;
 }
 
-/* Read-only, so it reads as a value to copy rather than a field to fill in. */
 .plugin-ai-integration-modal__response {
     box-sizing: border-box;
     width: 100%;
@@ -619,31 +515,18 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     font-size: 14px;
 }
 
-/*
- * Flotiq pads the content wrapper with px-6 md:px-11 (44px). The plugin API
- * forwards only dialogAdditionalClasses, which lands on the panel rather than
- * on that wrapper, so contentAdditionalClasses is out of reach and this has to
- * be done in CSS. Matched by the wrapper holding our own root element.
- */
 .plugin-ai-integration-dialog > div > div:has(.plugin-ai-integration-modal) {
     padding-left: 20px;
     padding-right: 20px;
 }
 
-/*
- * Flotiq renders the footer with justify-center and p-3. Reached through the
- * class we put on the dialog and matched structurally, not by its utility
- * classes. The horizontal padding matches the content wrapper above, so the
- * buttons line up with the field rather than sitting 8px closer to the edge.
- * Vertical padding is left at Flotiq's 12px.
- */
 .plugin-ai-integration-dialog > div:last-child:has(button) {
     justify-content: flex-end;
     padding-left: 20px;
     padding-right: 20px;
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-modal__response {
+.mode-dark .plugin-ai-integration-modal__response {
     border-color: var(--color-slate-600, #45556c);
     background-color: var(--color-slate-800, #1d293d);
 }
@@ -654,6 +537,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     color: var(--color-slate-900, #0f172b);
 }
 
-:is(.mode-dark, .dark) .plugin-ai-integration-modal__note {
+.mode-dark .plugin-ai-integration-modal__note {
     color: var(--color-slate-400, #8ea1b8);
 }

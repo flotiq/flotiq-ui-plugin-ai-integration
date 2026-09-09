@@ -1,6 +1,6 @@
 import pluginInfo from "../../plugin-manifest.json";
 import i18n from "../../i18n";
-import { getEntries, subscribe } from "../../common/logs-store";
+import { getEntries, subscribe } from "../../common/connection-store";
 import { logInfoIcon, logsEmptyIcon } from "../../common/icons";
 import {
     addElementToCache,
@@ -63,7 +63,6 @@ const buildEntry = (entry) => {
 
     item.querySelector(".plugin-ai-integration-log__status").textContent = statusText;
 
-    // The dot conveys the outcome by colour alone - give it a text equivalent.
     item.querySelector(".plugin-ai-integration-log__dot").dataset.tooltip =
         statusText;
 
@@ -74,9 +73,6 @@ const buildEntry = (entry) => {
     item.querySelector(".plugin-ai-integration-log__meta").textContent =
         `${i18n.t("Logs.Attempts", { count: entry.attempts })} · ${i18n.t("Logs.Duration", { seconds })}`;
 
-    // The row shows a shortened time and no message at all, so the icon carries
-    // the exact moment plus the reason behind the outcome when there is one.
-    // Always set: an icon that is sometimes inert reads as broken.
     item.querySelector(".plugin-ai-integration-log__info").dataset.tooltip = [
         new Date(entry.timestamp).toLocaleString(i18n.language),
         entry.message,

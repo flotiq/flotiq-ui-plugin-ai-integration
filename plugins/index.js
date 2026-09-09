@@ -16,8 +16,6 @@ const loadStyles = () => {
         document.head.appendChild(style);
     }
 
-    // Always overwrite, so reloading the plugin during development picks up
-    // CSS changes without a full page reload.
     style.textContent = cssString;
 };
 

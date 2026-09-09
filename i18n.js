@@ -24,12 +24,6 @@ i18n.init({
                     "{{url}} · model {{model}} · last successful test: {{date}}",
                 "Banner.FailedTitle": "Failed",
 
-                // Shown with the fields, not behind a hover: a statement about
-                // responsibility has to be readable without interacting.
-                "Notice.ExternalProvider":
-                    "Files you process reach the AI provider configured here. " +
-                    "You are responsible for the data sent.",
-
                 "Tabs.Settings": "Settings",
                 "Tabs.Logs": "Logs",
 
@@ -124,10 +118,6 @@ i18n.init({
                 "Banner.ActiveBody":
                     "{{url}} · model {{model}} · ostatni udany test: {{date}}",
                 "Banner.FailedTitle": "Niepowodzenie",
-
-                "Notice.ExternalProvider":
-                    "Przetwarzane pliki trafiają do skonfigurowanego tu dostawcy AI. " +
-                    "Odpowiadasz za wysyłane dane.",
 
                 "Tabs.Settings": "Ustawienia",
                 "Tabs.Logs": "Logi",

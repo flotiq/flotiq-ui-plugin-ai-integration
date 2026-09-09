@@ -4,7 +4,7 @@ import {
     getCachedElement,
     removeElement,
 } from "../../common/plugin-element-cache";
-import { hydrate } from "../../common/logs-store";
+import { hydrate } from "../../common/connection-store";
 import { getSchema } from "./form-schema";
 import { getSubmitHandler } from "./submit";
 import { validate } from "./validate";

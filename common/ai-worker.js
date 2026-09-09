@@ -54,17 +54,6 @@ export const TEST_RESULT = {
     BLOCKING: "blocking",
 };
 
-/**
- * The worker answers with three different error shapes, and itty-router spreads
- * the body onto `{ status }` rather than nesting it:
- *
- *   auth middleware        -> { error: "Unauthenticated" }
- *   thrown StatusError     -> { status: 500, error: "..." }
- *   zod validation (400)   -> { status: 400, ai_url: ["..."], space_id: [...] }
- *
- * Flatten all three to plain strings, so a validation failure never reaches the
- * form as "[object Object]".
- */
 const errorMessages = (payload, fallback) => {
     if (!payload || typeof payload !== "object") return [fallback];
 
@@ -82,17 +71,6 @@ const errorMessages = (payload, fallback) => {
     return messages.length ? messages : [fallback];
 };
 
-/**
- * Turn a failed /test into something a person can act on.
- *
- * The provider's own words never reach the UI - they leak keys ("Incorrect API
- * key provided: sk-u29B..."), they are English-only, and they are shaped by
- * whichever vendor happens to be configured. `reason` names the field at fault
- * so the form can pin a hint to it, and the raw text goes to the console.
- *
- * A provider 404 is ambiguous: a wrong URL and an unknown model both produce
- * one, and only the body separates them.
- */
 const REASON = {
     ENDPOINT: "endpoint",
     API_KEY: "api_key",
@@ -104,8 +82,6 @@ const REASON = {
 const mentionsModel = (body) => /model/i.test(body || "");
 
 const classify = (httpStatus, payload) => {
-    // The worker's own auth gate fired - this is about the Flotiq key, and it
-    // never reached the provider.
     if (httpStatus === 401) return REASON.FLOTIQ_KEY;
 
     const providerStatus = payload?.providerStatus;
@@ -121,7 +97,6 @@ const classify = (httpStatus, payload) => {
     return REASON.UNKNOWN;
 };
 
-/** Whole-banner text. */
 export const bannerMessageFor = (reason, fallback) => {
     switch (reason) {
         case REASON.FLOTIQ_KEY:
@@ -135,7 +110,6 @@ export const bannerMessageFor = (reason, fallback) => {
     }
 };
 
-/** Which input the hint belongs under, and what it says. */
 export const fieldErrorFor = (reason) => {
     switch (reason) {
         case REASON.FLOTIQ_KEY:
@@ -149,11 +123,6 @@ export const fieldErrorFor = (reason) => {
     }
 };
 
-/**
- * POST /test - the worker runs one synchronous generation against a built-in
- * test image and returns the parsed model output. It performs no retries, so a
- * temporarily unavailable model surfaces here as a blocking error.
- */
 export const testConfiguration = async (values, spaceId) => {
     const startedAt = Date.now();
     const attempts = 1;
@@ -177,8 +146,6 @@ export const testConfiguration = async (values, spaceId) => {
             const raw = errorMessages(payload, `HTTP ${response.status}`);
             const reason = classify(response.status, payload);
 
-            // Keep the provider's wording where a developer can find it, out of
-            // the UI where it would be noise at best and a leaked key at worst.
             console.error(pluginInfo.id, "connection test failed", raw.join(" "));
 
             return {
@@ -193,14 +160,10 @@ export const testConfiguration = async (values, spaceId) => {
             };
         }
 
-        // A 2xx without usable metadata means the model answered but could not
-        // produce what we asked for - worth saving, worth warning about.
         if (!payload?.title || !payload?.alt) {
             return {
                 type: TEST_RESULT.WARNING,
                 messages: [i18n.t("Test.EmptyResponse")],
-                // Shown verbatim in the confirmation modal - the user needs to
-                // see what came back to judge whether the model is usable.
                 response: JSON.stringify(payload),
                 durationMs,
                 attempts,
@@ -222,13 +185,6 @@ export const testConfiguration = async (values, spaceId) => {
     }
 };
 
-/**
- * GET /logs/:spaceId/:mediaId
- *
- * Both segments are required by the worker's router, so there is no way to list
- * a whole space yet. Unused by the Logs tab for now - connection tests are kept
- * in the plugin settings instead, because /test writes no log entry.
- */
 export const fetchLogs = async (
     { token, spaceId, mediaId },
     { page, limit } = {},

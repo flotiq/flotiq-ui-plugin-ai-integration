@@ -7,7 +7,6 @@ import {
     getCachedElement,
 } from "../../common/plugin-element-cache";
 
-/** Label + tooltip icon, rendered next to the switch instead of above it. */
 const getAutoGenerateLabel = () => {
     const key = `${pluginInfo.id}-autogenerate-label`;
     const cached = getCachedElement(key);
@@ -39,7 +38,6 @@ const getAutoGenerateLabel = () => {
 };
 
 export const handleFormFieldConfig = ({ name, config, contentType, form }) => {
-    // Only the settings form of THIS plugin, never a content object form.
     if (contentType?.id !== pluginInfo.id || !contentType?.nonCtdSchema) return;
 
     if (name === "ai_url") {
@@ -47,16 +45,11 @@ export const handleFormFieldConfig = ({ name, config, contentType, form }) => {
     }
 
     if (name === "api_key" || name === "flotiq_api_key") {
-        // config accepts standard HTML input attributes
         config.type = "password";
         config.autoComplete = "new-password";
     }
 
     if (name === "model") {
-        // Flotiq memoizes this event, so an async listing would never reach it -
-        // field-listeners calls form.rerenderForm() once the fetch resolves,
-        // which bumps the form counter and makes this run again with the
-        // models now sitting in the cache.
         const { models } = getModelsState(
             form.getValue("ai_url"),
             form.getValue("api_key"),
