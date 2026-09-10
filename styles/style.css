@@ -164,7 +164,7 @@
     z-index: 20;
     margin-bottom: 16px;
     transform: translateX(-50%);
-    padding: 12px;
+    padding: 8px 12px;
     width: max-content;
     max-width: 200px;
     border-radius: 6px;
@@ -193,7 +193,7 @@
 
 @media (min-width: 768px) {
     .plugin-ai-integration-tip::before {
-        padding: 16px;
+        padding: 10px 16px;
         max-width: 320px;
     }
 }
@@ -240,7 +240,7 @@
 
 .plugin-ai-integration-tabs__item {
     box-sizing: border-box;
-    height: 55px;
+    height: 48px;
     padding: 0 28px;
     border: none;
     border-bottom: 3px solid transparent;
@@ -248,7 +248,7 @@
     color: var(--color-slate-900, #0f172b);
     font-size: 14px;
     line-height: 20px;
-    font-weight: 500;
+    font-weight: 700;
     cursor: pointer;
 }
 
@@ -322,7 +322,7 @@
 }
 
 .plugin-ai-integration-logs__empty-title {
-    margin-bottom: 6px;
+    margin-bottom: 10px;
     font-size: 16px;
     font-weight: 600;
 }
@@ -331,11 +331,11 @@
     margin: 0;
     max-width: 480px;
     color: var(--color-slate-500, #62748e);
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .mode-dark .plugin-ai-integration-logs__empty-body {
-    color: var(--color-slate-400, #8ea1b8);
+    color: var(--color-slate-200, #cad5e2);
 }
 
 /* --------------------------------------------------------------- timeline */

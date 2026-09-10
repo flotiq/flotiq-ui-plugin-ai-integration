@@ -1,11 +1,25 @@
 import pluginInfo from "../plugin-manifest.json";
 import i18n from "../i18n";
+import {
+    bannerMessageFor,
+    classify,
+    errorMessages,
+    toEntry,
+} from "./ai-worker-helpers";
 
 // Injected by esbuild - falls back to production, dev overrides it with
 // WORKER_URL=http://localhost:8787 (see esbuild.config.js).
 const WORKER_URL = process.env.WORKER_URL;
 
 const TIMEOUT_MS = 300000;
+
+export const TEST_JOB_ID = "test";
+
+export const TEST_RESULT = {
+  SUCCESS: "success",
+  WARNING: "warning",
+  BLOCKING: "blocking",
+};
 
 const workerFetch = async (
     path,
@@ -40,85 +54,7 @@ const workerFetch = async (
     }
 };
 
-export const TEST_RESULT = {
-    SUCCESS: "success",
-    WARNING: "warning",
-    BLOCKING: "blocking",
-};
-
-const errorMessages = (payload, fallback) => {
-    if (!payload || typeof payload !== "object") return [fallback];
-
-    if (typeof payload.error === "string") return [payload.error];
-    if (typeof payload.message === "string") return [payload.message];
-
-    const messages = Object.entries(payload)
-        .filter(([key]) => key !== "status")
-        .flatMap(([field, value]) =>
-            (Array.isArray(value) ? value : [value])
-                .filter((entry) => typeof entry === "string")
-                .map((entry) => `${field}: ${entry}`),
-        );
-
-    return messages.length ? messages : [fallback];
-};
-
-const REASON = {
-    ENDPOINT: "endpoint",
-    API_KEY: "api_key",
-    MODEL: "model",
-    FLOTIQ_KEY: "flotiq_key",
-    UNKNOWN: "unknown",
-};
-
-const mentionsModel = (body) => /model/i.test(body || "");
-
-const classify = (httpStatus, payload) => {
-    if (httpStatus === 401) return REASON.FLOTIQ_KEY;
-
-    const providerStatus = payload?.providerStatus;
-    const providerBody = payload?.providerBody;
-
-    if (providerStatus === 401 || providerStatus === 403) return REASON.API_KEY;
-
-    if (providerStatus === 404)
-        return mentionsModel(providerBody) ? REASON.MODEL : REASON.ENDPOINT;
-
-    if (providerStatus === 400 && mentionsModel(providerBody)) return REASON.MODEL;
-
-    return REASON.UNKNOWN;
-};
-
-export const bannerMessageFor = (reason, fallback) => {
-    switch (reason) {
-        case REASON.FLOTIQ_KEY:
-            return i18n.t("Error.FlotiqUnauthorized");
-        case REASON.API_KEY:
-            return i18n.t("Error.Unauthorized");
-        case REASON.ENDPOINT:
-            return i18n.t("Error.NotFound");
-        default:
-            return fallback;
-    }
-};
-
-export const fieldErrorFor = (reason) => {
-    switch (reason) {
-        case REASON.FLOTIQ_KEY:
-            return ["flotiq_api_key", i18n.t("Validation.FlotiqKeyRejected")];
-        case REASON.API_KEY:
-            return ["api_key", i18n.t("Validation.ApiKeyRejected")];
-        case REASON.MODEL:
-            return ["model", i18n.t("Validation.ModelRejected")];
-        default:
-            return ["ai_url", i18n.t("Validation.EndpointRejected")];
-    }
-};
-
 export const testConfiguration = async (values, spaceId) => {
-    const startedAt = Date.now();
-    const attempts = 1;
-
     try {
         const { response, payload } = await workerFetch("/test", {
             token: values.flotiq_api_key,
@@ -132,8 +68,6 @@ export const testConfiguration = async (values, spaceId) => {
             },
         });
 
-        const durationMs = Date.now() - startedAt;
-
         if (!response.ok) {
             const raw = errorMessages(payload, `HTTP ${response.status}`);
             const reason = classify(response.status, payload);
@@ -142,13 +76,8 @@ export const testConfiguration = async (values, spaceId) => {
 
             return {
                 type: TEST_RESULT.BLOCKING,
-                messages: [
-                    bannerMessageFor(reason, i18n.t("Test.Unreachable")),
-                ],
+                messages: [bannerMessageFor(reason, i18n.t("Test.Unreachable"))],
                 reason,
-                durationMs,
-                attempts,
-                httpStatus: response.status,
             };
         }
 
@@ -157,12 +86,10 @@ export const testConfiguration = async (values, spaceId) => {
                 type: TEST_RESULT.WARNING,
                 messages: [i18n.t("Test.EmptyResponse")],
                 response: JSON.stringify(payload),
-                durationMs,
-                attempts,
             };
         }
 
-        return { type: TEST_RESULT.SUCCESS, messages: [], durationMs, attempts };
+        return { type: TEST_RESULT.SUCCESS, messages: [] };
     } catch (error) {
         return {
             type: TEST_RESULT.BLOCKING,
@@ -171,28 +98,35 @@ export const testConfiguration = async (values, spaceId) => {
                     ? i18n.t("Test.TimedOut")
                     : i18n.t("Test.Unreachable"),
             ],
-            durationMs: Date.now() - startedAt,
-            attempts,
         };
     }
 };
 
-export const fetchLogs = async (
-    { token, spaceId, mediaId },
-    { page, limit } = {},
-) => {
-    const params = new URLSearchParams();
-    if (page) params.set("page", page);
-    if (limit) params.set("limit", limit);
+/**
+ * Connection tests only. `job_id` is fixed instead of being a parameter,
+ * because the Logs tab has nothing to say about generation jobs yet.
+ */
+export const fetchLogs = async ({ token, spaceId }, { limit = 20 } = {}) => {
+    const params = new URLSearchParams({ job_id: TEST_JOB_ID, limit });
 
-    const query = params.toString() ? `?${params}` : "";
+    try {
+        const { response, payload } = await workerFetch(
+            `/logs/${spaceId}?${params}`,
+            { token, spaceId },
+        );
 
-    const { response, payload } = await workerFetch(
-        `/logs/${spaceId}/${mediaId}${query}`,
-        { token, spaceId },
-    );
+        if (!response.ok) {
+            console.error(pluginInfo.id, "fetching logs", response.status);
+            return { ok: false, entries: [] };
+        }
 
-    if (!response.ok) return { ok: false, entries: [] };
+        const entries = (payload?.data || [])
+            .map(toEntry)
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-    return { ok: true, entries: payload?.data || [] };
+        return { ok: true, entries };
+    } catch (error) {
+        console.error(pluginInfo.id, "fetching logs", error);
+        return { ok: false, entries: [] };
+    }
 };

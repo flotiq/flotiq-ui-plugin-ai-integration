@@ -5,6 +5,7 @@ import {
     removeElement,
 } from "../../common/plugin-element-cache";
 import { hydrate } from "../../common/connection-store";
+import { loadLogs } from "./load-logs";
 import { getSchema } from "./form-schema";
 import { getSubmitHandler } from "./submit";
 import { validate } from "./validate";
@@ -22,6 +23,8 @@ export const handleManageSchema = (data, client, globals) => {
         }
 
         hydrate(settings);
+
+        loadLogs(settings.flotiq_api_key, globals.getSpaceId());
 
         formSchema = {
             schema: getSchema(),

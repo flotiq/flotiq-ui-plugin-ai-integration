@@ -57,14 +57,16 @@ The test performs no retries, so a temporarily unavailable model surfaces here a
 
 ## Logs
 
-The **Logs** tab shows the result of the last connection test for this space: the outcome, the number of attempts, how
-long the request took, and the message behind the info icon. Full history is the worker's job - it writes to the
-`ai_logs` content type, and the plugin will read from there once that endpoint can list by space.
+The **Logs** tab lists the connection tests run for this space, newest first: the outcome, the number of attempts, how
+long the request took, and the message behind the info icon.
 
-The record is stored inside the plugin settings, alongside the connection state. A failed test is recorded without
-saving the configuration that produced it.
+The history belongs to the worker, not to the plugin. The worker writes every `/test` run to the `ai_logs` content
+type and tags it with `job_id` set to `test`, which is what separates connection tests from generation jobs. The tab
+reads them back with `GET /logs/{space-id}?job_id=test` - once when the settings modal opens, and again after every
+test, because the plugin never sees the entry the worker just wrote.
 
 <img src="./.docs/plugin_config_logs.png" alt="AI Integration logs tab" width="700"/>
+
 ## Development
 
 ### Quick start

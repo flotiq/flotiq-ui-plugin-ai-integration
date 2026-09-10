@@ -1,9 +1,9 @@
-const { defineConfig, globalIgnores } = require("eslint/config");
+const {defineConfig, globalIgnores} = require("eslint/config");
 
 const globals = require("globals");
 const js = require("@eslint/js");
 
-const { FlatCompat } = require("@eslint/eslintrc");
+const {FlatCompat} = require("@eslint/eslintrc");
 
 const compat = new FlatCompat({
     baseDirectory: __dirname,
@@ -33,6 +33,7 @@ module.exports = defineConfig([
                 "warn",
                 {
                     argsIgnorePattern: "^_",
+                    ignoreRestSiblings: true,
                 },
             ],
 
@@ -62,11 +63,11 @@ module.exports = defineConfig([
         },
     },
     {
-    // Inline SVG: the `d` attributes are single unbreakable tokens.
-    files: ["common/icons.js"],
-    rules: { "max-len": 0 },
-  },
-  globalIgnores([
+        // Inline SVG: the `d` attributes are single unbreakable tokens.
+        files: ["common/icons.js"],
+        rules: {"max-len": 0},
+    },
+    globalIgnores([
         "**/node_modules",
         "**/dist",
         "**/.eslintrc.cjs",

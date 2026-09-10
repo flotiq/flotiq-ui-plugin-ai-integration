@@ -1,41 +1,16 @@
 import pluginInfo from "../../plugin-manifest.json";
 import i18n from "../../i18n";
+import { TEST_RESULT, testConfiguration } from "../../common/ai-worker";
+import { fieldErrorFor } from "../../common/ai-worker-helpers";
 import {
-    TEST_RESULT,
-    fieldErrorFor,
-    testConfiguration,
-} from "../../common/ai-worker";
-import {
-    addEntry,
     markConnected,
     restoreBanner,
     setBanner,
     withState,
 } from "../../common/connection-store";
 import { confirmWarnings } from "../../common/modals";
+import { loadLogs } from "./load-logs";
 import { validate } from "./validate";
-
-const persistLastTest = async (client, { getPluginSettings, setPluginSettings }) => {
-    let stored;
-    try {
-        stored = JSON.parse(getPluginSettings() || "{}");
-    } catch {
-        stored = {};
-    }
-
-    const settings = JSON.stringify(withState(stored));
-
-    const { body, ok } = await client["_plugin_settings"].patch(pluginInfo.id, {
-        settings,
-    });
-
-    if (!ok) {
-        console.error(pluginInfo.id, "saving last test", body);
-        return;
-    }
-
-    setPluginSettings(settings);
-};
 
 const persist = async (values, client, { reload, modalInstance }, toast) => {
     const { body, ok } = await client["_plugin_settings"].patch(pluginInfo.id, {
@@ -59,7 +34,7 @@ export const getSubmitHandler =
     (
         data,
         client,
-        { toast, openModal, getSpaceId, getPluginSettings, setPluginSettings },
+        { toast, openModal, getSpaceId },
     ) =>
         async (values) => {
             const errors = validate(values);
@@ -77,18 +52,10 @@ export const getSubmitHandler =
             const result = await testConfiguration(values, spaceId);
             const passed = result.type !== TEST_RESULT.BLOCKING;
 
-            addEntry({
-                type: "connection_test",
-                status: passed ? "succeeded" : "failed",
-                attempts: result.attempts,
-                durationMs: result.durationMs,
-                message: result.messages.join(" "),
-            });
+            loadLogs(values.flotiq_api_key, spaceId);
 
             if (!passed) {
                 setBanner({ type: "failed", message: result.messages.join(" ") });
-
-                await persistLastTest(client, { getPluginSettings, setPluginSettings });
 
                 const [field, message] = fieldErrorFor(result.reason);
                 return [values, { [field]: message }];

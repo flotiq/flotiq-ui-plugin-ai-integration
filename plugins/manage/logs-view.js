@@ -1,7 +1,16 @@
 import pluginInfo from "../../plugin-manifest.json";
 import i18n from "../../i18n";
-import { getEntries, subscribe } from "../../common/connection-store";
-import { logInfoIcon, logsEmptyIcon } from "../../common/icons";
+import {
+    getEntries,
+    hasEntriesError,
+    isLoadingEntries,
+    subscribe,
+} from "../../common/connection-store";
+import {
+    logInfoIcon,
+    logsEmptyIcon,
+    spinnerIcon,
+} from "../../common/icons";
 import {
     addElementToCache,
     getCachedElement,
@@ -72,7 +81,7 @@ const buildEntry = (entry) => {
     );
 
     item.querySelector(".plugin-ai-integration-log__meta").textContent =
-        `${i18n.t("Logs.Attempts", { count: entry.attempts })} · ${i18n.t("Logs.Duration", { seconds })}`;
+        `${i18n.t("Logs.Attempts", {count: entry.attempts})} · ${i18n.t("Logs.Duration", {seconds})}`;
 
     item.querySelector(".plugin-ai-integration-log__info").dataset.tooltip = [
         new Date(entry.timestamp).toLocaleString(i18n.language),
@@ -82,6 +91,36 @@ const buildEntry = (entry) => {
         .join("\n");
 
     return item;
+};
+
+const buildLoadingState = () => {
+    const loading = document.createElement("div");
+    loading.className = "plugin-ai-integration-logs__empty";
+
+    loading.innerHTML = /* html */ `
+        <span class="plugin-ai-integration-logs__empty-icon">${spinnerIcon}</span>
+        <p class="plugin-ai-integration-logs__empty-body"></p>
+      `;
+
+    loading.querySelector(".plugin-ai-integration-logs__empty-body").textContent =
+        i18n.t("Logs.Loading");
+
+    return loading;
+};
+
+const buildErrorState = () => {
+    const failed = document.createElement("div");
+    failed.className = "plugin-ai-integration-logs__empty";
+
+    failed.innerHTML = /* html */ `
+    <span class="plugin-ai-integration-logs__empty-icon">${logsEmptyIcon}</span>
+    <p class="plugin-ai-integration-logs__empty-body"></p>
+  `;
+
+    failed.querySelector(".plugin-ai-integration-logs__empty-body").textContent =
+        i18n.t("Logs.ErrorBody");
+
+    return failed;
 };
 
 const buildEmptyState = () => {
@@ -111,10 +150,17 @@ export const getLogsView = () => {
     wrapper.className = "plugin-ai-integration-logs";
 
     const render = () => {
+        if (isLoadingEntries()) {
+            wrapper.replaceChildren(buildLoadingState());
+            return;
+        }
+
         const entries = getEntries();
 
         if (!entries.length) {
-            wrapper.replaceChildren(buildEmptyState());
+            wrapper.replaceChildren(
+                hasEntriesError() ? buildErrorState() : buildEmptyState(),
+            );
             return;
         }
 

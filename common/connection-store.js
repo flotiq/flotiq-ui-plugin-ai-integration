@@ -1,5 +1,7 @@
 const state = {
-    lastTest: null,
+    entries: [],
+    loadingEntries: false,
+    entriesError: false,
     banner: { type: "idle" },
     connection: null,
     savedBanner: { type: "idle" },
@@ -14,26 +16,35 @@ export const subscribe = (fn) => {
     return () => subscribers.delete(fn);
 };
 
-export const getEntries = () => (state.lastTest ? [state.lastTest] : []);
+export const getEntries = () => state.entries;
+
+export const isLoadingEntries = () => state.loadingEntries;
+
+export const hasEntriesError = () => state.entriesError;
+
+export const setLoadingEntries = (loading) => {
+    state.loadingEntries = loading;
+    notify();
+};
+
+export const setEntries = (entries) => {
+    state.entries = entries;
+    state.loadingEntries = false;
+    state.entriesError = false;
+    notify();
+};
+
+export const setEntriesError = () => {
+    state.entriesError = true;
+    state.loadingEntries = false;
+    notify();
+};
 
 export const getBanner = () => state.banner;
 
 /** Banner variants: idle | loading | active | failed */
 export const setBanner = (banner) => {
     state.banner = banner;
-    notify();
-};
-
-/**
- * @param {object} entry
- * @param {"connection_test"|"auto_generate"|"manual_generation"} entry.type
- * @param {"succeeded"|"failed"} entry.status
- * @param {number} entry.attempts
- * @param {number} entry.durationMs
- * @param {string} [entry.message]
- */
-export const addEntry = (entry) => {
-    state.lastTest = { timestamp: new Date().toISOString(), ...entry };
     notify();
 };
 
@@ -55,8 +66,6 @@ export const markDisconnected = () => {
 };
 
 export const hydrate = (settings) => {
-    state.lastTest =
-        settings?.lastTest || null;
     state.connection = settings?.connection || null;
 
     state.banner =
@@ -79,7 +88,6 @@ export const restoreBanner = () => {
     notify();
 };
 
-
 export const withState = (values) => {
-    return { ...values, lastTest: state.lastTest, connection: state.connection };
+    return { ...values, connection: state.connection };
 };

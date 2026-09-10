@@ -28,6 +28,10 @@ i18n.init({
                 "Logs.EmptyTitle": "No events yet",
                 "Logs.EmptyBody":
                     "Logs will appear here after your first connection test or the first time AI generates content.",
+                "Logs.Loading": "Loading history...",
+                "Logs.ErrorBody":
+                    "We could not load the log history. Check the connection " +
+                    "and try again.",
                 "Logs.Today": "Today",
                 "Logs.Succeeded": "Succeeded",
                 "Logs.Failed": "Failed",
@@ -51,20 +55,17 @@ i18n.init({
                     "When you save an entry, empty fields will be automatically filled in by AI. " +
                     "Generated content is saved as a draft for your review.",
 
-                // Whole-banner messages for the two statuses the mockup calls out.
                 "Error.Unauthorized":
                     "401 Unauthorized - the provider rejected your API key. " +
                     "Check that the key is active and has access to the selected model.",
                 "Error.NotFound":
                     "HTTP 404 · invalid_endpoint - couldn't connect to the provided URL. " +
                     "Check that the address is correct and the service is available.",
-                // The worker's own auth gate - this one never reached the
-                // provider, so it is about the Flotiq key, not the AI key.
+
                 "Error.FlotiqUnauthorized":
                     "401 Unauthorized - Flotiq rejected the API key. " +
                     "Check that the key is active and belongs to this space.",
 
-                // Per-field hints shown under the offending input.
                 "Validation.EndpointRejected":
                     "Check that the address is correct and the service is available",
                 "Validation.ApiKeyRejected":
@@ -124,8 +125,12 @@ i18n.init({
                 "Logs.EmptyBody":
                     "Logi pojawią się tutaj po pierwszym teście połączenia " +
                     "lub po pierwszym wygenerowaniu treści przez AI.",
+                "Logs.Loading": "Wczytywanie historii...",
+                "Logs.ErrorBody":
+                    "Nie udało się wczytać historii logów. Sprawdź " +
+                    "połączenie i spróbuj ponownie.",
                 "Logs.Today": "Dzisiaj",
-                "Logs.Succeeded": "Powodzenie",
+                "Logs.Succeeded": "Sukces",
                 "Logs.Failed": "Niepowodzenie",
                 "Logs.ConnectionTest": "Test połączenia",
                 "Logs.AutoGenerate": "Automatyczne generowanie",
