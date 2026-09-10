@@ -11,8 +11,7 @@ your own endpoint and key, and the plugin stores that configuration per space.
 
 The plugin works with any OpenAI-compatible chat completions API, including OpenAI, Azure OpenAI, Ollama, LM Studio and
 OpenRouter. Requests to the provider are made by a Cloudflare
-Worker ([flotiq-image-ai-worker](https://github.com/flotiq/flotiq-image-ai-worker)), not by the browser, so the provider
-key never has to be exposed to page scripts at generation time.
+Worker, not by the browser, so the provider key never has to be exposed to page scripts at generation time.
 
 Settings cannot be saved until a connection test passes, so a space never ends up holding a configuration nobody has
 verified.
@@ -33,9 +32,9 @@ Open the plugin settings from the plugin list and fill in four fields.
 
 ### Model list
 
-After you leave the API key field, the plugin fetches the provider's model listing and fills the select. The listing URL
-is derived from the endpoint by dropping the trailing operation segment, so `https://api.openai.com/v1/chat/completions`
-becomes `https://api.openai.com/v1/models`.
+After you leave the API key field, the plugin fetches the provider's model listing and fills the select dropdown. The
+listing URL is derived from the endpoint by dropping the trailing operation segment, so
+`https://api.openai.com/v1/chat/completions` becomes `https://api.openai.com/v1/models`.
 
 Providers that expose no listing - Cloudflare Workers AI encodes the model in the URL path, Azure OpenAI uses a
 different scheme - leave the select empty. The request goes from the browser straight to the provider, so the provider
@@ -73,8 +72,7 @@ test, because the plugin never sees the entry the worker just wrote.
 
 1. `yarn` - install dependencies
 2. `yarn start` - development mode, rebuilds on file changes and serves the plugin over HTTPS
-3. update `plugin-manifest.json` with the production URL and plugin information
-4. `yarn build` - production build
+3. `yarn build` - production build
 
 ### Output
 
@@ -106,7 +104,7 @@ npx cross-env WORKER_URL=http://localhost:8788 node esbuild.config.js
 
 ### Running the worker locally
 
-In the [flotiq-image-ai-worker](https://github.com/flotiq/flotiq-image-ai-worker) repository:
+In the flotiq-image-ai-worker repository:
 
 ```bash
 wrangler dev --env=dev --port 8788 \

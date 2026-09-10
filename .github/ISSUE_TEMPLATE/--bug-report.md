@@ -4,7 +4,7 @@ about: Report reproducible software issues, so we can improve
 
 ---
 
-Welcome to the Flotiq Singleton types Plugin GitHub repo!
+Welcome to the Flotiq AI Integration Plugin GitHub repo!
 
 For questions related to the creation of plugins, please check out docs at https://flotiq.com/docs/panel/PluginsDevelopment/plugins/
 
