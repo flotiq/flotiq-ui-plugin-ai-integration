@@ -1,0 +1,29 @@
+{
+  "license": "MIT",
+  "name": "flotiq-ui-plugin-ai-integration",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "start": "node --env-file-if-exists=.env esbuild.config.js --watch",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css,html,mdx,json,yaml,yml,md}\"",
+    "lint": "eslint"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.7",
+    "@eslint/js": "^10.0.1",
+    "cross-env": "^10.1.0",
+    "esbuild": "^0.25.0",
+    "esbuild-plugin-copy": "^2.1.1",
+    "esbuild-plugin-inline-import": "^1.1.0",
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.12.0",
+    "postcss": "^8.5.28",
+    "postcss-url": "^10.1.4",
+    "prettier": "^3.9.6"
+  },
+  "dependencies": {
+    "i18next": "^26.4.2"
+  }
+}
