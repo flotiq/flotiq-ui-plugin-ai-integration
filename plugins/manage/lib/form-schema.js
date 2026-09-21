@@ -1,5 +1,5 @@
-import pluginInfo from "../../plugin-manifest.json";
-import i18n from "../../i18n";
+import pluginInfo from "../../../plugin-manifest.json";
+import i18n from "../../../i18n";
 
 export const getSchema = () => ({
     id: pluginInfo.id,
@@ -48,8 +48,7 @@ export const getSchema = () => ({
             model: {
                 label: i18n.t("Field.Model"),
                 unique: false,
-                inputType: "select",
-                options: [],
+                inputType: "text",
             },
             auto_generate: {
                 label: "",

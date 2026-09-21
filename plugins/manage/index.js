@@ -5,10 +5,10 @@ import {
     removeElement,
 } from "../../common/plugin-element-cache";
 import { hydrate } from "../../common/connection-store";
-import { loadLogs } from "./load-logs";
-import { getSchema } from "./form-schema";
-import { getSubmitHandler } from "./submit";
-import { validate } from "./validate";
+import { loadLogs } from "./lib/load-logs";
+import { getSchema } from "./lib/form-schema";
+import { getSubmitHandler } from "./lib/submit";
+import { validate } from "./lib/validate";
 
 export const handleManageSchema = (data, client, globals) => {
     const cacheKey = `${pluginInfo.id}-form-schema`;

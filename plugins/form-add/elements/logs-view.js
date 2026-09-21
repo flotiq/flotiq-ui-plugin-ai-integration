@@ -1,20 +1,20 @@
-import pluginInfo from "../../plugin-manifest.json";
-import i18n from "../../i18n";
+import pluginInfo from "../../../plugin-manifest.json";
+import i18n from "../../../i18n";
 import {
     getEntries,
     hasEntriesError,
     isLoadingEntries,
     subscribe,
-} from "../../common/connection-store";
+} from "../../../common/connection-store";
 import {
     logInfoIcon,
     logsEmptyIcon,
     spinnerIcon,
-} from "../../common/icons";
+} from "../../../common/icons";
 import {
     addElementToCache,
     getCachedElement,
-} from "../../common/plugin-element-cache";
+} from "../../../common/plugin-element-cache";
 
 const TYPE_KEYS = {
     connection_test: "Logs.ConnectionTest",

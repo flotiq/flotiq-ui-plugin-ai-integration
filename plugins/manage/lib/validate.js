@@ -1,5 +1,5 @@
-import i18n from "../../i18n";
-import { validateAiUrl } from "../../common/validate-url";
+import i18n from "../../../i18n";
+import { validateAiUrl } from "../../../common/validate-url";
 
 
 export const validate = (values) => {

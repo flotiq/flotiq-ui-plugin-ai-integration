@@ -1,9 +1,9 @@
-import { fetchLogs } from "../../common/ai-worker";
+import { fetchLogs } from "../../../common/ai-worker";
 import {
     setEntries,
     setEntriesError,
     setLoadingEntries,
-} from "../../common/connection-store";
+} from "../../../common/connection-store";
 
 let generation = 0;
 

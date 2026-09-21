@@ -1,7 +1,6 @@
 import pluginInfo from "../../plugin-manifest.json";
 import i18n from "../../i18n";
 import { infoIcon } from "../../common/icons";
-import { getModelsState } from "../../common/models-cache";
 import {
     addElementToCache,
     getCachedElement,
@@ -37,7 +36,7 @@ const getAutoGenerateLabel = () => {
     return label;
 };
 
-export const handleFormFieldConfig = ({ name, config, contentType, form }) => {
+export const handleFormFieldConfig = ({ name, config, contentType }) => {
     if (contentType?.id !== pluginInfo.id || !contentType?.nonCtdSchema) return;
 
     if (name === "ai_url") {
@@ -50,12 +49,7 @@ export const handleFormFieldConfig = ({ name, config, contentType, form }) => {
     }
 
     if (name === "model") {
-        const { models } = getModelsState(
-            form.getValue("ai_url"),
-            form.getValue("api_key"),
-        );
-
-        config.options = models.map((model) => ({ value: model, label: model }));
+        config.placeholder = "gpt-4o-mini";
     }
 
     if (name === "auto_generate") {

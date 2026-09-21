@@ -49,6 +49,8 @@ export const bannerMessageFor = (reason, fallback) => {
             return i18n.t("Error.FlotiqUnauthorized");
         case REASON.API_KEY:
             return i18n.t("Error.Unauthorized");
+        case REASON.MODEL:
+            return i18n.t("Error.ModelNotFound");
         case REASON.ENDPOINT:
             return i18n.t("Error.NotFound");
         default:

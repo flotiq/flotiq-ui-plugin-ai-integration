@@ -1,14 +1,14 @@
-import pluginInfo from "../../plugin-manifest.json";
-import i18n from "../../i18n";
-import { TEST_RESULT, testConfiguration } from "../../common/ai-worker";
-import { fieldErrorFor } from "../../common/ai-worker-helpers";
+import pluginInfo from "../../../plugin-manifest.json";
+import i18n from "../../../i18n";
+import { TEST_RESULT, testConfiguration } from "../../../common/ai-worker";
+import { fieldErrorFor } from "../../../common/ai-worker-helpers";
 import {
     markConnected,
     restoreBanner,
     setBanner,
     withState,
-} from "../../common/connection-store";
-import { confirmWarnings } from "../../common/modals";
+} from "../../../common/connection-store";
+import { confirmWarnings } from "../../../common/modals";
 import { loadLogs } from "./load-logs";
 import { validate } from "./validate";
 

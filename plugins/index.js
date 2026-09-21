@@ -1,11 +1,11 @@
 import pluginInfo from "../plugin-manifest.json";
-import cssString from "inline:../styles/style.css";
+import cssString from "inline:./styles/style.css";
 import i18n from "../i18n";
 import { registerFn } from "../common/plugin-element-cache";
+import "../common/tooltip";
 import { handleManageSchema } from "./manage";
-import { getHeader } from "./manage/header";
-import { handleFormFieldConfig } from "./manage/field-config";
-import { handleFormFieldListeners } from "./manage/field-listeners";
+import { getHeader } from "./form-add";
+import { handleFormFieldConfig } from "./field-config";
 
 const loadStyles = () => {
     let style = document.getElementById(`${pluginInfo.id}-styles`);
@@ -42,9 +42,5 @@ registerFn(pluginInfo, (handler, client, globals) => {
 
     handler.on("flotiq.form.field::config", (data) =>
         handleFormFieldConfig(data),
-    );
-
-    handler.on("flotiq.form.field.listeners::add", (data) =>
-        handleFormFieldListeners(data),
     );
 });

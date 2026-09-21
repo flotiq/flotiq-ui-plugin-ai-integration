@@ -48,7 +48,7 @@ i18n.init({
                 "Field.ApiKeyHelp":
                     "Stored securely in your Flotiq account's plugin settings",
                 "Field.FlotiqApiKey": "Flotiq API key",
-                "Field.FlotiqApiKeyHelp": "A read-only key for this space",
+                "Field.FlotiqApiKeyHelp": "API key for this space",
                 "Field.Model": "Model",
                 "Field.AutoGenerate": "Auto-generate",
                 "Field.AutoGenerateTooltip":
@@ -61,6 +61,9 @@ i18n.init({
                 "Error.NotFound":
                     "HTTP 404 · invalid_endpoint - couldn't connect to the provided URL. " +
                     "Check that the address is correct and the service is available.",
+                "Error.ModelNotFound":
+                    "HTTP 404 · model_not_found - the selected model isn't available " +
+                    "from this provider. Check that the model name is correct and accessible.",
 
                 "Error.FlotiqUnauthorized":
                     "401 Unauthorized - Flotiq rejected the API key. " +
@@ -146,7 +149,7 @@ i18n.init({
                 "Field.ApiKeyHelp":
                     "Przechowywany bezpiecznie w ustawieniach pluginu na Twoim koncie Flotiq",
                 "Field.FlotiqApiKey": "Klucz API Flotiq",
-                "Field.FlotiqApiKeyHelp": "Klucz read-only dla tego space",
+                "Field.FlotiqApiKeyHelp": "Klucz API dla tego space",
                 "Field.Model": "Model",
                 "Field.AutoGenerate": "Generuj automatycznie",
                 "Field.AutoGenerateTooltip":
@@ -159,6 +162,9 @@ i18n.init({
                 "Error.NotFound":
                     "HTTP 404 · invalid_endpoint - nie udało się połączyć z podanym adresem URL. " +
                     "Sprawdź, czy adres jest poprawny i czy usługa jest dostępna.",
+                "Error.ModelNotFound":
+                    "HTTP 404 · model_not_found - wybrany model nie jest dostępny u tego dostawcy. " +
+                    "Sprawdź, czy nazwa modelu jest poprawna i czy masz do niego dostęp.",
                 "Error.FlotiqUnauthorized":
                     "401 Unauthorized - Flotiq odrzucił klucz API. " +
                     "Sprawdź, czy klucz jest aktywny i należy do tego space.",

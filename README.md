@@ -24,21 +24,17 @@ Open the plugin settings from the plugin list and fill in four fields.
 |----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Endpoint URL   | The **full** chat completions endpoint, for example `https://api.openai.com/v1/chat/completions`. The address is used exactly as entered - nothing is appended to it.  |
 | API key        | Key for your AI provider.                                                                                                                                              |
-| Flotiq API key | A read-only key for this space. It proves to the integration service that you have access to the space; the service uses its own credentials for everything it writes. |
-| Model          | Populated automatically once the endpoint URL and API key are filled in - see below.                                                                                   |
+| Flotiq API key | An API key for this space. It proves to the integration service that you have access to the space; the service uses its own credentials for everything it writes.      |
+| Model          | The model identifier your provider expects, typed by hand - see below.                                                                                                 |
 | Auto-generate  | When enabled, empty fields are filled in by AI on save, as a draft for review.                                                                                         |
 
 <img src="./.docs/plugin_config_active.png" alt="AI Integration settings, active connection" width="700"/>
 
-### Model list
+### Model name
 
-After you leave the API key field, the plugin fetches the provider's model listing and fills the select dropdown. The
-listing URL is derived from the endpoint by dropping the trailing operation segment, so
-`https://api.openai.com/v1/chat/completions` becomes `https://api.openai.com/v1/models`.
-
-Providers that expose no listing - Cloudflare Workers AI encodes the model in the URL path, Azure OpenAI uses a
-different scheme - leave the select empty. The request goes from the browser straight to the provider, so the provider
-must also allow cross-origin requests.
+Type the model identifier exactly as your provider spells it - `gpt-4o-mini` for OpenAI,
+`@cf/meta/llama-3.1-8b-instruct` for Cloudflare Workers AI. The value is passed to the provider unchanged, so a wrong
+name surfaces as a blocking error in the connection test below.
 
 ## Connection test
 
@@ -125,11 +121,11 @@ wrangler dev --env=dev --port 8788 \
 |----------------|--------------------------------------------------|
 | Endpoint URL   | `https://api.openai.com/v1/chat/completions`     |
 | API key        | your own provider key                            |
-| Flotiq API key | a read-only key for the space you are testing in |
+| Flotiq API key | an API key for the space you are testing in       |
 | Model          | `gpt-4o-mini`                                    |
 
-**Do not use `https://api.openai.com/v1` alone.** A bare base URL returns `404` with an empty body and no CORS headers,
-which the browser reports as a CORS failure rather than a wrong address.
+**Do not use `https://api.openai.com/v1` alone.** The address is used exactly as entered, so a bare base URL returns
+`404` from the provider and the connection test fails with an endpoint error pinned to the field.
 
 ### Loading the plugin
 

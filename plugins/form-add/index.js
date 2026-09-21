@@ -1,8 +1,8 @@
 import pluginInfo from "../../plugin-manifest.json";
 import i18n from "../../i18n";
 import { getEntries, subscribe } from "../../common/connection-store";
-import { getBannerElement } from "./banner";
-import { getLogsView } from "./logs-view";
+import { getBannerElement } from "./elements/banner";
+import { getLogsView } from "./elements/logs-view";
 import {
     addElementToCache,
     getCachedElement,
