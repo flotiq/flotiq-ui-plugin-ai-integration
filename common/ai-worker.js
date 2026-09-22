@@ -102,6 +102,31 @@ export const testConfiguration = async (values, spaceId) => {
     }
 };
 
+export const fetchModels = async (values, spaceId) => {
+    try {
+        const { response, payload } = await workerFetch("/models", {
+            token: values.flotiq_api_key,
+            spaceId,
+            method: "POST",
+            body: {
+                ai_url: values.ai_url,
+                ai_key: values.api_key,
+                space_id: spaceId,
+            },
+        });
+
+        if (!response.ok) {
+            console.error(pluginInfo.id, "listing models", response.status);
+            return { ok: false, models: [] };
+        }
+
+        return { ok: true, models: payload?.models || [] };
+    } catch (error) {
+        console.error(pluginInfo.id, "listing models", error);
+        return { ok: false, models: [] };
+    }
+};
+
 /**
  * Connection tests only. `job_id` is fixed instead of being a parameter,
  * because the Logs tab has nothing to say about generation jobs yet.

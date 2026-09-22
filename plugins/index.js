@@ -6,6 +6,7 @@ import "../common/tooltip";
 import { handleManageSchema } from "./manage";
 import { getHeader } from "./form-add";
 import { handleFormFieldConfig } from "./field-config";
+import { handleFormFieldListeners } from "./field-listeners";
 
 const loadStyles = () => {
     let style = document.getElementById(`${pluginInfo.id}-styles`);
@@ -42,5 +43,9 @@ registerFn(pluginInfo, (handler, client, globals) => {
 
     handler.on("flotiq.form.field::config", (data) =>
         handleFormFieldConfig(data),
+    );
+
+    handler.on("flotiq.form.field.listeners::add", (data) =>
+        handleFormFieldListeners(data, globals),
     );
 });

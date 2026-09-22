@@ -1,6 +1,31 @@
 import pluginInfo from "../../../plugin-manifest.json";
 import i18n from "../../../i18n";
 
+export const applyModelOptions = (schema, models, current) => {
+    const config = schema?.metaDefinition?.propertiesConfig?.model;
+    if (!config) return false;
+
+    const useSelect =
+        models.length > 0 && (!current || models.includes(current));
+
+    const inputType = useSelect ? "select" : "text";
+    const options = useSelect ? models : [];
+
+    const currentOptions = config.options || [];
+
+    const unchanged =
+        config.inputType === inputType &&
+        currentOptions.length === options.length &&
+        currentOptions.every((value, index) => value === options[index]);
+
+    if (unchanged) return false;
+
+    config.inputType = inputType;
+    config.options = options;
+
+    return true;
+};
+
 export const getSchema = () => ({
     id: pluginInfo.id,
     name: "ai_integration_settings",
@@ -9,15 +34,17 @@ export const getSchema = () => ({
     schemaDefinition: {
         type: "object",
         allOf: [
-            { $ref: "#/components/schemas/AbstractContentTypeSchemaDefinition" },
+            {
+                $ref: "#/components/schemas/AbstractContentTypeSchemaDefinition",
+            },
             {
                 type: "object",
                 properties: {
-                    ai_url: { type: "string", minLength: 1 },
-                    api_key: { type: "string", minLength: 1 },
-                    flotiq_api_key: { type: "string", minLength: 1 },
-                    model: { type: "string", minLength: 1 },
-                    auto_generate: { type: "boolean" },
+                    ai_url: {type: "string", minLength: 1},
+                    api_key: {type: "string", minLength: 1},
+                    flotiq_api_key: {type: "string", minLength: 1},
+                    model: {type: "string", minLength: 1},
+                    auto_generate: {type: "boolean"},
                 },
             },
         ],
@@ -25,7 +52,13 @@ export const getSchema = () => ({
         additionalProperties: true,
     },
     metaDefinition: {
-        order: ["ai_url", "api_key", "flotiq_api_key", "model", "auto_generate"],
+        order: [
+            "ai_url",
+            "api_key",
+            "flotiq_api_key",
+            "model",
+            "auto_generate",
+        ],
         propertiesConfig: {
             ai_url: {
                 label: i18n.t("Field.EndpointUrl"),
