@@ -109,7 +109,6 @@ wrangler dev --env=dev --port 8788 \
 ```
 
 - `--env=dev` is required - without it the worker has no vars, KV namespace or queues.
-- Port `8788` avoids a clash with the `flotiq-worker` container from `flotiq-backend`, which already publishes `8787`.
 - `FLOTIQ_API_URL` must point at the same Flotiq instance your editor is talking to. It is used both to validate the
   Flotiq API key and to download the test image, so the two cannot be split.
 - `TEST_IMAGE_ID` must name a **PNG** that exists in that instance - the worker builds the URL as `image/0x0/<id>.png`
@@ -167,4 +166,4 @@ Dev environment is configured to use:
 If you wish to talk with us about this project, feel free to hop on
 our [![Discord Chat](https://img.shields.io/discord/682699728454025410.svg)](https://discord.gg/FwXcHnX).
 
-If you found a bug, please report it in [issues](https://github.com/flotiq/flotiq-ui-plugin-templates-plain-js/issues).
+If you found a bug, please report it in [issues](https://github.com/flotiq/flotiq-ui-plugin-ai-integration/issues).
