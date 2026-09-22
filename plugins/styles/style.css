@@ -111,8 +111,13 @@
     font-weight: 600;
 }
 
+.plugin-ai-integration-banner__content {
+    min-width: 0;
+}
+
 .plugin-ai-integration-banner__body {
     margin: 0;
+    overflow-wrap: anywhere;
 }
 
 .plugin-ai-integration-banner__link {
