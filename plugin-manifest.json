@@ -2,7 +2,7 @@
   "id": "flotiq.ai-integration",
   "name": "AI Integration",
   "description": "Per-space AI provider integration: endpoint URL, API key, model and auto-generation with connection test before saving.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": "https://github.com/flotiq/flotiq-ui-plugin-ai-integration",
   "url": "https://localhost:3053/index.js",
   "permissions": [
