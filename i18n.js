@@ -50,6 +50,8 @@ i18n.init({
                 "Field.FlotiqApiKey": "Flotiq API key",
                 "Field.FlotiqApiKeyHelp": "API key for this space",
                 "Field.Model": "Model",
+                "Field.ModelFromUrl":
+                    "Taken from the endpoint address - this provider reads the model from the URL",
                 "Field.AutoGenerate": "Auto-generate",
                 "Field.AutoGenerateTooltip":
                     "When you save an entry, empty fields will be automatically filled in by AI. " +
@@ -151,6 +153,8 @@ i18n.init({
                 "Field.FlotiqApiKey": "Klucz API Flotiq",
                 "Field.FlotiqApiKeyHelp": "Klucz API dla tego space",
                 "Field.Model": "Model",
+                "Field.ModelFromUrl":
+                    "Pobrany z adresu endpointu - ten dostawca czyta model z URL-a",
                 "Field.AutoGenerate": "Generuj automatycznie",
                 "Field.AutoGenerateTooltip":
                     "Po zapisaniu obiektu puste pola zostaną uzupełnione przez AI. " +
