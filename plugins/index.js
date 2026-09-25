@@ -2,6 +2,7 @@ import pluginInfo from "../plugin-manifest.json";
 import cssString from "inline:./styles/style.css";
 import i18n from "../i18n";
 import { registerFn } from "../common/plugin-element-cache";
+import { setWorkerUrlFromApi } from "../common/ai-worker";
 import "../common/tooltip";
 import { handleManageSchema } from "./manage";
 import { getHeader } from "./form-add";
@@ -25,6 +26,8 @@ const isOwnSettingsForm = (contentType) =>
 
 registerFn(pluginInfo, (handler, client, globals) => {
     loadStyles();
+
+    setWorkerUrlFromApi(globals.getApiUrl());
 
     const language = globals.getLanguage();
     if (language !== i18n.language) i18n.changeLanguage(language);

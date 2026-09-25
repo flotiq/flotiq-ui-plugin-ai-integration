@@ -7,9 +7,30 @@ import {
     toEntry,
 } from "./ai-worker-helpers";
 
-// Injected by esbuild - falls back to production, dev overrides it with
-// WORKER_URL=http://localhost:8787 (see esbuild.config.js).
+const PRODUCTION_WORKER_URL = "https://ai-image-worker.flotiq.com";
 const WORKER_URL = process.env.WORKER_URL;
+
+let workerUrl = WORKER_URL;
+
+const WORKER_BY_API_HOST = [
+    [/(^|\.)api\.flotiq\.com$/i, PRODUCTION_WORKER_URL],
+    [/\.cdwv\.pl$/i, "https://ai-image-worker.staging.flotiq.com"],
+];
+
+export const setWorkerUrlFromApi = (apiUrl) => {
+    if (WORKER_URL !== PRODUCTION_WORKER_URL) return workerUrl;
+
+    try {
+        const { host } = new URL(apiUrl);
+        const match = WORKER_BY_API_HOST.find(([pattern]) => pattern.test(host));
+
+        if (match) workerUrl = match[1];
+    } catch {
+        // Unparseable api url - keep the baked default.
+    }
+
+    return workerUrl;
+};
 
 const TIMEOUT_MS = 300000;
 
@@ -29,7 +50,7 @@ const workerFetch = async (
     const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
     try {
-        const response = await fetch(`${WORKER_URL}${path}`, {
+        const response = await fetch(`${workerUrl}${path}`, {
             method,
             signal: controller.signal,
             headers: {
