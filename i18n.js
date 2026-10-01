@@ -101,9 +101,28 @@ i18n.init({
                 "Modal.ModelResponse": "Model response:",
                 "Modal.ChooseAnotherModel": "Choose another model",
                 "Modal.Accept": "Accept",
+                "Modal.OverwriteTitle": "Overwrite title and alt?",
+                "Modal.OverwriteNote":
+                    "This file already has a title or alt text. " +
+                    "AI will replace both with newly generated values.",
+                "Modal.Overwrite": "Generate and overwrite",
+                "Modal.Cancel": "Cancel",
 
                 "Toast.Saved": "AI integration saved",
                 "Toast.SaveError": "Could not save the settings",
+
+                "Media.Label": "SEO",
+                "Media.Generate": "Generate alt and title",
+                "Media.Generating": "Generating...",
+                "Media.UnsupportedFormat":
+                    "Unsupported format - AI works with JPG, PNG and SVG images",
+                "Media.Toast.Success": "Alt and title generated for {{name}}",
+                "Media.Toast.Failed":
+                    "Could not generate alt and title for {{name}}.",
+                "Media.Toast.Timeout":
+                    "Generating alt and title for {{name}} is taking too long. " +
+                    "Open the file again later to check the result.",
+                "Media.Toast.StartFailed": "Could not start generating.",
             },
         },
         pl: {
@@ -204,9 +223,29 @@ i18n.init({
                 "Modal.ModelResponse": "Odpowiedź modelu:",
                 "Modal.ChooseAnotherModel": "Wybierz inny model",
                 "Modal.Accept": "Akceptuj",
+                "Modal.OverwriteTitle": "Nadpisać tytuł i tekst alternatywny?",
+                "Modal.OverwriteNote":
+                    "Ten plik ma już tytuł lub tekst alternatywny. " +
+                    "AI zastąpi oba pola nowo wygenerowanymi wartościami.",
+                "Modal.Overwrite": "Generuj i nadpisz",
+                "Modal.Cancel": "Anuluj",
 
                 "Toast.Saved": "Zapisano integrację AI",
                 "Toast.SaveError": "Nie udało się zapisać ustawień",
+
+                "Media.Label": "SEO",
+                "Media.Generate": "Generuj tekst alt i tytuł",
+                "Media.Generating": "Generowanie...",
+                "Media.UnsupportedFormat":
+                    "Format nieobsługiwany - AI działa z obrazami JPG, PNG i SVG",
+                "Media.Toast.Success": "Wygenerowano alt i title dla {{name}}",
+                "Media.Toast.Failed":
+                    "Nie udało się wygenerować alt i title dla {{name}}.",
+                "Media.Toast.Timeout":
+                    "Generowanie alt i title dla {{name}} trwa zbyt długo. " +
+                    "Otwórz plik ponownie później, aby sprawdzić wynik.",
+                "Media.Toast.StartFailed":
+                    "Nie udało się uruchomić generowania.",
             },
         },
     },

@@ -62,6 +62,25 @@ test, because the plugin never sees the entry the worker just wrote.
 
 <img src="./.docs/plugin_config_logs.png" alt="AI Integration logs tab" width="700"/>
 
+## Generating alt and title
+
+Once the integration has an active connection, the media edit form gets an **SEO** row with a **Generate alt and
+title** button, between the file name and the title. Without a configured integration nothing is shown. For formats
+the worker does not accept (anything other than JPG, PNG and SVG) the button is disabled and a tooltip says why.
+
+1. If the file already has a title or alt text, the plugin asks before overwriting it.
+2. The plugin sends `POST /generate` to the worker with the language of the user's account (`pl` or `en`).
+3. While the job runs, the title and alt fields and the save buttons are locked and the button shows a spinner.
+   The plugin polls `GET /status/{space-id}/{media-id}` every 5 seconds.
+4. The worker saves the generated title and alt to the media object itself, so the job finishes even if the user
+   leaves the editor. When the editor is still open, the plugin loads the saved values into the form, unlocks it and
+   shows a toast. A failed job shows the error from the worker logs.
+
+Opening a media file whose job is still running brings the spinner and the lock back.
+
+The button is rendered with the `flotiq.media.form::add` event, which also gives the plugin `lockForm` and
+`reloadContentObject`. Flotiq versions without this event do not show the button.
+
 ## Development
 
 ### Quick start

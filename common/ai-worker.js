@@ -176,3 +176,88 @@ export const fetchLogs = async ({ token, spaceId }, { limit = 20 } = {}) => {
         return { ok: false, entries: [] };
     }
 };
+
+export const JOB_STATUS = {
+    GENERATING: "generating",
+    REGENERATING: "error (regenerating)",
+    SUCCESS: "success",
+    ERROR: "error",
+    CANCELED: "canceled",
+};
+
+export const isActiveStatus = (status) =>
+    status === JOB_STATUS.GENERATING || status === JOB_STATUS.REGENERATING;
+
+export const generateMedia = async (settings, { mediaId, spaceId, language }) => {
+    try {
+        const { response, payload } = await workerFetch("/generate", {
+            token: settings.flotiq_api_key,
+            spaceId,
+            method: "POST",
+            body: {
+                ai_url: settings.ai_url,
+                ai_key: settings.api_key,
+                model_name: settings.model,
+                media_id: mediaId,
+                space_id: spaceId,
+                language,
+            },
+        });
+
+        if (!response.ok) {
+            const messages = errorMessages(payload, `HTTP ${response.status}`);
+
+            console.error(pluginInfo.id, "starting generation", messages.join(" "));
+
+            return { ok: false, message: messages.join(" ") };
+        }
+
+        return { ok: true, inProgress: response.status === 202 };
+    } catch (error) {
+        console.error(pluginInfo.id, "starting generation", error);
+        return { ok: false, message: i18n.t("Test.Unreachable") };
+    }
+};
+
+export const fetchJobStatus = async ({ token, spaceId, mediaId }) => {
+    try {
+        const { response, payload } = await workerFetch(
+            `/status/${spaceId}/${mediaId}`,
+            { token, spaceId },
+        );
+
+        if (response.status === 404) return { ok: true, status: null };
+
+        if (!response.ok) {
+            console.error(pluginInfo.id, "fetching job status", response.status);
+            return { ok: false, status: null };
+        }
+
+        return { ok: true, status: payload?.status || null };
+    } catch (error) {
+        console.error(pluginInfo.id, "fetching job status", error);
+        return { ok: false, status: null };
+    }
+};
+
+export const fetchJobError = async ({ token, spaceId, mediaId }) => {
+    const params = new URLSearchParams({ exclude_tests: "1", limit: "5" });
+
+    try {
+        const { response, payload } = await workerFetch(
+            `/logs/${spaceId}/${mediaId}?${params}`,
+            { token, spaceId },
+        );
+
+        if (!response.ok) return "";
+
+        const failed = (payload?.data || []).find(
+            (log) => log.status === JOB_STATUS.ERROR,
+        );
+
+        return failed?.errors || "";
+    } catch (error) {
+        console.error(pluginInfo.id, "fetching job logs", error);
+        return "";
+    }
+};

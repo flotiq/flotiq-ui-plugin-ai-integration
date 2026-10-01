@@ -61,3 +61,47 @@ export const confirmWarnings = (openModal, modelResponse) =>
             },
         ],
     });
+
+const buildOverwriteContent = () => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "plugin-ai-integration-modal";
+
+    wrapper.innerHTML = /* html */ `
+    <div class="plugin-ai-integration-modal__heading">
+      <span class="plugin-ai-integration-modal__heading-icon">${warningTriangleIcon}</span>
+      <span class="plugin-ai-integration-modal__heading-text"></span>
+    </div>
+    <p class="plugin-ai-integration-modal__note"></p>
+  `;
+
+    wrapper.querySelector(".plugin-ai-integration-modal__heading-text").textContent =
+        i18n.t("Modal.OverwriteTitle");
+
+    wrapper.querySelector(".plugin-ai-integration-modal__note").textContent =
+        i18n.t("Modal.OverwriteNote");
+
+    return wrapper;
+};
+
+export const confirmOverwrite = (openModal) =>
+    openModal({
+        id: `${modalId}-overwrite`,
+        size: "md",
+        hideClose: true,
+        className: "plugin-ai-integration-dialog",
+        content: buildOverwriteContent(),
+        buttons: [
+            {
+                key: "cancel",
+                label: i18n.t("Modal.Cancel"),
+                color: "blueBordered",
+                result: false,
+            },
+            {
+                key: "overwrite",
+                label: i18n.t("Modal.Overwrite"),
+                color: "blue",
+                result: true,
+            },
+        ],
+    });

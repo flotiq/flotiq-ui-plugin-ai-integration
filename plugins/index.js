@@ -8,6 +8,7 @@ import { handleManageSchema } from "./manage";
 import { getHeader } from "./form-add";
 import { handleFormFieldConfig } from "./field-config";
 import { handleFormFieldListeners } from "./field-listeners";
+import { handleMediaFormElement } from "./media-edit";
 
 const loadStyles = () => {
     let style = document.getElementById(`${pluginInfo.id}-styles`);
@@ -50,5 +51,9 @@ registerFn(pluginInfo, (handler, client, globals) => {
 
     handler.on("flotiq.form.field.listeners::add", (data) =>
         handleFormFieldListeners(data, globals),
+    );
+
+    handler.on("flotiq.media.form::add", (data) =>
+        handleMediaFormElement(data, client, globals),
     );
 });

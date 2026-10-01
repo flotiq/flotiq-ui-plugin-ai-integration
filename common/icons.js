@@ -45,3 +45,8 @@ export const logsEmptyIcon = /* html */ `
 <path d="M16 10V12H2V10H16ZM18 0H0V2H18V0ZM18 4H0V6H18V4ZM18 8H0V14H18V8Z" fill="currentColor"/>
 </svg>
 `
+
+export const starIcon = /* html */ `
+<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5.5 0L6.66673 4.33327L11 5.5L6.66673 6.66673L5.5 11L4.33327 6.66673L0 5.5L4.33327 4.33327L5.5 0Z" fill="currentColor"/>
+</svg>`

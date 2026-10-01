@@ -539,3 +539,77 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
 .mode-dark .plugin-ai-integration-modal__note {
     color: var(--color-slate-400, #8ea1b8);
 }
+
+
+/* ============================================================ media form */
+
+/* The form already spaces its rows by 16px - padding adds to it */
+.plugin-ai-integration-media {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 24px;
+    padding-bottom: 16px;
+}
+
+.plugin-ai-integration-media__label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-slate-900, #0f172b);
+}
+
+.mode-dark .plugin-ai-integration-media__label {
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+.plugin-ai-integration-media__tip {
+    display: inline-flex;
+}
+
+.plugin-ai-integration-media__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border: 2px solid var(--color-blue, #1c70e8);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-blue, #1c70e8);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+        background-color 0.15s,
+        color 0.15s;
+}
+
+.mode-dark .plugin-ai-integration-media__button {
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+.plugin-ai-integration-media__button:hover:not(:disabled) {
+    background: var(--color-blue, #1c70e8);
+    color: var(--color-white, #fff);
+}
+
+/* A disabled button swallows pointer events - let them reach the tooltip */
+.plugin-ai-integration-media__button:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.plugin-ai-integration-media__icon {
+    display: inline-flex;
+    color: var(--color-blue, #1c70e8);
+}
+
+.plugin-ai-integration-media__button:hover:not(:disabled)
+    .plugin-ai-integration-media__icon {
+    color: var(--color-white, #fff);
+}
+
+.plugin-ai-integration-media__icon .plugin-ai-integration-spinner {
+    width: 14px;
+    height: 14px;
+}

@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0]
+
+### Added
+
+- Generate alt and title button in the media editor: overwrite confirmation, form lock while the job runs, status
+  polling and refreshed form with a toast when the job ends
+- Title and alt are generated in the language of the user's account
+
 ## [0.2.1]
 
 ### Fixed
