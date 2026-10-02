@@ -50,3 +50,9 @@ export const starIcon = /* html */ `
 <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M5.5 0L6.66673 4.33327L11 5.5L6.66673 6.66673L5.5 11L4.33327 6.66673L0 5.5L4.33327 4.33327L5.5 0Z" fill="currentColor"/>
 </svg>`
+
+/** Same as CheckmarkIcon used by Checkbox in Flotiq */
+export const checkmarkIcon = /* html */ `
+<svg viewBox="0 0 12.5 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.5,1l-7,7L1,4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`

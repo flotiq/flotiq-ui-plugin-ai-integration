@@ -101,11 +101,15 @@ i18n.init({
                 "Modal.ModelResponse": "Model response:",
                 "Modal.ChooseAnotherModel": "Choose another model",
                 "Modal.Accept": "Accept",
-                "Modal.OverwriteTitle": "Overwrite title and alt?",
+                "Modal.OverwriteTitle": "Overwrite existing values?",
                 "Modal.OverwriteNote":
-                    "This file already has a title or alt text. " +
-                    "AI will replace both with newly generated values.",
-                "Modal.Overwrite": "Generate and overwrite",
+                    "This file already has SEO values. " +
+                    "Generating will replace the ones you select.",
+                "Modal.FieldTitle": "Title",
+                "Modal.FieldAlt": "Alternative text",
+                "Modal.EmptyValue": "(empty)",
+                "Modal.SkipInSession": "Don't ask again in this session",
+                "Modal.Overwrite": "Generate and replace",
                 "Modal.Cancel": "Cancel",
 
                 "Toast.Saved": "AI integration saved",
@@ -223,11 +227,15 @@ i18n.init({
                 "Modal.ModelResponse": "Odpowiedź modelu:",
                 "Modal.ChooseAnotherModel": "Wybierz inny model",
                 "Modal.Accept": "Akceptuj",
-                "Modal.OverwriteTitle": "Nadpisać tytuł i tekst alternatywny?",
+                "Modal.OverwriteTitle": "Nadpisać istniejące wartości?",
                 "Modal.OverwriteNote":
-                    "Ten plik ma już tytuł lub tekst alternatywny. " +
-                    "AI zastąpi oba pola nowo wygenerowanymi wartościami.",
-                "Modal.Overwrite": "Generuj i nadpisz",
+                    "Ten plik ma już wartości SEO. " +
+                    "Generowanie zastąpi te, które zaznaczysz.",
+                "Modal.FieldTitle": "Tytuł",
+                "Modal.FieldAlt": "Tekst alternatywny",
+                "Modal.EmptyValue": "(puste)",
+                "Modal.SkipInSession": "Nie pytaj ponownie w tej sesji",
+                "Modal.Overwrite": "Generuj i zastąp",
                 "Modal.Cancel": "Anuluj",
 
                 "Toast.Saved": "Zapisano integrację AI",

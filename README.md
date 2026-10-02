@@ -68,9 +68,13 @@ Once the integration has an active connection, the media edit form gets an **SEO
 title** button, between the file name and the title. Without a configured integration nothing is shown. For formats
 the worker does not accept (anything other than JPG, PNG and SVG) the button is disabled and a tooltip says why.
 
-1. If the file already has a title or alt text, the plugin asks before overwriting it.
-2. The plugin sends `POST /generate` to the worker with the language of the user's account (`pl` or `en`).
-3. While the job runs, the title and alt fields and the save buttons are locked and the button shows a spinner.
+1. If the file already has a title or alt text, a modal lists both fields with their current values and lets the user
+   pick which ones to replace. Both are selected by default; an empty field is always listed as `(empty)`.
+   With **Don't ask again in this session** the modal is skipped until the browser tab is closed (`true` in
+   `sessionStorage`) and both fields are generated. The field choice itself applies to the current file only.
+2. The plugin sends `POST /generate` to the worker with the language of the user's account (`pl` or `en`) and the
+   selected `fields` - the worker saves only those.
+3. While the job runs, the selected fields and the save buttons are locked and the button shows a spinner.
    The plugin polls `GET /status/{space-id}/{media-id}` every 5 seconds.
 4. The worker saves the generated title and alt to the media object itself, so the job finishes even if the user
    leaves the editor. When the editor is still open, the plugin loads the saved values into the form, unlocks it and

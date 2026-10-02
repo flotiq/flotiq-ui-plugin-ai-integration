@@ -26,6 +26,9 @@ export const subscribe = (fn) => {
 
 export const isGenerating = (mediaId) => jobs.has(mediaId);
 
+/** Fields the running job writes, `undefined` when not known */
+export const getJobFields = (mediaId) => jobs.get(mediaId)?.fields;
+
 const resultFor = (status) =>
     status === JOB_STATUS.SUCCESS ? RESULT.SUCCESS : RESULT.ERROR;
 
@@ -35,10 +38,10 @@ const resultFor = (status) =>
  * polling without a final status. The job counts as running until `onFinish`
  * settles, so the form stays locked while it takes the new values over.
  */
-export const trackJob = (mediaId, { token, spaceId }, onFinish) => {
+export const trackJob = (mediaId, { token, spaceId, fields }, onFinish) => {
     if (jobs.has(mediaId)) return;
 
-    const job = { startedAt: Date.now(), timer: null };
+    const job = { startedAt: Date.now(), timer: null, fields };
     jobs.set(mediaId, job);
     notify(mediaId);
 

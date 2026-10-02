@@ -8,6 +8,7 @@ import {
 } from "../../common/ai-worker";
 import { spinnerIcon, starIcon } from "../../common/icons";
 import {
+    getJobFields,
     isGenerating,
     RESULT,
     subscribe,
@@ -58,11 +59,12 @@ const hasText = (value) => typeof value === "string" && value.trim() !== "";
 const panels = new Map();
 
 /**
- * The worker has already saved the media - the form only takes the new values
- * over. It is reset to them unless the user has other unsaved changes, which
- * stay dirty to be saved as usual.
+ * The worker has already saved the media - the form only takes the generated
+ * values over. It is reset to them unless the user has other unsaved changes
+ * (including fields left out of the generation), which stay dirty to be saved
+ * as usual.
  */
-const refreshForm = async (mediaId, client) => {
+const refreshForm = async (mediaId, client, fields) => {
     const panel = panels.get(mediaId);
     if (!panel) return;
 
@@ -74,10 +76,14 @@ const refreshForm = async (mediaId, client) => {
 
     if (ok && form) {
         const otherChanges = (form.getDirtyFields?.() || []).filter(
-            (field) => !GENERATED_FIELDS.includes(field),
+            (field) => !fields.includes(field),
         );
 
-        form.setValues({ title: body.title || "", alt: body.alt || "" });
+        form.setValues(
+            Object.fromEntries(
+                fields.map((field) => [field, body[field] || ""]),
+            ),
+        );
 
         if (!otherChanges.length) form.resetForm(form.getValues());
     }
@@ -85,13 +91,13 @@ const refreshForm = async (mediaId, client) => {
     await reloadContentObject?.();
 };
 
-const startTracking = (media, settings, spaceId, client, globals) => {
+const startTracking = (media, settings, spaceId, client, globals, fields) => {
     const token = settings.flotiq_api_key;
     const name = media.fileName;
 
-    trackJob(media.id, { token, spaceId }, async (result) => {
+    trackJob(media.id, { token, spaceId, fields }, async (result) => {
         if (result === RESULT.SUCCESS) {
-            await refreshForm(media.id, client);
+            await refreshForm(media.id, client, fields);
             globals.toast.success(i18n.t("Media.Toast.Success", { name }));
             return;
         }
@@ -141,8 +147,16 @@ const resumeJob = async (panel, client, globals) => {
 
     panel.checking = false;
 
+    // A job started elsewhere does not say which fields it writes
     if (isActiveStatus(status)) {
-        startTracking(media, settings, spaceId, client, globals);
+        startTracking(
+            media,
+            settings,
+            spaceId,
+            client,
+            globals,
+            GENERATED_FIELDS,
+        );
     }
 
     panel.render();
@@ -152,22 +166,29 @@ const generate = async (panel, client, globals) => {
     const { form, contentObject: media } = panel.ctx;
     const settings = readSettings(globals);
 
-    const filled = GENERATED_FIELDS.some((field) =>
-        hasText(form?.getValue(field)),
+    const values = Object.fromEntries(
+        GENERATED_FIELDS.map((field) => [field, form?.getValue(field)]),
     );
 
-    if (filled && !(await confirmOverwrite(globals.openModal))) return;
+    let fields = GENERATED_FIELDS;
+
+    if (GENERATED_FIELDS.some((field) => hasText(values[field]))) {
+        fields = await confirmOverwrite(globals.openModal, values);
+        if (!fields?.length) return;
+    }
 
     const spaceId = globals.getSpaceId();
     const language = globals.getLanguage();
 
     panel.starting = true;
+    panel.startingFields = fields;
     panel.render();
 
     const result = await generateMedia(settings, {
         mediaId: media.id,
         spaceId,
         language: LANGUAGES.includes(language) ? language : "en",
+        fields,
     });
 
     panel.starting = false;
@@ -183,21 +204,25 @@ const generate = async (panel, client, globals) => {
         return;
     }
 
-    startTracking(media, settings, spaceId, client, globals);
+    startTracking(media, settings, spaceId, client, globals, fields);
 };
 
 /**
- * Locks title, alt and saving while the job runs. `lockForm` sets state of
- * the editor, so it is never called while the editor renders the element.
+ * Locks the generated fields and saving while the job runs. `lockForm` sets
+ * state of the editor, so it is never called while the editor renders the
+ * element.
  */
 const applyLock = (panel, generating) => {
     if (panel.locked === generating) return;
     panel.locked = generating;
 
+    const mediaId = panel.ctx.contentObject.id;
+    const fields =
+        (panel.starting ? panel.startingFields : getJobFields(mediaId)) ||
+        GENERATED_FIELDS;
+
     setTimeout(() =>
-        panel.ctx.lockForm?.(
-            generating ? { fields: GENERATED_FIELDS, submit: true } : null,
-        ),
+        panel.ctx.lockForm?.(generating ? { fields, submit: true } : null),
     );
 };
 

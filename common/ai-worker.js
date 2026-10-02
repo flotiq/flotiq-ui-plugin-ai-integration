@@ -188,7 +188,10 @@ export const JOB_STATUS = {
 export const isActiveStatus = (status) =>
     status === JOB_STATUS.GENERATING || status === JOB_STATUS.REGENERATING;
 
-export const generateMedia = async (settings, { mediaId, spaceId, language }) => {
+export const generateMedia = async (
+    settings,
+    { mediaId, spaceId, language, fields },
+) => {
     try {
         const { response, payload } = await workerFetch("/generate", {
             token: settings.flotiq_api_key,
@@ -201,6 +204,7 @@ export const generateMedia = async (settings, { mediaId, spaceId, language }) =>
                 media_id: mediaId,
                 space_id: spaceId,
                 language,
+                fields,
             },
         });
 
