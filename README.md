@@ -85,6 +85,16 @@ Opening a media file whose job is still running brings the spinner and the lock 
 The button is rendered with the `flotiq.media.form::add` event, which also gives the plugin `lockForm` and
 `reloadContentObject`. Flotiq versions without this event do not show the button.
 
+### Auto-generate
+
+With **Auto-generate** on, the plugin listens to `flotiq.media::after-upload` and sends `POST /generate` for every
+uploaded image in a supported format, with both fields and the language of the uploading user. The upload is not held
+up and nothing is shown - the worker saves the result to the media. Opening the file while the job is still running
+shows the spinner and locks the fields, as described above.
+
+Only uploads made in the Flotiq panel trigger it. Files uploaded through the API, the CLI or imports are not
+generated automatically.
+
 ## Development
 
 ### Quick start

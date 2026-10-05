@@ -543,7 +543,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
 
 /* ============================================================ media form */
 
-/* The form already spaces its rows by 16px - padding adds to it */
 .plugin-ai-integration-media {
     display: flex;
     align-items: center;
@@ -593,7 +592,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     color: var(--color-white, #fff);
 }
 
-/* A disabled button swallows pointer events - let them reach the tooltip */
 .plugin-ai-integration-media__button:disabled {
     pointer-events: none;
     opacity: 0.5;
@@ -673,7 +671,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     background-color: var(--color-slate-800, #1d293d);
 }
 
-/* Checkbox styled like Checkbox in Flotiq */
 .plugin-ai-integration-overwrite__checkbox {
     position: relative;
     flex-shrink: 0;

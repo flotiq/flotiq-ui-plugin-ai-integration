@@ -9,6 +9,7 @@ import { getHeader } from "./form-add";
 import { handleFormFieldConfig } from "./field-config";
 import { handleFormFieldListeners } from "./field-listeners";
 import { handleMediaFormElement } from "./media-edit";
+import { handleMediaUpload } from "./media-upload";
 
 const loadStyles = () => {
     let style = document.getElementById(`${pluginInfo.id}-styles`);
@@ -54,6 +55,11 @@ registerFn(pluginInfo, (handler, client, globals) => {
     );
 
     handler.on("flotiq.media.form::add", (data) =>
-        handleMediaFormElement(data, client, globals),
+        handleMediaFormElement(data, globals),
     );
+
+    // No result is expected - the generation runs in the background
+    handler.on("flotiq.media::after-upload", (data) => {
+        handleMediaUpload(data, globals);
+    });
 });

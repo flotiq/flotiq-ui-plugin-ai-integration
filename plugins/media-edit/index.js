@@ -14,40 +14,18 @@ import {
     subscribe,
     trackJob,
 } from "../../common/media-generation";
+import {
+    GENERATED_FIELDS,
+    generationLanguage,
+    isConfigured,
+    isSupportedMedia,
+    readSettings,
+} from "../../common/media-support";
 import { confirmOverwrite } from "../../common/modals";
 import {
     addElementToCache,
     getCachedElement,
 } from "../../common/plugin-element-cache";
-
-/** Formats accepted by the worker */
-const SUPPORTED_MIME_TYPES = [
-    "image/jpeg",
-    "image/png",
-    "image/jpg",
-    "image/svg+xml",
-];
-
-const GENERATED_FIELDS = ["title", "alt"];
-
-const LANGUAGES = ["pl", "en"];
-
-const readSettings = (globals) => {
-    try {
-        return JSON.parse(globals.getPluginSettings() || "{}");
-    } catch {
-        return {};
-    }
-};
-
-const isConfigured = (settings) =>
-    settings.connection?.status === "active" &&
-    !!(
-        settings.ai_url &&
-        settings.api_key &&
-        settings.model &&
-        settings.flotiq_api_key
-    );
 
 const hasText = (value) => typeof value === "string" && value.trim() !== "";
 
@@ -59,45 +37,38 @@ const hasText = (value) => typeof value === "string" && value.trim() !== "";
 const panels = new Map();
 
 /**
- * The worker has already saved the media - the form only takes the generated
- * values over. It is reset to them unless the user has other unsaved changes
- * (including fields left out of the generation), which stay dirty to be saved
- * as usual.
+ * The worker has already saved the media. Reloading it refreshes the editor,
+ * and the form takes the generated values over from the reloaded media. The
+ * form is reset to them unless the user has other unsaved changes (including
+ * fields left out of the generation), which stay dirty to be saved as usual.
  */
-const refreshForm = async (mediaId, client, fields) => {
+const refreshForm = async (mediaId, fields) => {
     const panel = panels.get(mediaId);
     if (!panel) return;
 
     const { form, reloadContentObject } = panel.ctx;
 
-    const { body, ok } = await client._media
-        .get(mediaId)
-        .catch(() => ({ ok: false }));
+    const media = await reloadContentObject().catch(() => undefined);
+    if (!media || !form) return;
 
-    if (ok && form) {
-        const otherChanges = (form.getDirtyFields?.() || []).filter(
-            (field) => !fields.includes(field),
-        );
+    const otherChanges = (form.getDirtyFields?.() || []).filter(
+        (field) => !fields.includes(field),
+    );
 
-        form.setValues(
-            Object.fromEntries(
-                fields.map((field) => [field, body[field] || ""]),
-            ),
-        );
+    form.setValues(
+        Object.fromEntries(fields.map((field) => [field, media[field] || ""])),
+    );
 
-        if (!otherChanges.length) form.resetForm(form.getValues());
-    }
-
-    await reloadContentObject?.();
+    if (!otherChanges.length) form.resetForm(form.getValues());
 };
 
-const startTracking = (media, settings, spaceId, client, globals, fields) => {
+const startTracking = (media, settings, spaceId, globals, fields) => {
     const token = settings.flotiq_api_key;
     const name = media.fileName;
 
     trackJob(media.id, { token, spaceId, fields }, async (result) => {
         if (result === RESULT.SUCCESS) {
-            await refreshForm(media.id, client, fields);
+            await refreshForm(media.id, fields);
             globals.toast.success(i18n.t("Media.Toast.Success", { name }));
             return;
         }
@@ -128,7 +99,7 @@ const startTracking = (media, settings, spaceId, client, globals, fields) => {
  * Picks up a job started elsewhere - auto generation after upload, another
  * tab or a reload of the page.
  */
-const resumeJob = async (panel, client, globals) => {
+const resumeJob = async (panel, globals) => {
     const media = panel.ctx.contentObject;
     const settings = readSettings(globals);
 
@@ -149,20 +120,13 @@ const resumeJob = async (panel, client, globals) => {
 
     // A job started elsewhere does not say which fields it writes
     if (isActiveStatus(status)) {
-        startTracking(
-            media,
-            settings,
-            spaceId,
-            client,
-            globals,
-            GENERATED_FIELDS,
-        );
+        startTracking(media, settings, spaceId, globals, GENERATED_FIELDS);
     }
 
     panel.render();
 };
 
-const generate = async (panel, client, globals) => {
+const generate = async (panel, globals) => {
     const { form, contentObject: media } = panel.ctx;
     const settings = readSettings(globals);
 
@@ -178,7 +142,6 @@ const generate = async (panel, client, globals) => {
     }
 
     const spaceId = globals.getSpaceId();
-    const language = globals.getLanguage();
 
     panel.starting = true;
     panel.startingFields = fields;
@@ -187,7 +150,7 @@ const generate = async (panel, client, globals) => {
     const result = await generateMedia(settings, {
         mediaId: media.id,
         spaceId,
-        language: LANGUAGES.includes(language) ? language : "en",
+        language: generationLanguage(globals),
         fields,
     });
 
@@ -204,7 +167,7 @@ const generate = async (panel, client, globals) => {
         return;
     }
 
-    startTracking(media, settings, spaceId, client, globals, fields);
+    startTracking(media, settings, spaceId, globals, fields);
 };
 
 /**
@@ -250,7 +213,7 @@ const createPanel = () => {
     panel.render = () => {
         const media = panel.ctx.contentObject;
         const generating = isGenerating(media.id) || panel.starting;
-        const supported = SUPPORTED_MIME_TYPES.includes(media.mimeType);
+        const supported = isSupportedMedia(media);
 
         element.querySelector(
             ".plugin-ai-integration-media__label",
@@ -286,7 +249,7 @@ const createPanel = () => {
  * Renders the generate button in the media form, between the file name and
  * the title. Nothing is rendered until the integration is configured.
  */
-export const handleMediaFormElement = (data, client, globals) => {
+export const handleMediaFormElement = (data, globals) => {
     const { contentObject } = data;
 
     if (!contentObject?.id || !isConfigured(readSettings(globals))) return null;
@@ -307,7 +270,7 @@ export const handleMediaFormElement = (data, client, globals) => {
 
     panel.element
         .querySelector(".plugin-ai-integration-media__button")
-        .addEventListener("click", () => generate(panel, client, globals));
+        .addEventListener("click", () => generate(panel, globals));
 
     const unsubscribe = subscribe((id) => id === mediaId && panel.render());
     i18n.on("languageChanged", panel.render);
@@ -319,7 +282,7 @@ export const handleMediaFormElement = (data, client, globals) => {
     });
 
     panel.render();
-    resumeJob(panel, client, globals);
+    resumeJob(panel, globals);
 
     return panel.element;
 };
