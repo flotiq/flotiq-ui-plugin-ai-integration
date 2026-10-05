@@ -1,4 +1,3 @@
-
 export const parseSettings = (pluginSettings) => {
     try {
         return JSON.parse(pluginSettings || "{}");

@@ -20,12 +20,6 @@ const hasText = (value) => typeof value === "string" && value.trim() !== "";
 
 export const buttons = new Map();
 
-/**
- * The worker has already saved the media. Reloading it refreshes the editor,
- * and the form takes the generated values over from the reloaded media. The
- * form is reset to them unless the user has other unsaved changes (including
- * fields left out of the generation), which stay dirty to be saved as usual.
- */
 const refreshForm = async (mediaId, fields) => {
     const button = buttons.get(mediaId);
     if (!button) return;

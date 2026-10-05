@@ -20,13 +20,13 @@ verified.
 
 Open the plugin settings from the plugin list and fill in four fields.
 
-| Field          | Description                                                                                                                                                            |
-|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Endpoint URL   | The **full** chat completions endpoint, for example `https://api.openai.com/v1/chat/completions`. The address is used exactly as entered - nothing is appended to it.  |
-| API key        | Key for your AI provider.                                                                                                                                              |
-| Flotiq API key | An API key for this space. It proves to the integration service that you have access to the space; the service uses its own credentials for everything it writes.      |
-| Model          | The model identifier your provider expects, typed by hand - see below.                                                                                                 |
-| Auto-generate  | When enabled, empty fields are filled in by AI on save, as a draft for review.                                                                                         |
+| Field          | Description                                                                                                                                                           |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Endpoint URL   | The **full** chat completions endpoint, for example `https://api.openai.com/v1/chat/completions`. The address is used exactly as entered - nothing is appended to it. |
+| API key        | Key for your AI provider.                                                                                                                                             |
+| Flotiq API key | An API key for this space. It proves to the integration service that you have access to the space; the service uses its own credentials for everything it writes.     |
+| Model          | The model identifier your provider expects, typed by hand - see below.                                                                                                |
+| Auto-generate  | When enabled, empty fields are filled in by AI on save, as a draft for review.                                                                                        |
 
 <img src="./.docs/plugin_config_active.png" alt="AI Integration settings, active connection" width="700"/>
 
@@ -66,10 +66,10 @@ test, because the plugin never sees the entry the worker just wrote.
 
 Once the integration has an active connection, the media edit form gets an **SEO** row with a **Generate alt and
 title** button, between the file name and the title. Without a configured integration nothing is shown. For formats
-the worker does not accept (anything other than JPG, PNG and SVG) the button is disabled and a tooltip says why.
+the worker does not accept (anything other than JPG, PNG and SVG) the button is disabled.
 
 1. If the file already has a title or alt text, a modal lists both fields with their current values and lets the user
-   pick which ones to replace. Both are selected by default; an empty field is always listed as `(empty)`.
+   pick which ones to replace.
    With **Don't ask again in this session** the modal is skipped until the browser tab is closed (`true` in
    `sessionStorage`) and both fields are generated. The field choice itself applies to the current file only.
 2. The plugin sends `POST /generate` to the worker with the language of the user's account (`pl` or `en`) and the
@@ -77,23 +77,15 @@ the worker does not accept (anything other than JPG, PNG and SVG) the button is 
 3. While the job runs, the selected fields and the save buttons are locked and the button shows a spinner.
    The plugin polls `GET /status/{space-id}/{media-id}` every 5 seconds.
 4. The worker saves the generated title and alt to the media object itself, so the job finishes even if the user
-   leaves the editor. When the editor is still open, the plugin loads the saved values into the form, unlocks it and
-   shows a toast. A failed job shows the error from the worker logs.
+   leaves the editor.
 
 Opening a media file whose job is still running brings the spinner and the lock back.
-
-The button is rendered with the `flotiq.media.form::add` event, which also gives the plugin `lockForm` and
-`reloadContentObject`. Flotiq versions without this event do not show the button.
 
 ### Auto-generate
 
 With **Auto-generate** on, the plugin listens to `flotiq.media::after-upload` and sends `POST /generate` for every
-uploaded image in a supported format, with both fields and the language of the uploading user. The upload is not held
-up and nothing is shown - the worker saves the result to the media. Opening the file while the job is still running
-shows the spinner and locks the fields, as described above.
-
-Only uploads made in the Flotiq panel trigger it. Files uploaded through the API, the CLI or imports are not
-generated automatically.
+uploaded image in a supported format, with both fields and the language of the uploading user. Opening the file while
+the job is still running shows the spinner and locks the fields, as described above.
 
 ## Development
 
@@ -149,12 +141,12 @@ wrangler dev --env=dev --port 8788 \
 
 ### Test values
 
-| Field          | Value                                            |
-|----------------|--------------------------------------------------|
-| Endpoint URL   | `https://api.openai.com/v1/chat/completions`     |
-| API key        | your own provider key                            |
-| Flotiq API key | an API key for the space you are testing in       |
-| Model          | `gpt-4o-mini`                                    |
+| Field          | Value                                        |
+|----------------|----------------------------------------------|
+| Endpoint URL   | `https://api.openai.com/v1/chat/completions` |
+| API key        | your own provider key                        |
+| Flotiq API key | an API key for the space you are testing in  |
+| Model          | `gpt-4o-mini`                                |
 
 **Do not use `https://api.openai.com/v1` alone.** The address is used exactly as entered, so a bare base URL returns
 `404` from the provider and the connection test fails with an endpoint error pinned to the field.
