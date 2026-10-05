@@ -1,6 +1,7 @@
 import pluginInfo from "../plugin-manifest.json";
 import i18n from "../i18n";
-import { checkmarkIcon, warningTriangleIcon } from "./icons";
+import checkmarkIcon from "inline:../images/checkmark-icon.svg";
+import warningTriangleIcon from "inline:../images/warning-triangle-icon.svg";
 
 const modalId = `${pluginInfo.id}-modal`;
 
@@ -67,7 +68,6 @@ const OVERWRITE_FIELDS = [
     { name: "alt", label: "Modal.FieldAlt" },
 ];
 
-/** Set by "don't ask again", kept for the browser session */
 const SKIP_STORAGE_KEY = `${pluginInfo.id}-skip-overwrite-modal`;
 
 const isModalSkipped = () => {
@@ -153,12 +153,6 @@ const buildOverwriteContent = (values) => {
     return wrapper;
 };
 
-/**
- * Asks which of the existing values may be replaced. Resolves with the
- * selected field names, or `null` when the user cancels. After "don't ask
- * again" the modal is skipped for the rest of the browser session and all
- * fields are generated - the field choice applies to one file only.
- */
 export const confirmOverwrite = async (openModal, values) => {
     if (isModalSkipped()) return OVERWRITE_FIELDS.map(({ name }) => name);
 

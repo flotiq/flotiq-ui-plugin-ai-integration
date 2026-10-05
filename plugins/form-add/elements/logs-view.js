@@ -6,11 +6,9 @@ import {
     isLoadingEntries,
     subscribe,
 } from "../../../common/connection-store";
-import {
-    logInfoIcon,
-    logsEmptyIcon,
-    spinnerIcon,
-} from "../../../common/icons";
+import logInfoIcon from "inline:../../../images/log-info-icon.svg";
+import logsEmptyIcon from "inline:../../../images/logs-empty-icon.svg";
+import spinnerIcon from "inline:../../../images/spinner-icon.svg";
 import {
     addElementToCache,
     getCachedElement,

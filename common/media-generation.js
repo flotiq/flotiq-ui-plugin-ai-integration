@@ -1,5 +1,24 @@
 import { fetchJobStatus, isActiveStatus, JOB_STATUS } from "./ai-worker";
 
+const SUPPORTED_MIME_TYPES = [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "image/svg+xml",
+];
+
+export const GENERATED_FIELDS = ["title", "alt"];
+
+const LANGUAGES = ["pl", "en"];
+
+export const isSupportedMedia = (media) =>
+    SUPPORTED_MIME_TYPES.includes(media?.mimeType);
+
+export const generationLanguage = (globals) => {
+    const language = globals.getLanguage();
+    return LANGUAGES.includes(language) ? language : "en";
+};
+
 const POLL_INTERVAL_MS = 5000;
 const TIMEOUT_MS = 10 * 60 * 1000;
 
@@ -9,11 +28,6 @@ export const RESULT = {
     TIMEOUT: "timeout",
 };
 
-/**
- * Jobs tracked in this browser tab, by media id. Kept outside the panel, so
- * polling goes on when the user leaves the editor and the spinner comes back
- * when they return.
- */
 const jobs = new Map();
 const subscribers = new Set();
 
@@ -26,7 +40,6 @@ export const subscribe = (fn) => {
 
 export const isGenerating = (mediaId) => jobs.has(mediaId);
 
-/** Fields the running job writes, `undefined` when not known */
 export const getJobFields = (mediaId) => jobs.get(mediaId)?.fields;
 
 const resultFor = (status) =>

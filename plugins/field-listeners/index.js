@@ -2,6 +2,7 @@ import pluginInfo from "../../plugin-manifest.json";
 import { modelFromUrl } from "../../common/model-in-url";
 import { getModels, loadModels } from "../../common/models-cache";
 import { getCachedElement } from "../../common/plugin-element-cache";
+import { isOwnSettingsForm } from "../../common/settings-form";
 import { applyModelOptions } from "../manage/lib/form-schema";
 
 const TRIMMED = ["ai_url", "api_key", "flotiq_api_key", "model"];
@@ -37,7 +38,7 @@ export const handleFormFieldListeners = (
     { name, form, contentType },
     globals,
 ) => {
-    if (contentType?.id !== pluginInfo.id || !contentType?.nonCtdSchema) return;
+    if (!isOwnSettingsForm(contentType)) return;
     if (!TRIMMED.includes(name)) return;
 
     const trim = () => {

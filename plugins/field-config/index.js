@@ -1,10 +1,11 @@
 import pluginInfo from "../../plugin-manifest.json";
 import i18n from "../../i18n";
-import { infoIcon } from "../../common/icons";
+import infoIcon from "inline:../../images/info-icon.svg";
 import {
     addElementToCache,
     getCachedElement,
 } from "../../common/plugin-element-cache";
+import { isOwnSettingsForm } from "../../common/settings-form";
 
 const getAutoGenerateLabel = () => {
     const key = `${pluginInfo.id}-autogenerate-label`;
@@ -37,7 +38,7 @@ const getAutoGenerateLabel = () => {
 };
 
 export const handleFormFieldConfig = ({ name, config, contentType }) => {
-    if (contentType?.id !== pluginInfo.id || !contentType?.nonCtdSchema) return;
+    if (!isOwnSettingsForm(contentType)) return;
 
     if (name === "ai_url") {
         config.placeholder = "https://api.openai.com/v1/chat/completions";

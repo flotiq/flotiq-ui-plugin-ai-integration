@@ -3,19 +3,12 @@ import { generateMedia } from "../../common/ai-worker";
 import {
     GENERATED_FIELDS,
     generationLanguage,
-    isConfigured,
     isSupportedMedia,
-    readSettings,
-} from "../../common/media-support";
+} from "../../common/media-generation";
+import { isConfigured, parseSettings } from "../../common/settings-parser";
 
-/**
- * Auto generation: starts generating title and alt right after a file is
- * uploaded, when `auto_generate` is on. Nothing is shown and the upload is not
- * held up - the worker saves the result to the media, and the media editor
- * picks a running job up when the file is opened.
- */
-export const handleMediaUpload = async ({ media }, globals) => {
-    const settings = readSettings(globals);
+export const handleMediaAfterUpload = async ({ media }, globals) => {
+    const settings = parseSettings(globals.getPluginSettings());
 
     if (!settings.auto_generate || !isConfigured(settings)) return;
     if (!media?.id || !isSupportedMedia(media)) return;
