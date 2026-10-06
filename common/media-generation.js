@@ -26,6 +26,7 @@ export const RESULT = {
     SUCCESS: "success",
     ERROR: "error",
     TIMEOUT: "timeout",
+    START_FAILED: "start_failed",
 };
 
 const jobs = new Map();
@@ -51,16 +52,20 @@ const resultFor = (status) =>
  * polling without a final status. The job counts as running until `onFinish`
  * settles, so the form stays locked while it takes the new values over.
  */
-export const trackJob = (mediaId, { token, spaceId, fields }, onFinish) => {
+export const trackJob = (
+    mediaId,
+    { token, spaceId, fields, start },
+    onFinish,
+) => {
     if (jobs.has(mediaId)) return;
 
     const job = { startedAt: Date.now(), timer: null, fields };
     jobs.set(mediaId, job);
     notify(mediaId);
 
-    const finish = async (result) => {
+    const finish = async (result, message) => {
         try {
-            await onFinish(result);
+            await onFinish(result, message);
         } finally {
             jobs.delete(mediaId);
             notify(mediaId);
@@ -87,5 +92,20 @@ export const trackJob = (mediaId, { token, spaceId, fields }, onFinish) => {
         job.timer = setTimeout(poll, POLL_INTERVAL_MS);
     };
 
-    job.timer = setTimeout(poll, POLL_INTERVAL_MS);
+    const begin = async () => {
+        if (start) {
+            const result = await start;
+
+            if (!result?.ok) {
+                finish(RESULT.START_FAILED, result?.message);
+                return;
+            }
+
+            job.startedAt = Date.now();
+        }
+
+        job.timer = setTimeout(poll, POLL_INTERVAL_MS);
+    };
+
+    begin();
 };

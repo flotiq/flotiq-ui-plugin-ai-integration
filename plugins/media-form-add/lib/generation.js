@@ -1,3 +1,4 @@
+import pluginInfo from "../../../plugin-manifest.json";
 import i18n from "../../../i18n";
 import {
     fetchJobError,
@@ -40,36 +41,83 @@ const refreshForm = async (mediaId, fields) => {
     if (!otherChanges.length) form.resetForm(form.getValues());
 };
 
-const startTracking = (media, settings, spaceId, globals, fields) => {
+const startTracking = (
+    media,
+    settings,
+    spaceId,
+    globals,
+    fields,
+    { start, onlyWhenOpen = false } = {},
+) => {
     const token = settings.flotiq_api_key;
     const name = media.fileName;
 
-    trackJob(media.id, { token, spaceId, fields }, async (result) => {
-        if (result === RESULT.SUCCESS) {
-            await refreshForm(media.id, fields);
-            globals.toast.success(i18n.t("Media.Toast.Success", { name }));
-            return;
-        }
+    trackJob(
+        media.id,
+        { token, spaceId, fields, start },
+        async (result, message) => {
+            if (onlyWhenOpen && !buttons.has(media.id)) {
+                if (result === RESULT.START_FAILED) {
+                    console.error(
+                        pluginInfo.id,
+                        "auto generation",
+                        media.id,
+                        message,
+                    );
+                }
+                return;
+            }
 
-        if (result === RESULT.TIMEOUT) {
-            globals.toast.error(i18n.t("Media.Toast.Timeout", { name }), {
-                duration: 8000,
+            if (result === RESULT.START_FAILED) {
+                globals.toast.error(
+                    [i18n.t("Media.Toast.StartFailed"), message]
+                        .filter(Boolean)
+                        .join(" "),
+                    { duration: 8000 },
+                );
+                return;
+            }
+
+            if (result === RESULT.SUCCESS) {
+                await refreshForm(media.id, fields);
+                globals.toast.success(i18n.t("Media.Toast.Success", { name }));
+                return;
+            }
+
+            if (result === RESULT.TIMEOUT) {
+                globals.toast.error(i18n.t("Media.Toast.Timeout", { name }), {
+                    duration: 8000,
+                });
+                return;
+            }
+
+            const reason = await fetchJobError({
+                token,
+                spaceId,
+                mediaId: media.id,
             });
-            return;
-        }
 
-        const reason = await fetchJobError({
-            token,
-            spaceId,
+            globals.toast.error(
+                [i18n.t("Media.Toast.Failed", { name }), reason]
+                    .filter(Boolean)
+                    .join(" "),
+                { duration: 8000 },
+            );
+        },
+    );
+};
+
+export const trackAutoGeneration = (media, settings, globals) => {
+    const spaceId = globals.getSpaceId();
+
+    startTracking(media, settings, spaceId, globals, GENERATED_FIELDS, {
+        start: generateMedia(settings, {
             mediaId: media.id,
-        });
-
-        globals.toast.error(
-            [i18n.t("Media.Toast.Failed", { name }), reason]
-                .filter(Boolean)
-                .join(" "),
-            { duration: 8000 },
-        );
+            spaceId,
+            language: generationLanguage(globals),
+            fields: GENERATED_FIELDS,
+        }),
+        onlyWhenOpen: true,
     });
 };
 
