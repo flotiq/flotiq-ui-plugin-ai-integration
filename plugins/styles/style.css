@@ -758,23 +758,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     color: var(--color-slate-400, #90a1b9);
 }
 
-.plugin-ai-integration-overwrite__skip {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 24px;
-    cursor: pointer;
-}
-
-.plugin-ai-integration-overwrite__skip-text {
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--color-slate-900, #0f172b);
-}
-
-.mode-dark .plugin-ai-integration-overwrite__skip-text {
-    color: var(--color-slate-200, #e2e8f0);
-}
 
 
 /* ===================================================== generation history */

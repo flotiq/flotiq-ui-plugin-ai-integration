@@ -9,27 +9,9 @@ const OVERWRITE_FIELDS = [
     { name: "alt", label: "Modal.FieldAlt" },
 ];
 
-const SKIP_STORAGE_KEY = `${pluginInfo.id}-skip-overwrite-modal`;
-
-const isModalSkipped = () => {
-    try {
-        return sessionStorage.getItem(SKIP_STORAGE_KEY) === "true";
-    } catch {
-        return false;
-    }
-};
-
-const skipModal = () => {
-    try {
-        sessionStorage.setItem(SKIP_STORAGE_KEY, "true");
-    } catch {
-        // Storage unavailable - the modal is simply shown again next time.
-    }
-};
-
-const checkboxMarkup = (name, checked) => /* html */ `
+const checkboxMarkup = (name) => /* html */ `
     <span class="plugin-ai-integration-overwrite__checkbox">
-      <input type="checkbox" name="${name}" ${checked ? "checked" : ""} />
+      <input type="checkbox" name="${name}" checked />
       <span class="plugin-ai-integration-overwrite__checkmark">${checkmarkIcon}</span>
     </span>
   `;
@@ -39,7 +21,7 @@ const buildOverwriteOption = ({ name, label }, value) => {
     option.className = "plugin-ai-integration-overwrite__option";
 
     option.innerHTML = /* html */ `
-    ${checkboxMarkup(name, true)}
+    ${checkboxMarkup(name)}
     <span class="plugin-ai-integration-overwrite__text">
       <span class="plugin-ai-integration-overwrite__label"></span>
       <span class="plugin-ai-integration-overwrite__value"></span>
@@ -70,15 +52,7 @@ const buildOverwriteContent = (values) => {
     <p class="plugin-ai-integration-overwrite__title"></p>
     <p class="plugin-ai-integration-overwrite__note"></p>
     <div class="plugin-ai-integration-overwrite__options"></div>
-    <label class="plugin-ai-integration-overwrite__skip">
-      ${checkboxMarkup("skip", false)}
-      <span class="plugin-ai-integration-overwrite__skip-text"></span>
-    </label>
   `;
-
-    wrapper.querySelector(
-        ".plugin-ai-integration-overwrite__skip-text",
-    ).textContent = i18n.t("Modal.SkipInSession");
 
     wrapper.querySelector(
         ".plugin-ai-integration-overwrite__title",
@@ -99,8 +73,6 @@ const buildOverwriteContent = (values) => {
 };
 
 export const confirmOverwrite = async (openModal, values) => {
-    if (isModalSkipped()) return OVERWRITE_FIELDS.map(({ name }) => name);
-
     const content = buildOverwriteContent(values);
 
     const confirmed = await openModal({
@@ -133,8 +105,6 @@ export const confirmOverwrite = async (openModal, values) => {
             ".plugin-ai-integration-overwrite__options input:checked",
         ),
     ].map((input) => input.name);
-
-    if (content.querySelector('input[name="skip"]').checked) skipModal();
 
     return fields;
 };

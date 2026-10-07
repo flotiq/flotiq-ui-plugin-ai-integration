@@ -72,8 +72,6 @@ the worker does not accept (anything other than JPG, PNG and SVG) the button is 
 
 1. If the file already has a title or alt text, a modal lists both fields with their current values and lets the user
    pick which ones to replace.
-   With **Don't ask again in this session** the modal is skipped until the browser tab is closed (`true` in
-   `sessionStorage`) and both fields are generated. The field choice itself applies to the current file only.
 2. The plugin sends `POST /generate` to the worker with the language of the user's account (`pl` or `en`) and the
    selected `fields` - the worker saves only those.
 3. While the job runs, the selected fields and the save buttons are locked and the button shows a spinner.

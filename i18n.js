@@ -114,7 +114,6 @@ i18n.init({
                 "Modal.FieldTitle": "Title",
                 "Modal.FieldAlt": "Alternative text",
                 "Modal.EmptyValue": "(empty)",
-                "Modal.SkipInSession": "Don't ask again in this session",
                 "Modal.Overwrite": "Generate and replace",
                 "Modal.Cancel": "Cancel",
 
@@ -271,7 +270,6 @@ i18n.init({
                 "Modal.FieldTitle": "Tytuł",
                 "Modal.FieldAlt": "Tekst alternatywny",
                 "Modal.EmptyValue": "(puste)",
-                "Modal.SkipInSession": "Nie pytaj ponownie w tej sesji",
                 "Modal.Overwrite": "Generuj i zastąp",
                 "Modal.Cancel": "Anuluj",
 
