@@ -1,8 +1,8 @@
 import pluginInfo from "../../plugin-manifest.json";
-import { modelFromUrl } from "../../common/model-in-url";
-import { getModels, loadModels } from "../../common/models-cache";
-import { getCachedElement } from "../../common/plugin-element-cache";
-import { isOwnSettingsForm } from "../../common/settings-form";
+import { modelFromUrl } from "./lib/model-in-url";
+import { getModels, loadModels } from "./lib/models-cache";
+import { getCachedElement } from "../../common/lib/plugin-element-cache";
+import { isOwnSettingsForm } from "../../common/lib/settings-form";
 import { applyModelOptions } from "../manage/lib/form-schema";
 
 const TRIMMED = ["ai_url", "api_key", "flotiq_api_key", "model"];

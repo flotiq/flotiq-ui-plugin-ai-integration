@@ -266,10 +266,6 @@
     display: none !important;
 }
 
-/*
- * Class added to the plugin settings form. Tailwind utilities of Flotiq live
- * in a cascade layer, so this unlayered rule overrides its `md:pb-5`.
- */
 .plugin-ai-integration-settings-form {
     padding-bottom: 0;
 }
@@ -861,7 +857,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
 
 /* ============================================================ pagination */
 
-/* Styled like the Pagination component of Flotiq */
 .plugin-ai-integration-pagination {
     display: flex;
     align-items: center;
@@ -956,7 +951,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     font: inherit;
 }
 
-/* Log entries open the log modal */
 .plugin-ai-integration-log--clickable {
     cursor: pointer;
 }
@@ -991,7 +985,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     font-weight: 700;
 }
 
-/* The modal content has 20px side padding, which insets the border as well */
 .plugin-ai-integration-log-modal__header {
     padding-bottom: 16px;
     border-bottom: 1px solid var(--color-slate-300, #cad5e2);
@@ -1156,7 +1149,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     background: var(--color-slate-800, #1d293d);
 }
 
-/* Roboto Mono is loaded by the plugin - Flotiq ships no monospace font */
 .plugin-ai-integration-log-modal__code-text {
     margin: 0;
     color: var(--color-slate-900, #0f172b);
@@ -1172,7 +1164,6 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     color: var(--color-slate-200, #e2e8f0);
 }
 
-/* Close button of the Flotiq modal (only the log modal shows it) */
 .plugin-ai-integration-dialog--log > div.absolute > button svg {
     width: 12px;
     height: 12px;

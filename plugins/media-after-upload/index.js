@@ -1,6 +1,6 @@
-import { isSupportedMedia } from "../../common/media-generation";
-import { isConfigured, parseSettings } from "../../common/settings-parser";
-import { trackAutoGeneration } from "../media-form-add/lib/generation";
+import { isSupportedMedia } from "../../common/lib/generation-rules";
+import { isConfigured, parseSettings } from "../../common/lib/settings-parser";
+import { trackAutoGeneration } from "../../common/lib/generation";
 
 export const handleMediaAfterUpload = ({ media }, globals) => {
     const settings = parseSettings(globals.getPluginSettings());

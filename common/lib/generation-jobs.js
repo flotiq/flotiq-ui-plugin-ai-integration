@@ -1,23 +1,4 @@
-import { fetchJobStatus, isActiveStatus, JOB_STATUS } from "./ai-worker";
-
-const SUPPORTED_MIME_TYPES = [
-    "image/jpeg",
-    "image/png",
-    "image/jpg",
-    "image/svg+xml",
-];
-
-export const GENERATED_FIELDS = ["title", "alt"];
-
-const LANGUAGES = ["pl", "en"];
-
-export const isSupportedMedia = (media) =>
-    SUPPORTED_MIME_TYPES.includes(media?.mimeType);
-
-export const generationLanguage = (globals) => {
-    const language = globals.getLanguage();
-    return LANGUAGES.includes(language) ? language : "en";
-};
+import { fetchJobStatus, isActiveStatus, JOB_STATUS } from "../api/ai-worker";
 
 const POLL_INTERVAL_MS = 5000;
 const TIMEOUT_MS = 10 * 60 * 1000;
@@ -32,14 +13,8 @@ export const RESULT = {
 const jobs = new Map();
 const subscribers = new Set();
 
-/**
- * Tells subscribers that the generation state of the media changed - a job
- * started or ended, or a button started a request or a status check.
- */
 export const notifyChange = (mediaId) =>
     subscribers.forEach((fn) => fn(mediaId));
-
-const notify = notifyChange;
 
 export const subscribe = (fn) => {
     subscribers.add(fn);
@@ -68,26 +43,26 @@ export const trackJob = (
 
     const job = { startedAt: Date.now(), timer: null, fields };
     jobs.set(mediaId, job);
-    notify(mediaId);
+    notifyChange(mediaId);
 
     const finish = async (result, message) => {
         try {
             await onFinish(result, message);
         } finally {
             jobs.delete(mediaId);
-            notify(mediaId);
+            notifyChange(mediaId);
         }
     };
 
     const poll = async () => {
-        const { ok, status } = await fetchJobStatus({
+        const { ok, status, error } = await fetchJobStatus({
             token,
             spaceId,
             mediaId,
         });
 
         if (ok && !isActiveStatus(status)) {
-            finish(resultFor(status));
+            finish(resultFor(status), error);
             return;
         }
 

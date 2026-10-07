@@ -1,12 +1,7 @@
-import pluginInfo from "../plugin-manifest.json";
-import i18n from "../i18n";
-import {
-    bannerMessageFor,
-    classify,
-    errorMessages,
-    toGenerationEntries,
-    toSpaceEntries,
-} from "./ai-worker-helpers";
+import pluginInfo from "../../plugin-manifest.json";
+import i18n from "../../i18n";
+import { bannerMessageFor, classify, errorMessages } from "./worker-errors";
+import { toGenerationEntries, toSpaceEntries } from "../lib/log-entries";
 
 const PRODUCTION_WORKER_URL = "https://ai-image-worker.flotiq.com";
 const WORKER_URL = process.env.WORKER_URL;
@@ -37,7 +32,7 @@ export const setWorkerUrlFromApi = (apiUrl) => {
 
 const TIMEOUT_MS = 300000;
 
-export const TEST_JOB_ID = "test";
+const TEST_JOB_ID = "test";
 
 export const TEST_RESULT = {
     SUCCESS: "success",
@@ -157,11 +152,6 @@ export const fetchModels = async (values, spaceId) => {
     }
 };
 
-/**
- * One page of the space logs for the Logs tab - connection tests and finished
- * generations (`final_only` leaves out job starts and retried attempts, so
- * every page is full).
- */
 export const fetchLogs = async (
     { token, spaceId },
     { page = 1, limit = 20 } = {},
@@ -260,38 +250,17 @@ export const fetchJobStatus = async ({ token, spaceId, mediaId }) => {
             return { ok: false, status: null };
         }
 
-        return { ok: true, status: payload?.status || null };
+        return {
+            ok: true,
+            status: payload?.status || null,
+            error: payload?.error || "",
+        };
     } catch (error) {
         console.error(pluginInfo.id, "fetching job status", error);
         return { ok: false, status: null };
     }
 };
 
-export const fetchJobError = async ({ token, spaceId, mediaId }) => {
-    const params = new URLSearchParams({ exclude_tests: "1", limit: "5" });
-
-    try {
-        const { response, payload } = await workerFetch(
-            `/logs/${spaceId}/${mediaId}?${params}`,
-            { token, spaceId },
-        );
-
-        if (!response.ok) return "";
-
-        const failed = (payload?.data || []).find(
-            (log) => log.status === JOB_STATUS.ERROR,
-        );
-
-        return failed?.errors || "";
-    } catch (error) {
-        console.error(pluginInfo.id, "fetching job logs", error);
-        return "";
-    }
-};
-
-/**
- * The newest finished generations of one media file, newest first.
- */
 export const fetchMediaLogs = async (
     { token, spaceId, mediaId },
     { limit = 20 } = {},

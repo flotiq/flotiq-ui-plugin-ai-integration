@@ -9,7 +9,7 @@ import chevronRightIcon from "inline:../../../images/chevron-right-icon.svg";
 import {
     addElementToCache,
     getCachedElement,
-} from "../../../common/plugin-element-cache";
+} from "../../../common/lib/plugin-element-cache";
 
 const DOCS_URL = "https://flotiq.com/docs/";
 

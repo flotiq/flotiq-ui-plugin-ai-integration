@@ -6,7 +6,7 @@ import { getLogsView } from "./elements/logs-view";
 import {
     addElementToCache,
     getCachedElement,
-} from "../../common/plugin-element-cache";
+} from "../../common/lib/plugin-element-cache";
 
 export const getHeader = (globals) => {
     const key = `${pluginInfo.id}-header`;

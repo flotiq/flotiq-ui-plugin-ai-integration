@@ -1,6 +1,6 @@
-import pluginInfo from "../plugin-manifest.json";
-import i18n from "../i18n";
-import checkmarkIcon from "inline:../images/checkmark-icon.svg";
+import pluginInfo from "../../plugin-manifest.json";
+import i18n from "../../i18n";
+import checkmarkIcon from "inline:../../images/checkmark-icon.svg";
 
 const modalId = `${pluginInfo.id}-modal-overwrite`;
 

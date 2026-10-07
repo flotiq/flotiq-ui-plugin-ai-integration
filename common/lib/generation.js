@@ -1,22 +1,20 @@
-import pluginInfo from "../../../plugin-manifest.json";
-import i18n from "../../../i18n";
+import pluginInfo from "../../plugin-manifest.json";
+import i18n from "../../i18n";
 import {
-    fetchJobError,
     fetchJobStatus,
     generateMedia,
     isActiveStatus,
-} from "../../../common/ai-worker";
+} from "../api/ai-worker";
 import {
-    GENERATED_FIELDS,
-    generationLanguage,
     getJobFields,
     isGenerating,
     notifyChange,
     RESULT,
     trackJob,
-} from "../../../common/media-generation";
-import { confirmOverwrite } from "../../../common/overwrite-modal";
-import { isConfigured, parseSettings } from "../../../common/settings-parser";
+} from "./generation-jobs";
+import { GENERATED_FIELDS, generationLanguage } from "./generation-rules";
+import { confirmOverwrite } from "../elements/overwrite-modal";
+import { isConfigured, parseSettings } from "./settings-parser";
 
 const hasText = (value) => typeof value === "string" && value.trim() !== "";
 
@@ -42,7 +40,6 @@ const refreshForm = async (mediaId, fields) => {
     if (!otherChanges.length) form.resetForm(form.getValues());
 };
 
-/** Success toast naming only the fields the job generated */
 const successKeyFor = (fields) => {
     if (fields.length === 1 && fields[0] === "title")
         return "Media.Toast.SuccessTitle";
@@ -101,14 +98,8 @@ const startTracking = (
                 return;
             }
 
-            const reason = await fetchJobError({
-                token,
-                spaceId,
-                mediaId: media.id,
-            });
-
             globals.toast.error(
-                [i18n.t("Media.Toast.Failed", { name }), reason]
+                [i18n.t("Media.Toast.Failed", { name }), message]
                     .filter(Boolean)
                     .join(" "),
                 { duration: 8000 },
@@ -175,8 +166,6 @@ export const generate = async (button, globals) => {
 
     const spaceId = globals.getSpaceId();
 
-    // Subscribers (the SEO button and the history panel) show the request
-    // as generating right away
     button.starting = true;
     button.startingFields = fields;
     notifyChange(media.id);
@@ -201,8 +190,6 @@ export const generate = async (button, globals) => {
         return;
     }
 
-    // The job is tracked before `starting` ends, so the state never drops to
-    // "not generating" in between
     startTracking(media, settings, spaceId, globals, fields);
 
     button.starting = false;

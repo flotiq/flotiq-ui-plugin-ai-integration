@@ -1,6 +1,6 @@
-import pluginInfo from "../plugin-manifest.json";
-import i18n from "../i18n";
-import warningTriangleIcon from "inline:../images/warning-triangle-icon.svg";
+import pluginInfo from "../../../plugin-manifest.json";
+import i18n from "../../../i18n";
+import warningTriangleIcon from "inline:../../../images/warning-triangle-icon.svg";
 
 const modalId = `${pluginInfo.id}-modal`;
 

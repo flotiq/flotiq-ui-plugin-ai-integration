@@ -1,4 +1,4 @@
-import i18n from "../i18n";
+import i18n from "../../i18n";
 
 export const errorMessages = (payload, fallback) => {
     if (!payload || typeof payload !== "object") return [fallback];
@@ -71,59 +71,3 @@ export const fieldErrorFor = (reason) => {
             return ["ai_url", i18n.t("Validation.EndpointRejected")];
     }
 };
-
-export const toEntry = (log) => ({
-    timestamp: log.finished_at || log.started_at,
-    type: "connection_test",
-    status: log.status === "success" ? "succeeded" : "failed",
-    attempts: Number(log.attempts) || 1,
-    durationMs: Number(log.duration_ms) || 0,
-    message: log.errors || "",
-    log,
-});
-
-const isFinalGenerationLog = (log) =>
-    log.status === "success" || log.status === "error";
-
-const newestFirst = (a, b) => new Date(b.timestamp) - new Date(a.timestamp);
-
-/**
- * The worker writes the whole job into the final entry (`success` or
- * `error`) - total attempts, duration and the real error - so the start and
- * retry entries are left out.
- */
-const toGenerationEntry = (log) => ({
-    timestamp: log.finished_at || log.started_at,
-    status: log.status === "success" ? "succeeded" : "failed",
-    attempts: Number(log.attempts) || 1,
-    durationMs: Number(log.duration_ms) || 0,
-    message: log.status === "error" ? log.errors || "" : "",
-    log,
-});
-
-/** Generation history of one media file, newest first, without entry types */
-export const toGenerationEntries = (logs) =>
-    logs.filter(isFinalGenerationLog).map(toGenerationEntry).sort(newestFirst);
-
-/**
- * All logs of the space for the Logs tab, newest first: connection tests and
- * finished generations, typed by what started them. Generations logged before
- * `trigger` existed come from the editor button - auto generation is newer.
- */
-export const toSpaceEntries = (logs, testJobId) =>
-    logs
-        .flatMap((log) => {
-            if (log.job_id === testJobId) return [toEntry(log)];
-            if (!isFinalGenerationLog(log)) return [];
-
-            return [
-                {
-                    ...toGenerationEntry(log),
-                    type:
-                        log.trigger === "auto"
-                            ? "auto_generate"
-                            : "manual_generation",
-                },
-            ];
-        })
-        .sort(newestFirst);

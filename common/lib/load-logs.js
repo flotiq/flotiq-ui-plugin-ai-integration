@@ -1,13 +1,12 @@
-import { fetchLogs } from "../../../common/ai-worker";
+import { fetchLogs } from "../api/ai-worker";
 import {
     setEntries,
     setEntriesError,
     setLoadingEntries,
-} from "../../../common/connection-store";
+} from "../connection-store";
 
 let generation = 0;
 
-/** Credentials of the last load, reused to switch pages of the Logs tab */
 let lastRequest = null;
 
 export const loadLogs = async (token, spaceId, page = 1) => {

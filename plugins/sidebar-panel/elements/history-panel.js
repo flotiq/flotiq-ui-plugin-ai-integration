@@ -2,33 +2,19 @@ import i18n from "../../../i18n";
 import caretDownIcon from "inline:../../../images/caret-down-icon.svg";
 import spinnerIcon from "inline:../../../images/spinner-icon.svg";
 import starIcon from "inline:../../../images/star-icon.svg";
-import { fetchMediaLogs } from "../../../common/ai-worker";
-import {
-    isGenerating,
-    isSupportedMedia,
-    subscribe,
-} from "../../../common/media-generation";
-import { openLogModal } from "../../../common/log-modal";
-import { parseSettings } from "../../../common/settings-parser";
-import { renderLogs } from "../../form-add/elements/logs-view";
-import { buttons, generate } from "../../media-form-add/lib/generation";
+import { fetchMediaLogs } from "../../../common/api/ai-worker";
+import { isGenerating, subscribe } from "../../../common/lib/generation-jobs";
+import { isSupportedMedia } from "../../../common/lib/generation-rules";
+import { openLogModal } from "../../../common/elements/log-modal";
+import { parseSettings } from "../../../common/lib/settings-parser";
+import { renderLogs } from "../../../common/elements/logs-timeline";
+import { buttons, generate } from "../../../common/lib/generation";
 
-/**
- * Below the Information panel (order 10) and above Backlinks (order 20) in the
- * media editor sidebar.
- */
+
 const SIDEBAR_ORDER = "15";
 
-/**
- * The worker stores the job status and its log entry at the same time, so the
- * entry can lag behind the final status the plugin polls for.
- */
 const REFRESH_DELAY_MS = 2000;
 
-/**
- * "Generate" button of the empty history. It starts the same generation as the
- * SEO button in the form, so it mirrors that button's state.
- */
 const createGenerateAction = (panel, globals) => {
     const action = document.createElement("span");
     action.className =
@@ -72,11 +58,6 @@ const createGenerateAction = (panel, globals) => {
     return action;
 };
 
-/**
- * Collapsible generation history of one media file, styled like the Flotiq
- * sidebar panels. It reloads by itself after a job of this file ends and on
- * the refresh button.
- */
 export const createHistoryPanel = (mediaId, globals) => {
     const element = document.createElement("div");
     element.className = "plugin-ai-integration-history";
@@ -138,7 +119,6 @@ export const createHistoryPanel = (mediaId, globals) => {
         refresh.disabled = panel.state.loading;
     };
 
-    // Only the latest request updates the panel
     let generation = 0;
 
     panel.load = async () => {
@@ -183,8 +163,6 @@ export const createHistoryPanel = (mediaId, globals) => {
     const isRunning = () =>
         isGenerating(mediaId) || !!buttons.get(mediaId)?.starting;
 
-    // Any change updates the generate button, only the end of a generation
-    // brings a new log entry
     let wasRunning = isRunning();
 
     const unsubscribe = subscribe((id) => {

@@ -1,10 +1,10 @@
 import pluginInfo from "../plugin-manifest.json";
 import cssString from "inline:./styles/style.css";
 import i18n from "../i18n";
-import { registerFn } from "../common/plugin-element-cache";
-import { setWorkerUrlFromApi } from "../common/ai-worker";
-import { isOwnSettingsForm } from "../common/settings-form";
-import "../common/tooltip";
+import { registerFn } from "../common/lib/plugin-element-cache";
+import { setWorkerUrlFromApi } from "../common/api/ai-worker";
+import { isOwnSettingsForm } from "../common/lib/settings-form";
+import "../common/elements/tooltip";
 import { handleManageSchema } from "./manage";
 import { getHeader } from "./form-add";
 import { handleFormFieldConfig } from "./field-config";
@@ -24,7 +24,6 @@ const loadStyles = () => {
 
     style.textContent = cssString;
 
-    // Monospace font of the log modal (prompt and model responses)
     const fontId = `${pluginInfo.id}-font`;
     if (!document.getElementById(fontId)) {
         const font = document.createElement("link");

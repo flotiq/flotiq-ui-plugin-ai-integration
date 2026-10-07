@@ -1,4 +1,4 @@
-import { fetchModels } from "./ai-worker";
+import { fetchModels } from "../../../common/api/ai-worker";
 
 const cache = new Map();
 
@@ -10,7 +10,11 @@ export const getModels = (aiUrl, apiKey) =>
     cache.get(keyFor(aiUrl, apiKey)) || EMPTY;
 
 export const loadModels = async (values, spaceId) => {
-    const { ai_url: aiUrl, api_key: apiKey, flotiq_api_key: flotiqKey } = values;
+    const {
+        ai_url: aiUrl,
+        api_key: apiKey,
+        flotiq_api_key: flotiqKey,
+    } = values;
 
     if (!aiUrl || !apiKey || !flotiqKey || !spaceId) return false;
 

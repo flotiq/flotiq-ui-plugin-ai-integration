@@ -1,13 +1,13 @@
 import pluginInfo from "../../plugin-manifest.json";
 import i18n from "../../i18n";
-import { subscribe } from "../../common/media-generation";
+import { subscribe } from "../../common/lib/generation-jobs";
 import {
     addElementToCache,
     getCachedElement,
-} from "../../common/plugin-element-cache";
-import { isConfigured, parseSettings } from "../../common/settings-parser";
+} from "../../common/lib/plugin-element-cache";
+import { isConfigured, parseSettings } from "../../common/lib/settings-parser";
 import { createGenerateButton } from "./elements/generate-button";
-import { generate, buttons, resumeJob } from "./lib/generation";
+import { generate, buttons, resumeJob } from "../../common/lib/generation";
 
 export const handleMediaFormAdd = (data, globals) => {
     const { contentObject } = data;

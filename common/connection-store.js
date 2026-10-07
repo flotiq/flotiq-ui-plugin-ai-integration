@@ -35,7 +35,6 @@ export const getPagination = () => ({
     totalPages: state.totalPages,
 });
 
-/** Newest entry of the space - the first one of the first page */
 export const getLatestEntry = () => state.latestEntry;
 
 export const setEntries = (entries, { page = 1, totalPages = 1 } = {}) => {
@@ -62,21 +61,13 @@ export const setBanner = (banner) => {
     notify();
 };
 
-export const CONNECTION = {
+const CONNECTION = {
     ACTIVE: "active",
     DISCONNECTED: "disconnected",
 };
 
-export const getConnection = () => state.connection;
-
 export const markConnected = (at) => {
     state.connection = { status: CONNECTION.ACTIVE, at };
-};
-
-export const markDisconnected = () => {
-    state.connection = { status: CONNECTION.DISCONNECTED };
-    state.banner = { type: "idle" };
-    notify();
 };
 
 export const hydrate = (settings) => {

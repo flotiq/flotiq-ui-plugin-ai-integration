@@ -4,8 +4,8 @@ import infoIcon from "inline:../../images/info-icon.svg";
 import {
     addElementToCache,
     getCachedElement,
-} from "../../common/plugin-element-cache";
-import { isOwnSettingsForm } from "../../common/settings-form";
+} from "../../common/lib/plugin-element-cache";
+import { isOwnSettingsForm } from "../../common/lib/settings-form";
 
 const getAutoGenerateLabel = () => {
     const key = `${pluginInfo.id}-autogenerate-label`;

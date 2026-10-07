@@ -1,11 +1,9 @@
 import i18n from "../../../i18n";
 import spinnerIcon from "inline:../../../images/spinner-icon.svg";
 import starIcon from "inline:../../../images/star-icon.svg";
-import {
-    isGenerating,
-    isSupportedMedia,
-} from "../../../common/media-generation";
-import { applyLock } from "../lib/generation";
+import { isGenerating } from "../../../common/lib/generation-jobs";
+import { isSupportedMedia } from "../../../common/lib/generation-rules";
+import { applyLock } from "../../../common/lib/generation";
 
 export const createGenerateButton = () => {
     const element = document.createElement("div");

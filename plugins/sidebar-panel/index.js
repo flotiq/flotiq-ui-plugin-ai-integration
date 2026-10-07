@@ -3,14 +3,10 @@ import i18n from "../../i18n";
 import {
     addElementToCache,
     getCachedElement,
-} from "../../common/plugin-element-cache";
-import { isConfigured, parseSettings } from "../../common/settings-parser";
+} from "../../common/lib/plugin-element-cache";
+import { isConfigured, parseSettings } from "../../common/lib/settings-parser";
 import { createHistoryPanel } from "./elements/history-panel";
 
-/**
- * Generation history panel in the sidebar of the media editor. Nothing is
- * rendered until the integration is configured.
- */
 export const handleSidebarPanel = (data, globals) => {
     const { contentType, contentObject, create, duplicate } = data;
 

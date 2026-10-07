@@ -1,12 +1,10 @@
-import pluginInfo from "../plugin-manifest.json";
-import i18n from "../i18n";
+import pluginInfo from "../../plugin-manifest.json";
+import i18n from "../../i18n";
 
 const modalId = `${pluginInfo.id}-log-modal`;
 
-/** Connection tests have no media file and are not started by a person */
 const isGenerationLog = (log) => !!log && log.job_id !== "test";
 
-/** "12 August 2026, 2:22 PM" / "12 Sierpnia 2026, 14:22" */
 const formatDateTime = (iso) => {
     const date = new Date(iso);
     const english = i18n.language === "en";
@@ -121,7 +119,6 @@ const buildContent = (entry, toast) => {
             buildProperty("LogModal.Media", log.media_id),
             buildProperty(
                 "LogModal.TriggeredBy",
-                // Generations logged before `trigger` existed came from the button
                 i18n.t(
                     log.trigger === "auto"
                         ? "LogModal.Auto"
@@ -167,7 +164,6 @@ const buildContent = (entry, toast) => {
         }
     });
 
-    // A failed request has no model answer - its error is shown instead
     const failed = entry.status === "failed";
 
     wrapper.querySelector(
@@ -179,10 +175,6 @@ const buildContent = (entry, toast) => {
     return wrapper;
 };
 
-/**
- * Details of one log entry - from the Logs tab and from the generation
- * history in the media editor.
- */
 export const openLogModal = ({ openModal, toast }, entry) =>
     openModal({
         id: modalId,
