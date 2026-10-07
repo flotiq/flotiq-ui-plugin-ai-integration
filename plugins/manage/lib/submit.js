@@ -8,7 +8,7 @@ import {
     setBanner,
     withState,
 } from "../../../common/connection-store";
-import { confirmWarnings } from "../../../common/modals";
+import { confirmWarnings } from "../../../common/warning-modal";
 import { loadLogs } from "./load-logs";
 import { validate } from "./validate";
 

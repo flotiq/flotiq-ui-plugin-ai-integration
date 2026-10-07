@@ -52,13 +52,15 @@ The test performs no retries, so a temporarily unavailable model surfaces here a
 
 ## Logs
 
-The **Logs** tab lists the connection tests run for this space, newest first: the outcome, the number of attempts, how
-long the request took, and the message behind the info icon.
+The **Logs** tab lists the connection tests and the finished alt and title generations of this space, newest first:
+the outcome, the type (**Connection test**, **Manual generation** or **Auto-generate**), the number of attempts, how
+long it took, and the message behind the info icon.
 
-The history belongs to the worker, not to the plugin. The worker writes every `/test` run to the `ai_logs` content
-type and tags it with `job_id` set to `test`, which is what separates connection tests from generation jobs. The tab
-reads them back with `GET /logs/{space-id}?job_id=test` - once when the settings modal opens, and again after every
-test, because the plugin never sees the entry the worker just wrote.
+The history belongs to the worker, not to the plugin. The worker writes every `/test` run and every generation to the
+`ai_logs` content type. Connection tests have `job_id` set to `test`, generations carry `trigger` (`manual` or `auto`).
+The tab reads them back with `GET /logs/{space-id}` - once when the settings modal opens, and again after every test,
+because the plugin never sees the entry the worker just wrote. Only the final entry of a generation is shown, the
+worker stores the whole job in it.
 
 <img src="./.docs/plugin_config_logs.png" alt="AI Integration logs tab" width="700"/>
 

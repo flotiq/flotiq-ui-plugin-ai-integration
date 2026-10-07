@@ -11,6 +11,7 @@ import { handleFormFieldConfig } from "./field-config";
 import { handleFormFieldListeners } from "./field-listeners";
 import { handleMediaFormAdd } from "./media-form-add";
 import { handleMediaAfterUpload } from "./media-after-upload";
+import { handleSidebarPanel } from "./sidebar-panel";
 
 const loadStyles = () => {
     let style = document.getElementById(`${pluginInfo.id}-styles`);
@@ -22,6 +23,17 @@ const loadStyles = () => {
     }
 
     style.textContent = cssString;
+
+    // Monospace font of the log modal (prompt and model responses)
+    const fontId = `${pluginInfo.id}-font`;
+    if (!document.getElementById(fontId)) {
+        const font = document.createElement("link");
+        font.id = fontId;
+        font.rel = "stylesheet";
+        font.href =
+            "https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&display=swap";
+        document.head.appendChild(font);
+    }
 };
 
 registerFn(pluginInfo, (handler, client, globals) => {
@@ -41,7 +53,7 @@ registerFn(pluginInfo, (handler, client, globals) => {
     );
 
     handler.on("flotiq.form::add", ({ contentType }) =>
-        isOwnSettingsForm(contentType) ? getHeader() : null,
+        isOwnSettingsForm(contentType) ? getHeader(globals) : null,
     );
 
     handler.on("flotiq.form.field::config", (data) =>
@@ -59,4 +71,8 @@ registerFn(pluginInfo, (handler, client, globals) => {
     handler.on("flotiq.media::after-upload", (data) => {
         handleMediaAfterUpload(data, globals);
     });
+
+    handler.on("flotiq.form.sidebar-panel::add", (data) =>
+        handleSidebarPanel(data, globals),
+    );
 });

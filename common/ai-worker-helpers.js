@@ -38,7 +38,8 @@ export const classify = (httpStatus, payload) => {
     if (providerStatus === 404)
         return mentionsModel(providerBody) ? REASON.MODEL : REASON.ENDPOINT;
 
-    if (providerStatus === 400 && mentionsModel(providerBody)) return REASON.MODEL;
+    if (providerStatus === 400 && mentionsModel(providerBody))
+        return REASON.MODEL;
 
     return REASON.UNKNOWN;
 };
@@ -78,4 +79,51 @@ export const toEntry = (log) => ({
     attempts: Number(log.attempts) || 1,
     durationMs: Number(log.duration_ms) || 0,
     message: log.errors || "",
+    log,
 });
+
+const isFinalGenerationLog = (log) =>
+    log.status === "success" || log.status === "error";
+
+const newestFirst = (a, b) => new Date(b.timestamp) - new Date(a.timestamp);
+
+/**
+ * The worker writes the whole job into the final entry (`success` or
+ * `error`) - total attempts, duration and the real error - so the start and
+ * retry entries are left out.
+ */
+const toGenerationEntry = (log) => ({
+    timestamp: log.finished_at || log.started_at,
+    status: log.status === "success" ? "succeeded" : "failed",
+    attempts: Number(log.attempts) || 1,
+    durationMs: Number(log.duration_ms) || 0,
+    message: log.status === "error" ? log.errors || "" : "",
+    log,
+});
+
+/** Generation history of one media file, newest first, without entry types */
+export const toGenerationEntries = (logs) =>
+    logs.filter(isFinalGenerationLog).map(toGenerationEntry).sort(newestFirst);
+
+/**
+ * All logs of the space for the Logs tab, newest first: connection tests and
+ * finished generations, typed by what started them. Generations logged before
+ * `trigger` existed come from the editor button - auto generation is newer.
+ */
+export const toSpaceEntries = (logs, testJobId) =>
+    logs
+        .flatMap((log) => {
+            if (log.job_id === testJobId) return [toEntry(log)];
+            if (!isFinalGenerationLog(log)) return [];
+
+            return [
+                {
+                    ...toGenerationEntry(log),
+                    type:
+                        log.trigger === "auto"
+                            ? "auto_generate"
+                            : "manual_generation",
+                },
+            ];
+        })
+        .sort(newestFirst);

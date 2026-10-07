@@ -11,10 +11,11 @@ import {
     generationLanguage,
     getJobFields,
     isGenerating,
+    notifyChange,
     RESULT,
     trackJob,
 } from "../../../common/media-generation";
-import { confirmOverwrite } from "../../../common/modals";
+import { confirmOverwrite } from "../../../common/overwrite-modal";
 import { isConfigured, parseSettings } from "../../../common/settings-parser";
 
 const hasText = (value) => typeof value === "string" && value.trim() !== "";
@@ -39,6 +40,15 @@ const refreshForm = async (mediaId, fields) => {
     );
 
     if (!otherChanges.length) form.resetForm(form.getValues());
+};
+
+/** Success toast naming only the fields the job generated */
+const successKeyFor = (fields) => {
+    if (fields.length === 1 && fields[0] === "title")
+        return "Media.Toast.SuccessTitle";
+    if (fields.length === 1 && fields[0] === "alt")
+        return "Media.Toast.SuccessAlt";
+    return "Media.Toast.Success";
 };
 
 const startTracking = (
@@ -80,7 +90,7 @@ const startTracking = (
 
             if (result === RESULT.SUCCESS) {
                 await refreshForm(media.id, fields);
-                globals.toast.success(i18n.t("Media.Toast.Success", { name }));
+                globals.toast.success(i18n.t(successKeyFor(fields), { name }));
                 return;
             }
 
@@ -116,6 +126,7 @@ export const trackAutoGeneration = (media, settings, globals) => {
             spaceId,
             language: generationLanguage(globals),
             fields: GENERATED_FIELDS,
+            trigger: "auto",
         }),
         onlyWhenOpen: true,
     });
@@ -130,7 +141,7 @@ export const resumeJob = async (button, globals) => {
     const spaceId = globals.getSpaceId();
 
     button.checking = true;
-    button.render();
+    notifyChange(media.id);
 
     const { status } = await fetchJobStatus({
         token: settings.flotiq_api_key,
@@ -144,7 +155,7 @@ export const resumeJob = async (button, globals) => {
         startTracking(media, settings, spaceId, globals, GENERATED_FIELDS);
     }
 
-    button.render();
+    notifyChange(media.id);
 };
 
 export const generate = async (button, globals) => {
@@ -164,21 +175,23 @@ export const generate = async (button, globals) => {
 
     const spaceId = globals.getSpaceId();
 
+    // Subscribers (the SEO button and the history panel) show the request
+    // as generating right away
     button.starting = true;
     button.startingFields = fields;
-    button.render();
+    notifyChange(media.id);
 
     const result = await generateMedia(settings, {
         mediaId: media.id,
         spaceId,
         language: generationLanguage(globals),
         fields,
+        trigger: "manual",
     });
 
-    button.starting = false;
-
     if (!result.ok) {
-        button.render();
+        button.starting = false;
+        notifyChange(media.id);
         globals.toast.error(
             [i18n.t("Media.Toast.StartFailed"), result.message]
                 .filter(Boolean)
@@ -188,7 +201,12 @@ export const generate = async (button, globals) => {
         return;
     }
 
+    // The job is tracked before `starting` ends, so the state never drops to
+    // "not generating" in between
     startTracking(media, settings, spaceId, globals, fields);
+
+    button.starting = false;
+    notifyChange(media.id);
 };
 
 export const applyLock = (button, generating) => {

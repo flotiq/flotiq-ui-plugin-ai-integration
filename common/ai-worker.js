@@ -4,7 +4,8 @@ import {
     bannerMessageFor,
     classify,
     errorMessages,
-    toEntry,
+    toGenerationEntries,
+    toSpaceEntries,
 } from "./ai-worker-helpers";
 
 const PRODUCTION_WORKER_URL = "https://ai-image-worker.flotiq.com";
@@ -22,7 +23,9 @@ export const setWorkerUrlFromApi = (apiUrl) => {
 
     try {
         const { host } = new URL(apiUrl);
-        const match = WORKER_BY_API_HOST.find(([pattern]) => pattern.test(host));
+        const match = WORKER_BY_API_HOST.find(([pattern]) =>
+            pattern.test(host),
+        );
 
         if (match) workerUrl = match[1];
     } catch {
@@ -37,9 +40,9 @@ const TIMEOUT_MS = 300000;
 export const TEST_JOB_ID = "test";
 
 export const TEST_RESULT = {
-  SUCCESS: "success",
-  WARNING: "warning",
-  BLOCKING: "blocking",
+    SUCCESS: "success",
+    WARNING: "warning",
+    BLOCKING: "blocking",
 };
 
 const workerFetch = async (
@@ -93,11 +96,17 @@ export const testConfiguration = async (values, spaceId) => {
             const raw = errorMessages(payload, `HTTP ${response.status}`);
             const reason = classify(response.status, payload);
 
-            console.error(pluginInfo.id, "connection test failed", raw.join(" "));
+            console.error(
+                pluginInfo.id,
+                "connection test failed",
+                raw.join(" "),
+            );
 
             return {
                 type: TEST_RESULT.BLOCKING,
-                messages: [bannerMessageFor(reason, i18n.t("Test.Unreachable"))],
+                messages: [
+                    bannerMessageFor(reason, i18n.t("Test.Unreachable")),
+                ],
                 reason,
             };
         }
@@ -149,11 +158,15 @@ export const fetchModels = async (values, spaceId) => {
 };
 
 /**
- * Connection tests only. `job_id` is fixed instead of being a parameter,
- * because the Logs tab has nothing to say about generation jobs yet.
+ * One page of the space logs for the Logs tab - connection tests and finished
+ * generations (`final_only` leaves out job starts and retried attempts, so
+ * every page is full).
  */
-export const fetchLogs = async ({ token, spaceId }, { limit = 20 } = {}) => {
-    const params = new URLSearchParams({ job_id: TEST_JOB_ID, limit });
+export const fetchLogs = async (
+    { token, spaceId },
+    { page = 1, limit = 20 } = {},
+) => {
+    const params = new URLSearchParams({ final_only: "1", page, limit });
 
     try {
         const { response, payload } = await workerFetch(
@@ -166,11 +179,12 @@ export const fetchLogs = async ({ token, spaceId }, { limit = 20 } = {}) => {
             return { ok: false, entries: [] };
         }
 
-        const entries = (payload?.data || [])
-            .map(toEntry)
-            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-        return { ok: true, entries };
+        return {
+            ok: true,
+            entries: toSpaceEntries(payload?.data || [], TEST_JOB_ID),
+            page: Number(payload?.current_page) || page,
+            totalPages: Number(payload?.total_pages) || 1,
+        };
     } catch (error) {
         console.error(pluginInfo.id, "fetching logs", error);
         return { ok: false, entries: [] };
@@ -190,7 +204,7 @@ export const isActiveStatus = (status) =>
 
 export const generateMedia = async (
     settings,
-    { mediaId, spaceId, language, fields },
+    { mediaId, spaceId, language, fields, trigger },
 ) => {
     try {
         const { response, payload } = await workerFetch("/generate", {
@@ -205,13 +219,18 @@ export const generateMedia = async (
                 space_id: spaceId,
                 language,
                 fields,
+                trigger,
             },
         });
 
         if (!response.ok) {
             const messages = errorMessages(payload, `HTTP ${response.status}`);
 
-            console.error(pluginInfo.id, "starting generation", messages.join(" "));
+            console.error(
+                pluginInfo.id,
+                "starting generation",
+                messages.join(" "),
+            );
 
             return { ok: false, message: messages.join(" ") };
         }
@@ -233,7 +252,11 @@ export const fetchJobStatus = async ({ token, spaceId, mediaId }) => {
         if (response.status === 404) return { ok: true, status: null };
 
         if (!response.ok) {
-            console.error(pluginInfo.id, "fetching job status", response.status);
+            console.error(
+                pluginInfo.id,
+                "fetching job status",
+                response.status,
+            );
             return { ok: false, status: null };
         }
 
@@ -263,5 +286,40 @@ export const fetchJobError = async ({ token, spaceId, mediaId }) => {
     } catch (error) {
         console.error(pluginInfo.id, "fetching job logs", error);
         return "";
+    }
+};
+
+/**
+ * The newest finished generations of one media file, newest first.
+ */
+export const fetchMediaLogs = async (
+    { token, spaceId, mediaId },
+    { limit = 20 } = {},
+) => {
+    const params = new URLSearchParams({
+        exclude_tests: "1",
+        final_only: "1",
+        limit,
+    });
+
+    try {
+        const { response, payload } = await workerFetch(
+            `/logs/${spaceId}/${mediaId}?${params}`,
+            { token, spaceId },
+        );
+
+        if (!response.ok) {
+            console.error(
+                pluginInfo.id,
+                "fetching media logs",
+                response.status,
+            );
+            return { ok: false, entries: [] };
+        }
+
+        return { ok: true, entries: toGenerationEntries(payload?.data || []) };
+    } catch (error) {
+        console.error(pluginInfo.id, "fetching media logs", error);
+        return { ok: false, entries: [] };
     }
 };

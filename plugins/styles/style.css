@@ -266,6 +266,14 @@
     display: none !important;
 }
 
+/*
+ * Class added to the plugin settings form. Tailwind utilities of Flotiq live
+ * in a cascade layer, so this unlayered rule overrides its `md:pb-5`.
+ */
+.plugin-ai-integration-settings-form {
+    padding-bottom: 0;
+}
+
 /* ================================================================== logs */
 
 .plugin-ai-integration-panel[hidden] {
@@ -342,7 +350,7 @@
     position: relative;
     margin: 0;
     padding: 0 0 0 20px;
-    max-height: 439px;
+    max-height: 420px;
     list-style: none;
 }
 
@@ -766,4 +774,436 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
 
 .mode-dark .plugin-ai-integration-overwrite__skip-text {
     color: var(--color-slate-200, #e2e8f0);
+}
+
+
+/* ===================================================== generation history */
+
+.plugin-ai-integration-history {
+    padding: 20px 28px;
+    border-radius: 8px;
+    background: var(--color-white, #fff);
+    color: var(--color-slate-900, #0f172b);
+}
+
+.mode-dark .plugin-ai-integration-history {
+    background: var(--color-slate-950, #020618);
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+.plugin-ai-integration-history__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.plugin-ai-integration-history__title {
+    margin-right: 8px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.plugin-ai-integration-history__caret {
+    display: inline-flex;
+    width: 12px;
+    min-width: 12px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.plugin-ai-integration-history__caret svg {
+    width: 100%;
+    height: auto;
+}
+
+.plugin-ai-integration-history[data-open="true"] .plugin-ai-integration-history__caret {
+    transform: rotate(180deg);
+}
+
+.plugin-ai-integration-history__content {
+    display: flex;
+    flex-direction: column;
+    padding-top: 16px;
+}
+
+.plugin-ai-integration-history__content[hidden] {
+    display: none;
+}
+
+.plugin-ai-integration-history__logs {
+    min-height: 0;
+    max-height: 400px;
+    padding-top: 0;
+}
+
+.plugin-ai-integration-history__logs .plugin-ai-integration-logs__empty {
+    padding: 24px 16px;
+}
+
+.plugin-ai-integration-history__logs .plugin-ai-integration-logs__empty-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.plugin-ai-integration-history__generate {
+    display: inline-flex;
+    margin-top: 16px;
+}
+
+.plugin-ai-integration-history__refresh {
+    align-self: flex-start;
+    margin-top: 12px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--color-blue, #1c70e8);
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.mode-dark .plugin-ai-integration-history__refresh {
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+.plugin-ai-integration-history__refresh:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+.plugin-ai-integration-history__refresh:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+
+/* ============================================================ pagination */
+
+/* Styled like the Pagination component of Flotiq */
+.plugin-ai-integration-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 4px 0;
+    user-select: none;
+}
+
+.plugin-ai-integration-pagination[hidden] {
+    display: none;
+}
+
+.plugin-ai-integration-pagination__nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.plugin-ai-integration-pagination__group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.plugin-ai-integration-pagination__arrow {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--color-slate-600, #45556c);
+    cursor: pointer;
+}
+
+.mode-dark .plugin-ai-integration-pagination__arrow {
+    color: var(--color-slate-400, #90a1b9);
+}
+
+.plugin-ai-integration-pagination__arrow svg {
+    width: auto;
+    height: 12px;
+}
+
+.plugin-ai-integration-pagination__arrow:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.plugin-ai-integration-pagination__pages {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+}
+
+.mode-dark .plugin-ai-integration-pagination__pages {
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+.plugin-ai-integration-pagination__current {
+    margin: 8px;
+}
+
+.plugin-ai-integration-pagination__number {
+    padding: 0 4px;
+    border: none;
+    background: none;
+    color: var(--color-blue-600, #1c70e8);
+    font: inherit;
+    cursor: pointer;
+}
+
+.mode-dark .plugin-ai-integration-pagination__number {
+    color: var(--color-blue-400, #429cf0);
+}
+
+.plugin-ai-integration-pagination__number[hidden],
+.plugin-ai-integration-pagination__input[hidden] {
+    display: none;
+}
+
+.plugin-ai-integration-pagination__input {
+    width: 56px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-blue-600, #1c70e8);
+    font: inherit;
+}
+
+/* Log entries open the log modal */
+.plugin-ai-integration-log--clickable {
+    cursor: pointer;
+}
+
+.plugin-ai-integration-log--clickable:hover,
+.plugin-ai-integration-log--clickable:focus-visible {
+    background-color: var(--color-slate-50, #f8fafc);
+    outline: none;
+}
+
+.mode-dark .plugin-ai-integration-log--clickable:hover,
+.mode-dark .plugin-ai-integration-log--clickable:focus-visible {
+    background-color: var(--color-slate-800, #1d293d);
+}
+
+/* ============================================================== log modal */
+
+.plugin-ai-integration-log-modal {
+    color: var(--color-slate-900, #0f172b);
+    font-size: 14px;
+}
+
+.mode-dark .plugin-ai-integration-log-modal {
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+.plugin-ai-integration-log-modal__title {
+    margin: 0 0 16px;
+    color: var(--color-blue, #1c70e8);
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 700;
+}
+
+/* The modal content has 20px side padding, which insets the border as well */
+.plugin-ai-integration-log-modal__header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-slate-300, #cad5e2);
+}
+
+.mode-dark .plugin-ai-integration-log-modal__header {
+    border-bottom-color: var(--color-slate-700, #314158);
+}
+
+.plugin-ai-integration-log-modal__status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.plugin-ai-integration-log-modal__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.plugin-ai-integration-log-modal[data-status="succeeded"] .plugin-ai-integration-log-modal__dot {
+    background: var(--color-lime-300, #83ce63);
+}
+
+.plugin-ai-integration-log-modal[data-status="failed"] .plugin-ai-integration-log-modal__dot {
+    background: var(--color-red, #eb5757);
+}
+
+.plugin-ai-integration-log-modal__status,
+.plugin-ai-integration-log-modal__label {
+    font-weight: 700;
+}
+
+.plugin-ai-integration-log-modal__date,
+.plugin-ai-integration-log-modal__value {
+    font-weight: 400;
+}
+
+.plugin-ai-integration-log-modal__date {
+    color: var(--color-slate-500, #62748e);
+}
+
+.mode-dark .plugin-ai-integration-log-modal__date {
+    color: var(--color-slate-300, #cad5e2);
+}
+
+.plugin-ai-integration-log-modal__properties {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.plugin-ai-integration-log-modal__property {
+    display: flex;
+    gap: 6px;
+    min-width: 0;
+}
+
+.plugin-ai-integration-log-modal__value {
+    overflow-wrap: anywhere;
+}
+
+.plugin-ai-integration-log-modal__heading {
+    margin: 16px 0 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.plugin-ai-integration-log-modal__stats {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.plugin-ai-integration-log-modal__stat {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: var(--color-slate-50, #f8fafc);
+}
+
+.mode-dark .plugin-ai-integration-log-modal__stat {
+    background: var(--color-slate-800, #1d293d);
+}
+
+.plugin-ai-integration-log-modal__stat-label {
+    color: var(--color-slate-500, #62748e);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.mode-dark .plugin-ai-integration-log-modal__stat-label {
+    color: var(--color-slate-300, #cad5e2);
+}
+
+.plugin-ai-integration-log-modal__stat-value {
+    color: var(--color-slate-900, #0f172b);
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 700;
+}
+
+.mode-dark .plugin-ai-integration-log-modal__stat-value {
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+.plugin-ai-integration-log-modal__subheading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 16px 0 8px;
+}
+
+.plugin-ai-integration-log-modal__subheading {
+    margin: 0;
+    color: var(--color-slate-900, #0f172b);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.plugin-ai-integration-log-modal__copy {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--color-blue, #1c70e8);
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.mode-dark .plugin-ai-integration-log-modal__copy {
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+.plugin-ai-integration-log-modal__copy:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+.plugin-ai-integration-log-modal__copy:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.mode-dark .plugin-ai-integration-log-modal__subheading {
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+.plugin-ai-integration-log-modal__code {
+    padding: 12px 14px;
+    border: 1px solid var(--color-slate-300, #cad5e2);
+    border-radius: 8px;
+    background: var(--color-slate-50, #f8fafc);
+}
+
+.mode-dark .plugin-ai-integration-log-modal__code {
+    border-color: var(--color-slate-700, #314158);
+    background: var(--color-slate-800, #1d293d);
+}
+
+/* Roboto Mono is loaded by the plugin - Flotiq ships no monospace font */
+.plugin-ai-integration-log-modal__code-text {
+    margin: 0;
+    color: var(--color-slate-900, #0f172b);
+    font-family: "Roboto Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.mode-dark .plugin-ai-integration-log-modal__code-text {
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+/* Close button of the Flotiq modal (only the log modal shows it) */
+.plugin-ai-integration-dialog--log > div.absolute > button svg {
+    width: 12px;
+    height: 12px;
+    color: var(--color-slate-500, #62748e);
+}
+
+.mode-dark .plugin-ai-integration-dialog--log > div.absolute > button svg {
+    color: var(--color-slate-300, #cad5e2);
+}
+
+.mode-dark .plugin-ai-integration-log-modal__title {
+    color: var(--color-slate-200, #e2e8f0);
+}
+
+.plugin-ai-integration-log-modal__heading--response {
+    margin-bottom: 8px;
 }

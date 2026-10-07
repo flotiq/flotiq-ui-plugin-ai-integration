@@ -2,6 +2,9 @@ const state = {
     entries: [],
     loadingEntries: false,
     entriesError: false,
+    page: 1,
+    totalPages: 1,
+    latestEntry: null,
     banner: { type: "idle" },
     connection: null,
     savedBanner: { type: "idle" },
@@ -27,8 +30,19 @@ export const setLoadingEntries = (loading) => {
     notify();
 };
 
-export const setEntries = (entries) => {
+export const getPagination = () => ({
+    page: state.page,
+    totalPages: state.totalPages,
+});
+
+/** Newest entry of the space - the first one of the first page */
+export const getLatestEntry = () => state.latestEntry;
+
+export const setEntries = (entries, { page = 1, totalPages = 1 } = {}) => {
     state.entries = entries;
+    state.page = page;
+    state.totalPages = totalPages;
+    if (page === 1) state.latestEntry = entries[0] || null;
     state.loadingEntries = false;
     state.entriesError = false;
     notify();
@@ -71,11 +85,11 @@ export const hydrate = (settings) => {
     state.banner =
         state.connection?.status === CONNECTION.ACTIVE
             ? {
-                type: "active",
-                url: settings.ai_url,
-                model: settings.model,
-                at: state.connection.at,
-            }
+                  type: "active",
+                  url: settings.ai_url,
+                  model: settings.model,
+                  at: state.connection.at,
+              }
             : { type: "idle" };
 
     state.savedBanner = state.banner;

@@ -32,7 +32,14 @@ export const RESULT = {
 const jobs = new Map();
 const subscribers = new Set();
 
-const notify = (mediaId) => subscribers.forEach((fn) => fn(mediaId));
+/**
+ * Tells subscribers that the generation state of the media changed - a job
+ * started or ended, or a button started a request or a status check.
+ */
+export const notifyChange = (mediaId) =>
+    subscribers.forEach((fn) => fn(mediaId));
+
+const notify = notifyChange;
 
 export const subscribe = (fn) => {
     subscribers.add(fn);
