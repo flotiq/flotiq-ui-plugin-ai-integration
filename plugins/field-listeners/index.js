@@ -3,7 +3,7 @@ import { modelFromUrl } from "./lib/model-in-url";
 import { getModels, loadModels } from "./lib/models-cache";
 import { getCachedElement } from "../../common/lib/plugin-element-cache";
 import { isOwnSettingsForm } from "../../common/lib/settings-form";
-import { applyModelOptions } from "../manage/lib/form-schema";
+import { applyModelOptions } from "./lib/model-options";
 
 const TRIMMED = ["ai_url", "api_key", "flotiq_api_key", "model"];
 const WATCHED = ["ai_url", "api_key", "flotiq_api_key"];

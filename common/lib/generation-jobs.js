@@ -61,7 +61,7 @@ export const trackJob = (
             mediaId,
         });
 
-        if (ok && !isActiveStatus(status)) {
+        if (ok && status && !isActiveStatus(status)) {
             finish(resultFor(status), error);
             return;
         }

@@ -10,7 +10,6 @@ import { parseSettings } from "../../../common/lib/settings-parser";
 import { renderLogs } from "../../../common/elements/logs-timeline";
 import { buttons, generate } from "../../../common/lib/generation";
 
-
 const SIDEBAR_ORDER = "15";
 
 const REFRESH_DELAY_MS = 2000;

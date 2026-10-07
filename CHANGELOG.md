@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generate alt and title button in the media editor
 - Auto-generate: title and alt are generated in the background for images uploaded in the Flotiq panel
 - Title and alt are generated in the language of the user's account
+- Generation history panel in the sidebar of the media editor
+- Log details modal 
 
 ## [0.2.1]
 

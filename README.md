@@ -18,7 +18,7 @@ verified.
 
 ## Configuration
 
-Open the plugin settings from the plugin list and fill in four fields.
+Open the plugin settings from the plugin list and fill in the fields below.
 
 | Field          | Description                                                                                                                                                           |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -26,7 +26,7 @@ Open the plugin settings from the plugin list and fill in four fields.
 | API key        | Key for your AI provider.                                                                                                                                             |
 | Flotiq API key | An API key for this space. It proves to the integration service that you have access to the space; the service uses its own credentials for everything it writes.     |
 | Model          | The model identifier your provider expects, typed by hand - see below.                                                                                                |
-| Auto-generate  | When enabled, empty fields are filled in by AI on save, as a draft for review.                                                                                        |
+| Auto-generate  | When enabled, title and alt are generated in the background for every image uploaded in a supported format - see [Auto-generate](#auto-generate).                     |
 
 <img src="./.docs/plugin_config_active.png" alt="AI Integration settings, active connection" width="700"/>
 
@@ -58,9 +58,12 @@ long it took, and the message behind the info icon.
 
 The history belongs to the worker, not to the plugin. The worker writes every `/test` run and every generation to the
 `ai_logs` content type. Connection tests have `job_id` set to `test`, generations carry `trigger` (`manual` or `auto`).
-The tab reads them back with `GET /logs/{space-id}` - once when the settings modal opens, and again after every test,
-because the plugin never sees the entry the worker just wrote. Only the final entry of a generation is shown, the
-worker stores the whole job in it.
+The tab reads them back with `GET /logs/{space-id}` - once when the settings modal opens, again after every test
+and on every page change. Entries come 20 per page. 
+
+Clicking an entry opens the **Generation log** modal: the status and date, the media file, what triggered the job and
+the model, the number of attempts and the duration, the prompt sent to the model and the model response - or the 
+error, if the job failed.
 
 <img src="./.docs/plugin_config_logs.png" alt="AI Integration logs tab" width="700"/>
 
@@ -86,6 +89,13 @@ Opening a media file whose job is still running brings the spinner and the lock 
 With **Auto-generate** on, the plugin listens to `flotiq.media::after-upload` and sends `POST /generate` for every
 uploaded image in a supported format, with both fields and the language of the uploading user. Opening the file while
 the job is still running shows the spinner and locks the fields, as described above.
+
+### Generation history
+
+The sidebar of the media editor gets a collapsible **Generation history** panel. It lists the 20 newest finished 
+generations of the file - manual and automatic - read with`GET /logs/{space-id}/{media-id}`, and opens the 
+same **Generation log** modal on click. The panel reloads by itself when a job of the file ends, and on **Refresh**. 
+A file with no generations shows a **Generate** button that starts the same flow as the button in the form.
 
 ## Development
 
