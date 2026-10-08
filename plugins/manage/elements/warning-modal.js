@@ -1,6 +1,6 @@
-import pluginInfo from "../plugin-manifest.json";
-import i18n from "../i18n";
-import { warningTriangleIcon } from "./icons";
+import pluginInfo from "../../../plugin-manifest.json";
+import i18n from "../../../i18n";
+import warningTriangleIcon from "inline:../../../images/warning-triangle-icon.svg";
 
 const modalId = `${pluginInfo.id}-modal`;
 
@@ -20,8 +20,9 @@ const buildContent = (modelResponse) => {
            id="plugin-ai-integration-model-response" type="text" readonly />
   `;
 
-    wrapper.querySelector(".plugin-ai-integration-modal__heading-text").textContent =
-        i18n.t("Modal.WarningTitle");
+    wrapper.querySelector(
+        ".plugin-ai-integration-modal__heading-text",
+    ).textContent = i18n.t("Modal.WarningTitle");
 
     wrapper.querySelector(".plugin-ai-integration-modal__note").textContent =
         i18n.t("Modal.WarningNote");

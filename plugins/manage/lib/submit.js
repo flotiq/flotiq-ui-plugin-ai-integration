@@ -1,15 +1,15 @@
 import pluginInfo from "../../../plugin-manifest.json";
 import i18n from "../../../i18n";
-import { TEST_RESULT, testConfiguration } from "../../../common/ai-worker";
-import { fieldErrorFor } from "../../../common/ai-worker-helpers";
+import { TEST_RESULT, testConfiguration } from "../../../common/api/ai-worker";
+import { fieldErrorFor } from "../../../common/api/worker-errors";
 import {
     markConnected,
     restoreBanner,
     setBanner,
     withState,
 } from "../../../common/connection-store";
-import { confirmWarnings } from "../../../common/modals";
-import { loadLogs } from "./load-logs";
+import { confirmWarnings } from "../elements/warning-modal";
+import { loadLogs } from "../../../common/lib/load-logs";
 import { validate } from "./validate";
 
 const persist = async (values, client, { reload, modalInstance }, toast) => {

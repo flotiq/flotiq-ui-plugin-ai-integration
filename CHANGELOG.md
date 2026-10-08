@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0]
+
+### Added
+
+- Generate alt and title button in the media editor
+- Auto-generate: title and alt are generated in the background for images uploaded in the Flotiq panel
+- Title and alt are generated in the language of the user's account
+- Generation history panel in the sidebar of the media editor
+- Log details modal 
+
 ## [0.2.1]
 
 ### Fixed

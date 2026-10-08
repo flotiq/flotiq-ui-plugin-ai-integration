@@ -1,17 +1,15 @@
 import pluginInfo from "../../../plugin-manifest.json";
 import i18n from "../../../i18n";
 import {getBanner, subscribe} from "../../../common/connection-store";
-import {
-    infoIcon,
-    successIcon,
-    warningIcon,
-    spinnerIcon,
-    chevronRightIcon,
-} from "../../../common/icons";
+import infoIcon from "inline:../../../images/info-icon.svg";
+import successIcon from "inline:../../../images/success-icon.svg";
+import warningIcon from "inline:../../../images/warning-icon.svg";
+import spinnerIcon from "inline:../../../images/spinner-icon.svg";
+import chevronRightIcon from "inline:../../../images/chevron-right-icon.svg";
 import {
     addElementToCache,
     getCachedElement,
-} from "../../../common/plugin-element-cache";
+} from "../../../common/lib/plugin-element-cache";
 
 const DOCS_URL = "https://flotiq.com/docs/";
 

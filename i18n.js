@@ -41,6 +41,12 @@ i18n.init({
                 "Logs.Attempts_one": "{{count}} attempt",
                 "Logs.Attempts_other": "{{count}} attempts",
                 "Logs.Duration": "{{seconds}} s",
+                "Pagination.Page": "Page",
+                "Pagination.NumOfPages": "of {{numOfPages}}",
+                "Pagination.FirstPage": "First Page",
+                "Pagination.PreviousPage": "Previous Page",
+                "Pagination.NextPage": "Next Page",
+                "Pagination.LastPage": "Last Page",
 
                 "Field.EndpointUrl": "Endpoint URL",
                 "Field.EndpointUrlHelp": "Your provider's base API address",
@@ -101,9 +107,56 @@ i18n.init({
                 "Modal.ModelResponse": "Model response:",
                 "Modal.ChooseAnotherModel": "Choose another model",
                 "Modal.Accept": "Accept",
+                "Modal.OverwriteTitle": "Overwrite existing values?",
+                "Modal.OverwriteNote":
+                    "This file already has SEO values. " +
+                    "Generating will replace the ones you select.",
+                "Modal.FieldTitle": "Title",
+                "Modal.FieldAlt": "Alternative text",
+                "Modal.EmptyValue": "(empty)",
+                "Modal.Overwrite": "Generate and replace",
+                "Modal.Cancel": "Cancel",
 
                 "Toast.Saved": "AI integration saved",
                 "Toast.SaveError": "Could not save the settings",
+
+                "LogModal.Title": "Generation log",
+                "LogModal.Media": "Media",
+                "LogModal.TriggeredBy": "Triggered by",
+                "LogModal.Model": "Model",
+                "LogModal.Manual": "Manual",
+                "LogModal.Auto": "Auto-generate",
+                "LogModal.RequestData": "Request data",
+                "LogModal.Attempts": "Attempts",
+                "LogModal.Duration": "Duration",
+                "LogModal.Prompt": "Prompt",
+                "LogModal.Response": "Response",
+                "LogModal.Error": "Error",
+                "LogModal.Copy": "Copy",
+                "LogModal.Copied": "Copied",
+                "LogModal.Ok": "OK",
+
+                "History.Title": "Generation history",
+                "History.EmptyTitle": "No generations yet",
+                "History.EmptyBody":
+                    "Alternative text and title for this file haven't been generated with AI.",
+                "History.Refresh": "Refresh",
+                "History.Generate": "Generate",
+
+                "Media.Label": "SEO",
+                "Media.Generate": "Generate alt and title",
+                "Media.Generating": "Generating...",
+                "Media.UnsupportedFormat":
+                    "Unsupported format - AI works with JPG, PNG and SVG images",
+                "Media.Toast.Success": "Alt and title generated for {{name}}",
+                "Media.Toast.SuccessTitle": "Title generated for {{name}}",
+                "Media.Toast.SuccessAlt": "Alt generated for {{name}}",
+                "Media.Toast.Failed":
+                    "Could not generate alt and title for {{name}}.",
+                "Media.Toast.Timeout":
+                    "Generating alt and title for {{name}} is taking too long. " +
+                    "Open the file again later to check the result.",
+                "Media.Toast.StartFailed": "Could not start generating.",
             },
         },
         pl: {
@@ -138,12 +191,18 @@ i18n.init({
                 "Logs.Succeeded": "Sukces",
                 "Logs.Failed": "Niepowodzenie",
                 "Logs.ConnectionTest": "Test połączenia",
-                "Logs.AutoGenerate": "Automatyczne generowanie",
-                "Logs.ManualGeneration": "Ręczne generowanie",
+                "Logs.AutoGenerate": "Generowanie automatyczne",
+                "Logs.ManualGeneration": "Generowanie ręczne",
                 "Logs.Attempts_one": "{{count}} próba",
                 "Logs.Attempts_few": "{{count}} próby",
                 "Logs.Attempts_many": "{{count}} prób",
                 "Logs.Duration": "{{seconds}} s",
+                "Pagination.Page": "Strona",
+                "Pagination.NumOfPages": "z {{numOfPages}}",
+                "Pagination.FirstPage": "Pierwsza strona",
+                "Pagination.PreviousPage": "Poprzednia strona",
+                "Pagination.NextPage": "Następna strona",
+                "Pagination.LastPage": "Ostatnia strona",
 
                 "Field.EndpointUrl": "Endpoint URL",
                 "Field.EndpointUrlHelp": "Adres bazowy API dostawcy",
@@ -204,9 +263,57 @@ i18n.init({
                 "Modal.ModelResponse": "Odpowiedź modelu:",
                 "Modal.ChooseAnotherModel": "Wybierz inny model",
                 "Modal.Accept": "Akceptuj",
+                "Modal.OverwriteTitle": "Nadpisać istniejące wartości?",
+                "Modal.OverwriteNote":
+                    "Ten plik ma już wartości SEO. " +
+                    "Generowanie zastąpi te, które zaznaczysz.",
+                "Modal.FieldTitle": "Tytuł",
+                "Modal.FieldAlt": "Tekst alternatywny",
+                "Modal.EmptyValue": "(puste)",
+                "Modal.Overwrite": "Generuj i zastąp",
+                "Modal.Cancel": "Anuluj",
 
                 "Toast.Saved": "Zapisano integrację AI",
                 "Toast.SaveError": "Nie udało się zapisać ustawień",
+
+                "LogModal.Title": "Dziennik generowania",
+                "LogModal.Media": "Plik",
+                "LogModal.TriggeredBy": "Uruchomione przez",
+                "LogModal.Model": "Model",
+                "LogModal.Manual": "Ręcznie",
+                "LogModal.Auto": "Automatycznie",
+                "LogModal.RequestData": "Dane żądania",
+                "LogModal.Attempts": "Próby",
+                "LogModal.Duration": "Czas trwania",
+                "LogModal.Prompt": "Prompt",
+                "LogModal.Response": "Odpowiedź",
+                "LogModal.Error": "Błąd",
+                "LogModal.Copy": "Kopiuj",
+                "LogModal.Copied": "Skopiowano",
+                "LogModal.Ok": "OK",
+
+                "History.Title": "Historia generowania",
+                "History.EmptyTitle": "Brak wygenerowanych wartości",
+                "History.EmptyBody":
+                    "Tekst alternatywny i tytuł dla tego pliku nie zostały jeszcze wygenerowane przez AI.",
+                "History.Refresh": "Odśwież",
+                "History.Generate": "Generuj",
+
+                "Media.Label": "SEO",
+                "Media.Generate": "Generuj tekst alt i tytuł",
+                "Media.Generating": "Generowanie...",
+                "Media.UnsupportedFormat":
+                    "Format nieobsługiwany - AI działa z obrazami JPG, PNG i SVG",
+                "Media.Toast.Success": "Wygenerowano alt i title dla {{name}}",
+                "Media.Toast.SuccessTitle": "Wygenerowano title dla {{name}}",
+                "Media.Toast.SuccessAlt": "Wygenerowano alt dla {{name}}",
+                "Media.Toast.Failed":
+                    "Nie udało się wygenerować alt i title dla {{name}}.",
+                "Media.Toast.Timeout":
+                    "Generowanie alt i title dla {{name}} trwa zbyt długo. " +
+                    "Otwórz plik ponownie później, aby sprawdzić wynik.",
+                "Media.Toast.StartFailed":
+                    "Nie udało się uruchomić generowania.",
             },
         },
     },
