@@ -34,7 +34,7 @@ const createGenerateAction = (panel, globals) => {
 
     action.render = () => {
         const seoButton = buttons.get(panel.mediaId);
-        const generating = isGenerating(panel.mediaId) || !!seoButton?.starting;
+        const generating = isGenerating(panel.mediaId);
         const supported = isSupportedMedia(panel.ctx.contentObject);
 
         if (supported) delete action.dataset.tooltip;
@@ -159,15 +159,12 @@ export const createHistoryPanel = (mediaId, globals) => {
         }
     });
 
-    const isRunning = () =>
-        isGenerating(mediaId) || !!buttons.get(mediaId)?.starting;
-
-    let wasRunning = isRunning();
+    let wasRunning = isGenerating(mediaId);
 
     const unsubscribe = subscribe((id) => {
         if (id !== mediaId) return;
 
-        const running = isRunning();
+        const running = isGenerating(mediaId);
         if (wasRunning && !running) setTimeout(panel.load, REFRESH_DELAY_MS);
         wasRunning = running;
 

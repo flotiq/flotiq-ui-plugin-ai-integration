@@ -5,6 +5,14 @@ const modalId = `${pluginInfo.id}-log-modal`;
 
 const isGenerationLog = (log) => !!log && log.job_id !== "test";
 
+const prettyJson = (text) => {
+    try {
+        return JSON.stringify(JSON.parse(text), null, 2);
+    } catch {
+        return text;
+    }
+};
+
 const formatDateTime = (iso) => {
     const date = new Date(iso);
     const english = i18n.language === "en";
@@ -170,7 +178,7 @@ const buildContent = (entry, toast) => {
         ".plugin-ai-integration-log-modal__heading--response",
     ).textContent = i18n.t(failed ? "LogModal.Error" : "LogModal.Response");
     wrapper.querySelector('[data-field="response"]').textContent =
-        (failed ? log?.errors : log?.response_raw) || "-";
+        (failed ? log?.errors : prettyJson(log?.response_raw)) || "-";
 
     return wrapper;
 };

@@ -21,14 +21,13 @@ export const createGenerateButton = () => {
     const button = {
         element,
         ctx: {},
-        starting: false,
         checking: false,
         locked: false,
     };
 
     button.render = () => {
         const media = button.ctx.contentObject;
-        const generating = isGenerating(media.id) || button.starting;
+        const generating = isGenerating(media.id);
         const supported = isSupportedMedia(media);
 
         element.querySelector(

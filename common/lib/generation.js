@@ -166,34 +166,15 @@ export const generate = async (button, globals) => {
 
     const spaceId = globals.getSpaceId();
 
-    button.starting = true;
-    button.startingFields = fields;
-    notifyChange(media.id);
-
-    const result = await generateMedia(settings, {
-        mediaId: media.id,
-        spaceId,
-        language: generationLanguage(globals),
-        fields,
-        trigger: "manual",
+    startTracking(media, settings, spaceId, globals, fields, {
+        start: generateMedia(settings, {
+            mediaId: media.id,
+            spaceId,
+            language: generationLanguage(globals),
+            fields,
+            trigger: "manual",
+        }),
     });
-
-    if (!result.ok) {
-        button.starting = false;
-        notifyChange(media.id);
-        globals.toast.error(
-            [i18n.t("Media.Toast.StartFailed"), result.message]
-                .filter(Boolean)
-                .join(" "),
-            { duration: 8000 },
-        );
-        return;
-    }
-
-    startTracking(media, settings, spaceId, globals, fields);
-
-    button.starting = false;
-    notifyChange(media.id);
 };
 
 export const applyLock = (button, generating) => {
@@ -201,9 +182,7 @@ export const applyLock = (button, generating) => {
     button.locked = generating;
 
     const mediaId = button.ctx.contentObject.id;
-    const fields =
-        (button.starting ? button.startingFields : getJobFields(mediaId)) ||
-        GENERATED_FIELDS;
+    const fields = getJobFields(mediaId) || GENERATED_FIELDS;
 
     setTimeout(() =>
         button.ctx.lockForm?.(generating ? { fields, submit: true } : null),

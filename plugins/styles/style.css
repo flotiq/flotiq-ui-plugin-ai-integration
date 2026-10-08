@@ -262,8 +262,12 @@
 /* ================================================================== tabs: logs view */
 
 .plugin-ai-integration-hide-fields
-    > *:not(.plugin-ai-integration-header):not(:has(.plugin-ai-integration-header)) {
+> *:not(.plugin-ai-integration-header):not(:has(.plugin-ai-integration-header)) {
     display: none !important;
+}
+
+.plugin-ai-integration-hide-fields > :has(.plugin-ai-integration-header) {
+    margin-block-end: 0;
 }
 
 .plugin-ai-integration-settings-form {
@@ -281,6 +285,11 @@
     padding-top: 24px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.plugin-ai-integration-logs-view:has(.plugin-ai-integration-pagination:not([hidden]))
+.plugin-ai-integration-logs {
+    min-height: 444px;
 }
 
 .plugin-ai-integration-logs::-webkit-scrollbar {
@@ -582,9 +591,8 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition:
-        background-color 0.15s,
-        color 0.15s;
+    transition: background-color 0.15s,
+    color 0.15s;
 }
 
 .mode-dark .plugin-ai-integration-media__button {
@@ -607,7 +615,7 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
 }
 
 .plugin-ai-integration-media__button:hover:not(:disabled)
-    .plugin-ai-integration-media__icon {
+.plugin-ai-integration-media__icon {
     color: var(--color-white, #fff);
 }
 
@@ -620,7 +628,7 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
 /* ======================================================= overwrite modal */
 
 .plugin-ai-integration-dialog.plugin-ai-integration-dialog--centered
-    > div:last-child:has(button) {
+> div:last-child:has(button) {
     justify-content: center;
 }
 
@@ -714,8 +722,8 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
 }
 
 .plugin-ai-integration-overwrite__checkbox
-    input:checked
-    + .plugin-ai-integration-overwrite__checkmark {
+input:checked
++ .plugin-ai-integration-overwrite__checkmark {
     display: block;
 }
 
@@ -755,11 +763,10 @@ div:has(> div > .plugin-ai-integration-toggle-label) label {
 }
 
 
-
 /* ===================================================== generation history */
 
 .plugin-ai-integration-history {
-    padding: 20px 28px;
+    padding: 20px 16px;
     border-radius: 8px;
     background: var(--color-white, #fff);
     color: var(--color-slate-900, #0f172b);
