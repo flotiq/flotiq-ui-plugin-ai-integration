@@ -78,7 +78,7 @@ const triggerFrom = (target) =>
         ? target.closest(".plugin-ai-integration-tip[data-tooltip]")
         : null;
 
-export const installTooltips = () => {
+const installTooltips = () => {
     if (installed || typeof document === "undefined") return;
     installed = true;
 

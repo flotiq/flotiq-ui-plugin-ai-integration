@@ -1,4 +1,4 @@
-import i18n from "../i18n";
+import i18n from "../../../i18n";
 
 export const validateAiUrl = (value) => {
     const raw = (value || "").trim();
@@ -22,5 +22,3 @@ export const validateAiUrl = (value) => {
 
     return null;
 };
-
-export const isValidAiUrl = (value) => validateAiUrl(value) === null;

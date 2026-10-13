@@ -1,13 +1,17 @@
 import pluginInfo from "../plugin-manifest.json";
 import cssString from "inline:./styles/style.css";
 import i18n from "../i18n";
-import { registerFn } from "../common/plugin-element-cache";
-import { setWorkerUrlFromApi } from "../common/ai-worker";
-import "../common/tooltip";
+import { registerFn } from "../common/lib/plugin-element-cache";
+import { setWorkerUrlFromApi } from "../common/api/ai-worker";
+import { isOwnSettingsForm } from "../common/lib/settings-form";
+import "../common/elements/tooltip";
 import { handleManageSchema } from "./manage";
 import { getHeader } from "./form-add";
 import { handleFormFieldConfig } from "./field-config";
 import { handleFormFieldListeners } from "./field-listeners";
+import { handleMediaFormAdd } from "./media-form-add";
+import { handleMediaAfterUpload } from "./media-after-upload";
+import { handleSidebarPanel } from "./sidebar-panel";
 
 const loadStyles = () => {
     let style = document.getElementById(`${pluginInfo.id}-styles`);
@@ -19,10 +23,17 @@ const loadStyles = () => {
     }
 
     style.textContent = cssString;
-};
 
-const isOwnSettingsForm = (contentType) =>
-    contentType?.id === pluginInfo.id && contentType?.nonCtdSchema;
+    const fontId = `${pluginInfo.id}-font`;
+    if (!document.getElementById(fontId)) {
+        const font = document.createElement("link");
+        font.id = fontId;
+        font.rel = "stylesheet";
+        font.href =
+            "https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&display=swap";
+        document.head.appendChild(font);
+    }
+};
 
 registerFn(pluginInfo, (handler, client, globals) => {
     loadStyles();
@@ -41,7 +52,7 @@ registerFn(pluginInfo, (handler, client, globals) => {
     );
 
     handler.on("flotiq.form::add", ({ contentType }) =>
-        isOwnSettingsForm(contentType) ? getHeader() : null,
+        isOwnSettingsForm(contentType) ? getHeader(globals) : null,
     );
 
     handler.on("flotiq.form.field::config", (data) =>
@@ -50,5 +61,17 @@ registerFn(pluginInfo, (handler, client, globals) => {
 
     handler.on("flotiq.form.field.listeners::add", (data) =>
         handleFormFieldListeners(data, globals),
+    );
+
+    handler.on("flotiq.media.form::add", (data) =>
+        handleMediaFormAdd(data, globals),
+    );
+
+    handler.on("flotiq.media::after-upload", (data) => {
+        handleMediaAfterUpload(data, globals);
+    });
+
+    handler.on("flotiq.form.sidebar-panel::add", (data) =>
+        handleSidebarPanel(data, globals),
     );
 });

@@ -1,4 +1,4 @@
-import i18n from "../i18n";
+import i18n from "../../i18n";
 
 export const errorMessages = (payload, fallback) => {
     if (!payload || typeof payload !== "object") return [fallback];
@@ -38,7 +38,8 @@ export const classify = (httpStatus, payload) => {
     if (providerStatus === 404)
         return mentionsModel(providerBody) ? REASON.MODEL : REASON.ENDPOINT;
 
-    if (providerStatus === 400 && mentionsModel(providerBody)) return REASON.MODEL;
+    if (providerStatus === 400 && mentionsModel(providerBody))
+        return REASON.MODEL;
 
     return REASON.UNKNOWN;
 };
@@ -70,12 +71,3 @@ export const fieldErrorFor = (reason) => {
             return ["ai_url", i18n.t("Validation.EndpointRejected")];
     }
 };
-
-export const toEntry = (log) => ({
-    timestamp: log.finished_at || log.started_at,
-    type: "connection_test",
-    status: log.status === "success" ? "succeeded" : "failed",
-    attempts: Number(log.attempts) || 1,
-    durationMs: Number(log.duration_ms) || 0,
-    message: log.errors || "",
-});

@@ -3,9 +3,10 @@ import {
     addElementToCache,
     getCachedElement,
     removeElement,
-} from "../../common/plugin-element-cache";
+} from "../../common/lib/plugin-element-cache";
 import { hydrate } from "../../common/connection-store";
-import { loadLogs } from "./lib/load-logs";
+import { parseSettings } from "../../common/lib/settings-parser";
+import { loadLogs } from "../../common/lib/load-logs";
 import { getSchema } from "./lib/form-schema";
 import { getSubmitHandler } from "./lib/submit";
 import { validate } from "./lib/validate";
@@ -15,12 +16,7 @@ export const handleManageSchema = (data, client, globals) => {
     let formSchema = getCachedElement(cacheKey)?.element;
 
     if (!formSchema) {
-        let settings;
-        try {
-            settings = JSON.parse(globals.getPluginSettings() || "{}");
-        } catch {
-            settings = {};
-        }
+        const settings = parseSettings(globals.getPluginSettings());
 
         hydrate(settings);
 
