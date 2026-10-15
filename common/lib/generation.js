@@ -49,14 +49,7 @@ const successKeyFor = (fields) => {
     return "Media.Toast.Success";
 };
 
-const startTracking = (
-    media,
-    settings,
-    spaceId,
-    globals,
-    fields,
-    { start } = {},
-) => {
+const startTracking = (media, settings, spaceId, globals, fields, start) => {
     const token = settings.flotiq_api_key;
     const name = media.fileName;
 
@@ -124,9 +117,14 @@ export const resumeJob = async (button, globals) => {
 
     const start = pendingStarts.get(media.id);
     if (start) {
-        startTracking(media, settings, spaceId, globals, GENERATED_FIELDS, {
+        startTracking(
+            media,
+            settings,
+            spaceId,
+            globals,
+            GENERATED_FIELDS,
             start,
-        });
+        );
         return;
     }
 
@@ -165,15 +163,20 @@ export const generate = async (button, globals) => {
 
     const spaceId = globals.getSpaceId();
 
-    startTracking(media, settings, spaceId, globals, fields, {
-        start: generateMedia(settings, {
+    startTracking(
+        media,
+        settings,
+        spaceId,
+        globals,
+        fields,
+        generateMedia(settings, {
             mediaId: media.id,
             spaceId,
             language: generationLanguage(globals),
             fields,
             trigger: "manual",
         }),
-    });
+    );
 };
 
 export const applyLock = (button, generating) => {
