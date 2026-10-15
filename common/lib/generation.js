@@ -1,4 +1,3 @@
-import pluginInfo from "../../plugin-manifest.json";
 import i18n from "../../i18n";
 import {
     fetchJobStatus,
@@ -19,6 +18,8 @@ import { isConfigured, parseSettings } from "./settings-parser";
 const hasText = (value) => typeof value === "string" && value.trim() !== "";
 
 export const buttons = new Map();
+
+const pendingStarts = new Map();
 
 const refreshForm = async (mediaId, fields) => {
     const button = buttons.get(mediaId);
@@ -54,7 +55,7 @@ const startTracking = (
     spaceId,
     globals,
     fields,
-    { start, onlyWhenOpen = false } = {},
+    { start } = {},
 ) => {
     const token = settings.flotiq_api_key;
     const name = media.fileName;
@@ -63,18 +64,6 @@ const startTracking = (
         media.id,
         { token, spaceId, fields, start },
         async (result, message) => {
-            if (onlyWhenOpen && !buttons.has(media.id)) {
-                if (result === RESULT.START_FAILED) {
-                    console.error(
-                        pluginInfo.id,
-                        "auto generation",
-                        media.id,
-                        message,
-                    );
-                }
-                return;
-            }
-
             if (result === RESULT.START_FAILED) {
                 globals.toast.error(
                     [i18n.t("Media.Toast.StartFailed"), message]
@@ -108,18 +97,20 @@ const startTracking = (
     );
 };
 
-export const trackAutoGeneration = (media, settings, globals) => {
-    const spaceId = globals.getSpaceId();
+export const startAutoGeneration = (media, settings, globals) => {
+    const start = generateMedia(settings, {
+        mediaId: media.id,
+        spaceId: globals.getSpaceId(),
+        language: generationLanguage(globals),
+        fields: GENERATED_FIELDS,
+        trigger: "auto",
+    });
 
-    startTracking(media, settings, spaceId, globals, GENERATED_FIELDS, {
-        start: generateMedia(settings, {
-            mediaId: media.id,
-            spaceId,
-            language: generationLanguage(globals),
-            fields: GENERATED_FIELDS,
-            trigger: "auto",
-        }),
-        onlyWhenOpen: true,
+    pendingStarts.set(media.id, start);
+    start.then(() => {
+        if (pendingStarts.get(media.id) === start) {
+            pendingStarts.delete(media.id);
+        }
     });
 };
 
@@ -130,6 +121,14 @@ export const resumeJob = async (button, globals) => {
     if (isGenerating(media.id) || !isConfigured(settings)) return;
 
     const spaceId = globals.getSpaceId();
+
+    const start = pendingStarts.get(media.id);
+    if (start) {
+        startTracking(media, settings, spaceId, globals, GENERATED_FIELDS, {
+            start,
+        });
+        return;
+    }
 
     button.checking = true;
     notifyChange(media.id);
