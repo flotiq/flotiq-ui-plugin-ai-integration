@@ -24,6 +24,6 @@
     "prettier": "^3.9.10"
   },
   "dependencies": {
-    "i18next": "^26.5.2"
+    "i18next": "^26.5.11"
   }
 }
